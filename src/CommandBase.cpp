@@ -5,6 +5,7 @@
 // Initialize a single static instance of all of your subsystems to NULL
 Stacker* CommandBase::stacker = NULL;
 DriveTrain* CommandBase::driveTrain = NULL;
+Intake* CommandBase::intake = NULL;
 OI* CommandBase::oi = NULL;
 
 CommandBase::CommandBase(char const *name) :
@@ -25,5 +26,6 @@ void CommandBase::init()
 	stacker = new Stacker();
 
 	driveTrain = new DriveTrain();
+	intake = new Intake(11,12);
 	oi = new OI();
 }
