@@ -6,6 +6,7 @@
 #include "Subsystems/Stacker.h"
 #include "Subsystems/DriveTrain.h"
 #include "Subsystems/Intake.h"
+#include "Subsystems/Arm.h"
 #include "OI.h"
 #include "WPILib.h"
 
@@ -25,6 +26,7 @@ public:
 	static OI *oi;
 	static DriveTrain* driveTrain;
 	static Intake* intake;
+	static Arm* arm;
 };
 
 #endif

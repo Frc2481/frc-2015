@@ -7,6 +7,7 @@ Stacker* CommandBase::stacker = NULL;
 DriveTrain* CommandBase::driveTrain = NULL;
 Intake* CommandBase::intake = NULL;
 OI* CommandBase::oi = NULL;
+Arm* CommandBase::arm = NULL;
 
 CommandBase::CommandBase(char const *name) :
 		Command(name)
@@ -28,4 +29,5 @@ void CommandBase::init()
 	driveTrain = new DriveTrain();
 	intake = new Intake(11,12);
 	oi = new OI();
+	arm = new Arm(0,1,13,14,15);
 }
