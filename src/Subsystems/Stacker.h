@@ -13,7 +13,24 @@ private:
 	// for methods that implement subsystem capabilities
 	Lift2481* mRightLift;
 	Lift2481* mLeftLift;
+	int mToteCount;
+
+	enum Direction{
+		Raising,
+		Lowering
+	} mCounterState;
+
+	enum Stopped{
+		Up,
+		Down
+	} mLiftLastExtreme;
+
 public:
+	enum StackerLiftID{
+			RIGHT,
+			LEFT,
+		};
+
 	Stacker();
 	void InitDefaultCommand();
 	void Reset();
@@ -22,6 +39,11 @@ public:
 	void PeriodicUpdate();
 	void Stop();
 	bool IsResetting();
+	int GetToteCount() const;
+	void SetToteCount(int toteCount);
+	void IncrementToteCount();
+	void DecrementToteCount();
+	void SetFeedbackEnable(StackerLiftID id, bool state);
 };
 
 #endif

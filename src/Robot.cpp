@@ -4,6 +4,9 @@
 #include "CommandBase.h"
 #include "Commands/StackerResetCommand.h"
 #include "Commands/PickUpTote.h"
+#include "Commands/IncrementToteCountCommand.h"
+#include "Commands/DecrementToteCountCommand.h"
+#include "Commands/StackerSetFeedbackCommand.h"
 
 class Robot: public IterativeRobot
 {
@@ -17,8 +20,14 @@ private:
 		autonomousCommand = new ExampleCommand();
 		lw = LiveWindow::GetInstance();
 
-		SmartDashboard::PutData (new StackerResetCommand());
-		SmartDashboard::PutData(new PickUpTote());
+		SmartDashboard::PutData("Increment Tote Count", new IncrementToteCountCommand());
+		SmartDashboard::PutData("Decrement Tote Count", new DecrementToteCountCommand());
+		SmartDashboard::PutData("Reset Stacker", new StackerResetCommand());
+		SmartDashboard::PutData("Pickup Tote", new PickUpTote());
+		SmartDashboard::PutData("Disable Right Lift", new StackerSetFeedbackCommand(Stacker::RIGHT, false));
+		SmartDashboard::PutData("Enable Right Lift", new StackerSetFeedbackCommand(Stacker::RIGHT, true));
+		SmartDashboard::PutData("Disable Left Lift", new StackerSetFeedbackCommand(Stacker::LEFT,false));
+		SmartDashboard::PutData("Enable Left Lift", new StackerSetFeedbackCommand(Stacker::LEFT,true));
 	}
 	
 	void DisabledPeriodic()

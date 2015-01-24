@@ -12,4 +12,8 @@
 #define ARM_PIVOT_POSITION_TOP 5
 #define ARM_PIVOT_POSITION_BOT 0
 
+//Stacker Define
+#define STACKER_POSITION_UP 2000
+#define STACKER_POSITION_DOWN 100
+
 #endif

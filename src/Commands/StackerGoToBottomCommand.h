@@ -1,5 +1,5 @@
 #ifndef STACKER_GOTO_BOTTOM_COMMAND_H
-#define BOTTOM_COMMAND_H
+#define STACKER_GOTO_BOTTOM_COMMAND_H
 
 #include "../CommandBase.h"
 #include "WPILib.h"

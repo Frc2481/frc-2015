@@ -15,6 +15,7 @@ public:
 	enum LiftState {
 		NORMAL,
 		RESETTING,
+		FEEDBACK_DISABLE,
 	};
 private:
 	CANTalon* mMotor;
@@ -34,6 +35,8 @@ public:
 	void Reset();
 	void Stop();
 	bool IsResetting();
+	void SetFeedbackState(bool state);
+	LiftState GetLiftState();
 	PIDController* GetController();
 };
 
