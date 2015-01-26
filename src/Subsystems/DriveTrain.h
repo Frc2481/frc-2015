@@ -11,7 +11,7 @@
 #include "../Components/SwerveModule.h"
 #include "WPILib.h"
 #include "Commands/Subsystem.h"
-#include "IMU/IMU.h"
+#include "../IMU/IMU.h"
 
 class DriveTrain: public Subsystem {
 
