@@ -5,9 +5,14 @@
 Stacker::Stacker() :
 		Subsystem("Stacker"), mToteCount(0), mLiftLastExtreme(Up)
 {
-	mRightLift = new Lift2481(9, 10, 11, .005, .001, 0, 0);
-	mLeftLift = new Lift2481(10, 3, 4, .1, 0, 0, 5);
+	float p = Preferences::GetInstance()->GetFloat("STACKER_P", .0002);
+	float i = Preferences::GetInstance()->GetFloat("STACKER_I", .00001);
+
+	mRightLift = new Lift2481(9, 10, 11, p, i, 0, STACKER_RIGHT_BOTTOM_LIMIT, STACKER_RIGHT_TOP_LIMIT);
+	mLeftLift = new Lift2481(10, 12, 13, p, i, 0, STACKER_LEFT_BOTTOM_LIMIT, STACKER_LEFT_TOP_LIMIT);
 	mLiftLastExtreme = Down;
+
+	mLeftLift->SetInverted(true);
 }
 
 void Stacker::InitDefaultCommand()
@@ -27,7 +32,18 @@ bool Stacker::OnTarget() {
 }
 
 void Stacker::SetPosition(float pos) {
-	pos *= 100;
+	pos *= STACKER_TICKS_PER_INCH;
+
+	float i = Preferences::GetInstance()->GetFloat("STACKER_I", 0);
+	float p = Preferences::GetInstance()->GetFloat("STACKER_P", .0002);
+	mRightLift->SetI(i);
+	mRightLift->SetP(p);
+	mLeftLift->SetI(i);
+	mLeftLift->SetP(p);
+
+	std::cout << "p: " << p << " i " << i << std::endl;
+
+
 	mRightLift->SetDesiredPostion(pos);
 	mLeftLift->SetDesiredPostion(pos);
 }
@@ -49,7 +65,7 @@ void Stacker::PeriodicUpdate() {
 
 	if (mCounterState == Raising &&
 			mLiftLastExtreme == Down &&
-			(std::min(lpos,rpos) > (STACKER_POSITION_UP - 100))){
+			(std::min(lpos,rpos) > (STACKER_POSITION_UP - (STACKER_TICKS_PER_INCH + 100)))){
 
 		mLiftLastExtreme = Up;
 
@@ -57,12 +73,16 @@ void Stacker::PeriodicUpdate() {
 	}
 	else if (mCounterState == Lowering &&
 			mLiftLastExtreme == Up &&
-			(std::max(lpos,rpos) > (STACKER_POSITION_DOWN + 100))){
+			(std::max(lpos,rpos) > (STACKER_POSITION_DOWN + (STACKER_TICKS_PER_INCH + 100)))){
 
 		mLiftLastExtreme = Down;
 	}
 
-
+	float error = fabs(mRightLift->GetCurrentPostion() - mRightLift->GetDesiredPostion());
+	if (error > 500) {
+		mRightLift->GetController()->ResetError();
+		mLeftLift->GetController()->ResetError();
+	}
 
 #ifdef DEBUGGING
 	SmartDashboard::PutNumber("ToteCount", mToteCount);
@@ -74,8 +94,8 @@ void Stacker::PeriodicUpdate() {
 	SmartDashboard::PutBoolean("stackerRightResetting", mRightLift->IsResetting());
 	SmartDashboard::PutNumber("stackerLeftCurrentPosition", mLeftLift->GetCurrentPostion());
 	SmartDashboard::PutNumber("stackerRightCurrentPosition", mRightLift->GetCurrentPostion());
-	SmartDashboard::PutData("stackerLeftController", mLeftLift->GetController());
-	SmartDashboard::PutData("stackerRightController", mRightLift->GetController());
+	SmartDashboard::PutData("stackerLeftController", (PIDController*)mLeftLift->GetController());
+	SmartDashboard::PutData("stackerRightController", (PIDController*)mRightLift->GetController());
 	SmartDashboard::PutNumber("RightStackerState", mRightLift->GetLiftState());
 	SmartDashboard::PutNumber("LeftStackerState", mLeftLift->GetLiftState());
 #endif

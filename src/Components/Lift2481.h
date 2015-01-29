@@ -8,7 +8,22 @@
 #ifndef SRC_COMPONENTS_LIFT2481_H_
 #define SRC_COMPONENTS_LIFT2481_H_
 
+#include "../PIDController2481.h"
 #include "WPILib.h"
+
+class LiftPIDOutput2481 : public PIDOutput {
+private:
+	CANTalon* mMotor;
+	DigitalInput* mBottomLimit;
+	DigitalInput* mTopLimit;
+	bool mInverted;
+public:
+	LiftPIDOutput2481(int motor, DigitalInput* bot, DigitalInput* top);
+	virtual ~LiftPIDOutput2481();
+	void PIDWrite(float output);
+	void Set(float output);
+	void InvertMotor(bool invert);
+};
 
 class Lift2481 {
 public:
@@ -18,14 +33,15 @@ public:
 		FEEDBACK_DISABLE,
 	};
 private:
-	CANTalon* mMotor;
 	Encoder* mEncoder;
-	PIDController* mPIDController;
+	LiftPIDOutput2481* mPIDOutput;
+	PIDController2481* mPIDController;
 	DigitalInput* mBottomLimit;
+	DigitalInput* mTopLimit;
 	LiftState mState;
 public:
 
-	Lift2481(int motor, uint32_t encoderA, uint32_t encoderB, float P, float I, float D, uint32_t bottomLimit);
+	Lift2481(int motor, uint32_t encoderA, uint32_t encoderB, float P, float I, float D, uint32_t bottomLimit, uint32_t topLimit);
 	virtual ~Lift2481();
 	void PeriodicUpdate();
 	float GetCurrentPostion();
@@ -37,7 +53,10 @@ public:
 	bool IsResetting();
 	void SetFeedbackState(bool state);
 	LiftState GetLiftState();
-	PIDController* GetController();
+	PIDController2481* GetController();
+	void SetP(float p);
+	void SetI(float i);
+	void SetInverted(bool invert);
 };
 
 #endif /* SRC_COMPONENTS_LIFT2481_H_ */

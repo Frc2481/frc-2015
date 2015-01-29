@@ -10,7 +10,7 @@ public:
 	StackerGoToTopCommand() : CommandBase() {
 	}
 	void Initialize(){
-		CommandBase::stacker->SetPosition(24.2f);
+		CommandBase::stacker->SetPosition(13.0f);
 	}
 	void Execute() {}
 	bool IsFinished(){
