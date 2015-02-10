@@ -1,0 +1,34 @@
+#ifndef ThreeToteStackAutoCommandGroup_H
+#define ThreeToteStackAutoCommandGroup_H
+
+#include <Commands/PickUpToteCommand.h>
+#include "Commands/CommandGroup.h"
+#include "WPILib.h"
+#include "AutoDriveCommand.h"
+#include "UnloadToteStackCommand.h"
+#include "AcquireToteCommand.h"
+#include "AutoMoveRCOutOfWayCommand.h"
+#include "WaitForToteCommand.h"
+
+
+
+class ThreeToteStackAutoCommandGroup: public CommandGroup
+{
+public:
+	ThreeToteStackAutoCommandGroup(){
+		AddParallel(new AcquireToteCommand());
+		AddSequential(new WaitForToteCommand());
+		AddSequential(new AutoMoveRCOutOfWayCommand());
+		AddParallel(new AutoDriveCommand(0,1,0,.5));
+		AddParallel(new AcquireToteCommand());
+		AddSequential(new WaitForToteCommand());
+		AddSequential(new AutoMoveRCOutOfWayCommand());
+		AddParallel(new AutoDriveCommand(0,1,0,.5));
+		AddParallel(new AcquireToteCommand());
+		AddSequential(new WaitForToteCommand());
+		AddSequential(new AutoDriveCommand(1,0,0,1.5));
+		AddSequential(new UnloadToteStackCommand());
+	}
+};
+
+#endif

@@ -24,10 +24,13 @@ void CommandBase::init()
 {
 	// Create a single static instance of all of your subsystems. The following
 	// line should be repeated for each subsystem in the project.
-	stacker = new Stacker();
 
 	driveTrain = new DriveTrain();
-	intake = new Intake(11,12);
+	intake = new Intake(11,12,4);
+	stacker = new Stacker();
+	arm = new Arm(0,1,13,14,15,0);
+
 	oi = new OI();
-	arm = new Arm(0,1,13,14,15);
+
+	driveTrain->SetLengthAndWidth(ROBOT_LENGTH, ROBOT_WIDTH);
 }

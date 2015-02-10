@@ -21,6 +21,7 @@ public:
 	CommandBase(char const *name);
 	CommandBase();
 	static void init();
+
 	// Create a single static instance of all of your subsystems
 	static Stacker *stacker;
 	static OI *oi;
