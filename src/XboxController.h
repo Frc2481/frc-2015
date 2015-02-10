@@ -16,7 +16,8 @@ class XboxController: public Joystick {
 public:
 	static const uint32_t xbLeftXAxis;
 	static const uint32_t xbLeftYAxis;
-	static const uint32_t xbZAxis;
+	static const uint32_t xbLeftTrigger;
+	static const uint32_t xbRightTrigger;
 	static const uint32_t xbRightXAxis;
 	static const uint32_t xbRightYAxis;
 	static const uint32_t xbAButton;
@@ -29,6 +30,10 @@ public:
 	static const uint32_t xbLeftBumper;
 	static const uint32_t xbRightStickCLick;
 	static const uint32_t xbLeftStickClick;
+	static const uint32_t xbDPadTop;
+	static const uint32_t xbDPadRight;
+	static const uint32_t xbDPadBottom;
+	static const uint32_t xbDPadLeft;
 	
 	XboxController(uint32_t port);
 	virtual ~XboxController();

@@ -7,9 +7,10 @@
 
 #include "XboxController.h"
 
-const uint32_t XboxController::xbLeftXAxis = 1;
-const uint32_t XboxController::xbLeftYAxis = 2;
-const uint32_t XboxController::xbZAxis = 3;
+const uint32_t XboxController::xbLeftXAxis = 0;
+const uint32_t XboxController::xbLeftYAxis = 1;
+const uint32_t XboxController::xbLeftTrigger = 2;
+const uint32_t XboxController::xbRightTrigger = 3;
 const uint32_t XboxController::xbRightXAxis = 4;
 const uint32_t XboxController::xbRightYAxis = 5;
 const uint32_t XboxController::xbAButton = 1;
@@ -22,6 +23,10 @@ const uint32_t XboxController::xbRightBumper = 6;
 const uint32_t XboxController::xbLeftBumper = 5;
 const uint32_t XboxController::xbRightStickCLick = 10;
 const uint32_t XboxController::xbLeftStickClick = 9;
+const uint32_t XboxController::xbDPadTop = 0;
+const uint32_t XboxController::xbDPadRight = 90;
+const uint32_t XboxController::xbDPadBottom = 180;
+const uint32_t XboxController::xbDPadLeft = 270;
 
 
 XboxController::XboxController(uint32_t port) : Joystick(port){}
