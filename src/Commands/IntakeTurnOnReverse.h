@@ -13,10 +13,14 @@ public:
 	}
 	void Execute(){}
 	bool IsFinished(){
-		return true;
+		return false;
 	}
-	void End(){}
-	void Interrupted(){}
+	void End(){
+		CommandBase::intake->TurnOff();
+	}
+	void Interrupted(){
+		End();
+	}
 };
 
 #endif

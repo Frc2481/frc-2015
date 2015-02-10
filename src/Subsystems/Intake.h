@@ -17,6 +17,7 @@ class Intake: public Subsystem
 private:
 	CANTalon* mRightMotor;
 	CANTalon* mLeftMotor;
+	DigitalInput* mIntakeLimit;
 	enum IntakeState{
 		Off,
 		On,
@@ -28,7 +29,7 @@ private:
 	// It's desirable that everything possible under private except
 	// for methods that implement subsystem capabilities
 public:
-	Intake(int leftCANID,int rightCANID);
+	Intake(int leftCANID,int rightCANID,int limitID);
 	void InitDefaultCommand();
 	void TurnOn();
 	void TurnOff();
@@ -39,6 +40,7 @@ public:
 	bool IsOff();
 	void IntakeManual(float xValue);
 	void PeriodicUpdate();
+	bool IsContained();
 
 };
 

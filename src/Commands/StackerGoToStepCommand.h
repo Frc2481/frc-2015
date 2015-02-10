@@ -8,6 +8,7 @@ class StackerGoToStepCommand: public CommandBase
 {
 public:
 	StackerGoToStepCommand() : CommandBase() {
+		Requires(stacker);
 	}
 	void Initialize(){
 		CommandBase::stacker->SetPosition(6.7f);
@@ -17,7 +18,8 @@ public:
 		return CommandBase::stacker->OnTarget();
 	}
 	void End(){
-		CommandBase::stacker->Stop();
+		CommandBase::stacker->Disable();
+		CommandBase::stacker->UpdateToteCount();
 	}
 	void Interrupted(){
 		End();

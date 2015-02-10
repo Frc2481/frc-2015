@@ -1,25 +1,22 @@
 #include "Intake.h"
 #include "../RobotMap.h"
-#include "RobotParameters.h"
+#include <iostream>
+#include "../RobotParameters.h"
 
 
 
-Intake::Intake(int leftCANID, int rightCANID):
+Intake::Intake(int leftCANID, int rightCANID, int limitID):
 	Subsystem("Intake"),
 	mRightMotor(new CANTalon(rightCANID)),
-	mLeftMotor(new CANTalon(leftCANID)) {
-
+	mLeftMotor(new CANTalon(leftCANID)),
+	mIntakeLimit(new DigitalInput(limitID)){
 }
 
-void Intake::InitDefaultCommand()
-{
-	// Set the default command for a subsystem here.
-	//SetDefaultCommand(new MySpecialCommand());
-}
+void Intake::InitDefaultCommand(){}
 
 void Intake::TurnOn() {
 	mRightMotor->Set(INTAKE_FORWARD_SPEED);
-	mLeftMotor->Set(INTAKE_FORWARD_SPEED);
+	mLeftMotor->Set(-INTAKE_FORWARD_SPEED);
 	mState = On;
 }
 
@@ -31,18 +28,18 @@ void Intake::TurnOff() {
 
 void Intake::TurnOnReverse() {
 	mRightMotor->Set(INTAKE_REVERSE_SPEED);
-	mLeftMotor->Set(INTAKE_REVERSE_SPEED);
+	mLeftMotor->Set(-INTAKE_REVERSE_SPEED);
 	mState = Reverse;
 }
 
 void Intake::RotateCW() {
-	mRightMotor->Set(INTAKE_FORWARD_SPEED);
+	mRightMotor->Set(-INTAKE_FORWARD_SPEED);
 	mLeftMotor->Set(INTAKE_REVERSE_SPEED * INTAKE_TRIM);
 	mState = CW;
 }
 
 void Intake::RotateCCW() {
-	mRightMotor->Set(INTAKE_REVERSE_SPEED * INTAKE_TRIM);
+	mRightMotor->Set(-INTAKE_REVERSE_SPEED * INTAKE_TRIM);
 	mLeftMotor->Set(INTAKE_FORWARD_SPEED);
 	mState = CCW;
 }
@@ -61,25 +58,28 @@ void Intake::IntakeManual(float xValue){
 
 	if (xValue < -0.2){
 		trim = (((xValue + 1.0f) * -2.0f) / 0.8f) + 1.0f;
-		mRightMotor->Set(INTAKE_REVERSE_SPEED);
-		mLeftMotor->Set(INTAKE_FORWARD_SPEED * trim);
+		mRightMotor->Set(-INTAKE_REVERSE_SPEED);
+		mLeftMotor->Set(-INTAKE_REVERSE_SPEED * trim);
 	}
-	if (xValue >0.2){
+	else if (xValue > 0.2){
 		trim = (((xValue - 0.2f) * 2.0f) / 0.8f) - 1.0f;
-		mRightMotor->Set(INTAKE_FORWARD_SPEED * trim);
+		mRightMotor->Set(INTAKE_REVERSE_SPEED * trim);
 		mLeftMotor->Set(INTAKE_REVERSE_SPEED);
 	}
 	else{
-		mRightMotor->Set(INTAKE_REVERSE_SPEED);
+		mRightMotor->Set(-INTAKE_REVERSE_SPEED);
 		mLeftMotor->Set(INTAKE_REVERSE_SPEED);
 	}
 }
 
 void Intake::PeriodicUpdate(){
 #ifdef DEBUGGING
-	SmartDashboard::PutNumber("getLeftMotorSpeed", mLeftMotor->Get());
-	SmartDashboard::PutNumber("getRightMotorSpeed", mRightMotor->Get());
+	SmartDashboard::PutNumber("IntakeLeftMotorSpeed", mLeftMotor->Get());
+	SmartDashboard::PutNumber("IntakeRightMotorSpeed", mRightMotor->Get());
+	SmartDashboard::PutBoolean("Contain Limit", mIntakeLimit->Get());
 #endif
 }
 
-
+bool Intake::IsContained() {
+	return !mIntakeLimit->Get();
+}

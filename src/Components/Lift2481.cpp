@@ -9,18 +9,23 @@
 #include "RobotParameters.h"
 
 Lift2481::Lift2481(int motor, uint32_t encoderA, uint32_t encoderB, float P,
-		float I, float D, uint32_t bottomLimit, uint32_t topLimit) {
+		float I, float D, uint32_t bottomLimit, uint32_t topLimit, int brake) {
 	mEncoder = new Encoder(encoderA, encoderB);
+//	mEncoder->SetDistancePerPulse(1.0f / 578.0f);
 	mBottomLimit = new DigitalInput(bottomLimit);
 	mTopLimit = new DigitalInput(topLimit);
 	mPIDOutput = new LiftPIDOutput2481(motor, mBottomLimit, mTopLimit);
 	mPIDController = new PIDController2481(P, I, D, mEncoder, mPIDOutput, .01);
+	mBrake = new Solenoid(brake);
+
+	mMotorOffCount = mMotorOnCount = 0;
 
 	mPIDController->SetAbsoluteTolerance(200.0f);
 	mPIDController->SetInputRange(0, STACKER_POSITION_UP);
 
 	//Reset();            //remove for testing
 	mState = NORMAL;
+	mBrakeState = STATIC;
 }
 
 Lift2481::~Lift2481() {
@@ -37,6 +42,42 @@ void Lift2481::PeriodicUpdate() {
 //		mState = NORMAL;
 //		mEncoder->Reset();
 //	}
+	SmartDashboard::PutNumber("Brake State1", (int)mBrakeState);
+
+	SmartDashboard::PutNumber("PIDGet Stacker", mEncoder->PIDGet());
+
+	if (mState == NORMAL) {
+
+		//Turn the motor off if the brake has been applied for 4
+		//iterations through the loop.
+		if (mBrakeState == APPLYING) {
+			mBrake->Set(false);
+			mMotorOffCount++;
+		}
+
+		if (mMotorOffCount >= 10) {
+			mPIDController->Disable();
+			mMotorOffCount = 0;
+			mBrakeState = STATIC;
+		}
+
+		//Turn the motor on if the brake has been removed for 4
+		//iterations through the loop.
+		if (mBrakeState == RELEASING) {
+			mBrake->Set(true);
+			mMotorOnCount++;
+		}
+
+		if (mMotorOnCount >= 3) {
+			mPIDController->Enable();
+			mMotorOnCount = 0;
+			mBrakeState = STATIC;
+		}
+	}
+
+	SmartDashboard::PutBoolean("Brake", mBrake->Get());
+
+	mCurrentAverager.add(mPIDOutput->GetMotorCurrent());
 }
 
 float Lift2481::GetCurrentPostion() {
@@ -57,9 +98,13 @@ void Lift2481::SetDesiredPostion(float pos) {
 	mPIDController->SetSetpoint(pos);
 	//mPIDController->SetPID(mPIDController->GetP() ,mPIDController->GetI() *.01,mPIDController->GetD());
 
+	if (mState == MANUAL) {
+		mState = NORMAL;
+	}
+
 	if(mState == NORMAL){
 		mPIDController->Reset();
-		mPIDController->Enable();
+		mBrakeState = RELEASING; //PIDController is automatically enabled later.
 
 	}
 }
@@ -79,11 +124,6 @@ void Lift2481::Reset() {
 //		mPIDOutput->Set(-.5);
 	}
 //}
-
-void Lift2481::Stop(){
-	//mPIDController->Disable();
-	//mPIDOutput->Set(0);
-}
 
 bool Lift2481::IsResetting(){
 	return mState == RESETTING;
@@ -119,37 +159,64 @@ void Lift2481::SetInverted(bool invert) {
 	mPIDOutput->InvertMotor(invert);
 }
 
-LiftPIDOutput2481::LiftPIDOutput2481(int motor, DigitalInput* bot,
-		DigitalInput* top) {
-	mMotor = new CANTalon(motor);
-	mMotor->ConfigNeutralMode(CANTalon::kNeutralMode_Brake);
-	mBottomLimit = bot;
-	mTopLimit = top;
-}
-
-LiftPIDOutput2481::~LiftPIDOutput2481() {
-	delete mMotor;
-}
-
-void LiftPIDOutput2481::PIDWrite(float output) {
-	Set(output);
-}
-
-void LiftPIDOutput2481::Set(float output) {
-	if (output > 0 && mTopLimit->Get()){
-		output = 0;
+void Lift2481::Set(float speed) {
+	if (mPIDController->IsEnabled()) {
+		mPIDController->Disable();
+		mBrake->Set(true);
+		mState = MANUAL;
+	} else {
+		mPIDOutput->Set(speed);
 	}
-	else if (output < 0 && mBottomLimit->Get()){
-		output = 0;
-	}
-	if (mInverted){
-		output *= -1;
-	}
-	mMotor->Set(output);
+
 }
 
-void LiftPIDOutput2481::InvertMotor(bool invert) {
-	mInverted = invert;
+float Lift2481::GetAverageCurrent() {
+	return mCurrentAverager.avg();
+}
+
+void Lift2481::Disable(bool motor, bool brake) {
+	if (motor && !brake){
+		mPIDController->Disable();
+		mBrakeState = STATIC;
+	}
+	else if (motor && brake){
+		mBrakeState = APPLYING;
+	}
+	else {
+		mBrake->Set(false);
+		mBrakeState = STATIC;
+	}
+}
+void Lift2481::Enable(bool motor){
+	if (motor){
+		mBrakeState = RELEASING;
+	}
+	else {
+		mBrake->Set(true);
+	}
 }
 
 
+float Lift2481::GetSpeed() {
+	return mEncoder->GetRate();
+}
+
+float Lift2481::GetCurrentStdDev() {
+	return mCurrentAverager.stddev();
+}
+
+bool Lift2481::IsTopLimit() {
+	return mTopLimit->Get();
+}
+
+void Lift2481::SetD(float d) {
+	mPIDController->SetPID(mPIDController->GetP(), mPIDController->GetI(), d);
+}
+
+float Lift2481::GetAverageVoltage() {
+	return mVoltageAverager.avg();
+}
+
+bool Lift2481::IsBottomLimit() {
+	return mBottomLimit->Get();
+}

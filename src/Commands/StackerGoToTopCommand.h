@@ -6,18 +6,28 @@
 
 class StackerGoToTopCommand: public CommandBase
 {
+private:
+	bool mSkipOnTarget;
 public:
 	StackerGoToTopCommand() : CommandBase() {
+		Requires(stacker);
+		mSkipOnTarget = false;
 	}
 	void Initialize(){
-		CommandBase::stacker->SetPosition(13.0f);
+		if (CommandBase::stacker->GetPosition() < (15 * 578)){
+			CommandBase::stacker->SetPosition(15.0f);
+			mSkipOnTarget = false;
+		} else {
+			mSkipOnTarget = true;
+		}
 	}
 	void Execute() {}
 	bool IsFinished(){
-		return CommandBase::stacker->OnTarget();
+		return (CommandBase::stacker->GetPosition() > (15 * 578)) || mSkipOnTarget;
 	}
 	void End(){
-		CommandBase::stacker->Stop();
+		CommandBase::stacker->Disable();
+//		CommandBase::stacker->UpdateToteCount();
 	}
 	void Interrupted(){
 		End();

@@ -8,16 +8,17 @@ class StackerGoToScoringPlatformCommand: public CommandBase
 {
 public:
 	StackerGoToScoringPlatformCommand() : CommandBase() {
+		Requires(stacker);
 	}
 	void Initialize(){
-		CommandBase::stacker->SetPosition(2.5f);
+		CommandBase::stacker->SetPosition(3.0f);
 	}
 	void Execute() {}
 	bool IsFinished(){
 		return CommandBase::stacker->OnTarget();
 	}
 	void End(){
-		CommandBase::stacker->Stop();
+		CommandBase::stacker->Disable();
 	}
 	void Interrupted(){
 		End();

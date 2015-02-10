@@ -18,7 +18,7 @@ public:
 		return !CommandBase::stacker->IsResetting();
 	}
 	void End(){
-		CommandBase::stacker->Stop();
+		CommandBase::stacker->Disable();
 	}
 	void Interrupted(){
 		End();

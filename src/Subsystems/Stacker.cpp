@@ -3,16 +3,14 @@
 #include "../RobotMap.h"
 
 Stacker::Stacker() :
-		Subsystem("Stacker"), mToteCount(0), mLiftLastExtreme(Up)
+		Subsystem("Stacker"), mToteCount(0), mLiftLastExtreme(Up), mMaxPower(0)
 {
 	float p = Preferences::GetInstance()->GetFloat("STACKER_P", .0002);
-	float i = Preferences::GetInstance()->GetFloat("STACKER_I", .00001);
+	float i = Preferences::GetInstance()->GetFloat("STACKER_I", .0001);
+	printf ("%f %f \n", p, i);
 
-	mRightLift = new Lift2481(9, 10, 11, p, i, 0, STACKER_RIGHT_BOTTOM_LIMIT, STACKER_RIGHT_TOP_LIMIT);
-	mLeftLift = new Lift2481(10, 12, 13, p, i, 0, STACKER_LEFT_BOTTOM_LIMIT, STACKER_LEFT_TOP_LIMIT);
+	mRightLift = new Lift2481(9, 2, 3, p, i, 0, STACKER_RIGHT_TOP_LIMIT, STACKER_RIGHT_BOTTOM_LIMIT, 0);
 	mLiftLastExtreme = Down;
-
-	mLeftLift->SetInverted(true);
 }
 
 void Stacker::InitDefaultCommand()
@@ -23,49 +21,51 @@ void Stacker::InitDefaultCommand()
 
 void Stacker::Reset() {
 	mRightLift->Reset();
-	mLeftLift->Reset();
 	mLiftLastExtreme = Down;
 }
 
 bool Stacker::OnTarget() {
-	return mRightLift->OnTarget() && mLeftLift->OnTarget();
+	return mRightLift->OnTarget();
 }
 
-void Stacker::SetPosition(float pos) {
+void Stacker::SetPosition(float pos, bool loaded) {
 	pos *= STACKER_TICKS_PER_INCH;
 
-	float i = Preferences::GetInstance()->GetFloat("STACKER_I", 0);
+	float i = Preferences::GetInstance()->GetFloat("STACKER_I", .0001);
 	float p = Preferences::GetInstance()->GetFloat("STACKER_P", .0002);
-	mRightLift->SetI(i);
-	mRightLift->SetP(p);
-	mLeftLift->SetI(i);
-	mLeftLift->SetP(p);
+	float d = Preferences::GetInstance()->GetFloat("STACKER_D", .00001);
 
-	std::cout << "p: " << p << " i " << i << std::endl;
-
+	mRightLift->SetI(loaded ? 0.0 : i);
+	mRightLift->SetP(loaded ? 0.0001 : p);
+	mRightLift->SetD(loaded ? 0.0 : d);
 
 	mRightLift->SetDesiredPostion(pos);
-	mLeftLift->SetDesiredPostion(pos);
+}
+
+float Stacker::GetPosition() {
+	return mRightLift->GetCurrentPostion();
 }
 
 void Stacker::PeriodicUpdate() {
+//	SmartDashboard::PutNumber("Left Current", p.GetCurrent(0));
+	SmartDashboard::PutNumber("Stacker Current AVG Power", mRightLift->GetAverageCurrent() * mRightLift->GetAverageVoltage());
+//	SmartDashboard::PutNumber("Stacker Current", p.GetCurrent(0));
+
+
 	mRightLift->PeriodicUpdate();
-	mLeftLift->PeriodicUpdate();
-	float lpos = mLeftLift->GetCurrentPostion();
 	float rpos = mRightLift->GetCurrentPostion();
-	float ldpos = mLeftLift->GetDesiredPostion();
 	float rdpos = mRightLift->GetDesiredPostion();
 
-	if (lpos < ldpos || rpos < rdpos){
+	if (rpos < rdpos){
 		mCounterState = Raising;
 	}
-	else if (lpos > ldpos || rpos > rdpos){
+	else if (rpos > rdpos){
 		mCounterState = Lowering;
 	}
 
 	if (mCounterState == Raising &&
 			mLiftLastExtreme == Down &&
-			(std::min(lpos,rpos) > (STACKER_POSITION_UP - (STACKER_TICKS_PER_INCH + 100)))){
+			(rpos > (STACKER_POSITION_UP - (STACKER_TICKS_PER_INCH + 100)))){
 
 		mLiftLastExtreme = Up;
 
@@ -73,37 +73,29 @@ void Stacker::PeriodicUpdate() {
 	}
 	else if (mCounterState == Lowering &&
 			mLiftLastExtreme == Up &&
-			(std::max(lpos,rpos) > (STACKER_POSITION_DOWN + (STACKER_TICKS_PER_INCH + 100)))){
+			(rpos > (STACKER_POSITION_DOWN + (STACKER_TICKS_PER_INCH + 100)))){
 
 		mLiftLastExtreme = Down;
 	}
 
 	float error = fabs(mRightLift->GetCurrentPostion() - mRightLift->GetDesiredPostion());
-	if (error > 500) {
+	if (error > 2000) {
 		mRightLift->GetController()->ResetError();
-		mLeftLift->GetController()->ResetError();
 	}
+
+	mMaxPower = std::max(mRightLift->GetAverageCurrent() * mRightLift->GetAverageVoltage(),mMaxPower);
 
 #ifdef DEBUGGING
 	SmartDashboard::PutNumber("ToteCount", mToteCount);
-	SmartDashboard::PutNumber("stackerLeftPosition", mLeftLift->GetDesiredPostion());
 	SmartDashboard::PutNumber("stackerRightPosition", mRightLift->GetDesiredPostion());
-	SmartDashboard::PutBoolean("stackerLeftOnTarget", mLeftLift->OnTarget());
 	SmartDashboard::PutBoolean("stackerRightOnTarget", mRightLift->OnTarget());
-	SmartDashboard::PutBoolean("stackerLeftResetting", mLeftLift->IsResetting());
 	SmartDashboard::PutBoolean("stackerRightResetting", mRightLift->IsResetting());
-	SmartDashboard::PutNumber("stackerLeftCurrentPosition", mLeftLift->GetCurrentPostion());
 	SmartDashboard::PutNumber("stackerRightCurrentPosition", mRightLift->GetCurrentPostion());
-	SmartDashboard::PutData("stackerLeftController", (PIDController*)mLeftLift->GetController());
 	SmartDashboard::PutData("stackerRightController", (PIDController*)mRightLift->GetController());
 	SmartDashboard::PutNumber("RightStackerState", mRightLift->GetLiftState());
-	SmartDashboard::PutNumber("LeftStackerState", mLeftLift->GetLiftState());
+	SmartDashboard::PutBoolean("top limit", mRightLift->IsTopLimit());
+	SmartDashboard::PutBoolean("Bottom Limit", mRightLift->IsBottomLimit());
 #endif
-}
-
-void Stacker::Stop(){
-	mRightLift->Stop();
-	mLeftLift->Stop();
 }
 
 int Stacker::GetToteCount() const {
@@ -115,7 +107,33 @@ void Stacker::SetToteCount(int toteCount) {
 }
 
 bool Stacker::IsResetting(){
-	return mRightLift->IsResetting() || mLeftLift->IsResetting();
+	return mRightLift->IsResetting();
+}
+
+void Stacker::UpdateToteCount(){
+
+	if (mMaxPower > TOTE_COUNT_6_CURRENT_THRESHOLD){
+		mToteCount = 6;
+	}
+	else if (mMaxPower > TOTE_COUNT_5_CURRENT_THRESHOLD){
+		mToteCount = 5;
+	}
+	else if (mMaxPower > TOTE_COUNT_4_CURRENT_THRESHOLD){
+		mToteCount = 4;
+	}
+	else if (mMaxPower > TOTE_COUNT_3_CURRENT_THRESHOLD){
+		mToteCount = 3;
+	}
+	else if (mMaxPower > TOTE_COUNT_2_CURRENT_THRESHOLD){
+		mToteCount = 2;
+	}
+	else if (mMaxPower > TOTE_COUNT_1_CURRENT_THRESHOLD){
+		mToteCount = 1;
+	}
+	else {
+		mToteCount = 0;
+	}
+	mMaxPower = 0;
 }
 
 void Stacker::IncrementToteCount() {
@@ -126,12 +144,36 @@ void Stacker::DecrementToteCount() {
 	mToteCount--;
 }
 
+void Stacker::ResetToteCount() {
+	mToteCount = 0;
+}
+
 void Stacker::SetFeedbackEnable(StackerLiftID id, bool state) {
 	if(id == RIGHT){
 		mRightLift->SetFeedbackState(state);
 	}
-	if(id == LEFT){
-		mLeftLift->SetFeedbackState(state);
-	}
 
+}
+
+void Stacker::Set(float output) {
+	mRightLift->Set(output);
+}
+
+void Stacker::Disable(bool motor, bool brake){
+	mRightLift->Disable(motor, brake);
+}
+
+void Stacker::Enable(bool motor) {
+	mRightLift->Enable(motor);
+}
+
+void Stacker::StackerManual(float yValue) {
+	if (yValue < -0.2){
+		mRightLift->Set(STACKER_DOWN_SPEED);
+	}
+	else if (yValue > 0.2){
+		mRightLift->Set(STACKER_UP_SPEED);
+	}
+	else
+		mRightLift->Set(0.0f);
 }

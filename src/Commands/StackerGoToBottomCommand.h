@@ -6,18 +6,22 @@
 
 class StackerGoToBottomCommand: public CommandBase
 {
+private:
+	bool mloaded;
 public:
-	StackerGoToBottomCommand() : CommandBase() {
+	StackerGoToBottomCommand(bool loaded = false) : CommandBase() {
+		Requires(stacker);
+		mloaded = loaded;
 	}
 	void Initialize(){
-		CommandBase::stacker->SetPosition(2.0f);
+		CommandBase::stacker->SetPosition(0.34f, mloaded);
 	}
 	void Execute() {}
 	bool IsFinished(){
-		return CommandBase::stacker->OnTarget();
+		return CommandBase::stacker->GetPosition() < 250;
 	}
 	void End(){
-		CommandBase::stacker->Stop();
+		CommandBase::stacker->Disable(true, false);
 	}
 	void Interrupted(){
 		End();

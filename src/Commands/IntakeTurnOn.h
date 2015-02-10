@@ -7,16 +7,22 @@
 class IntakeTurnOn: public CommandBase
 {
 public:
-	IntakeTurnOn(){}
+	IntakeTurnOn(){
+		Requires(intake);
+	}
 	void Initialize(){
-		CommandBase::intake->TurnOn();
+		intake->TurnOn();
 	}
 	void Execute(){}
 	bool IsFinished(){
-		return true;
+		intake->IsContained();
 	}
-	void End(){}
-	void Interrupted(){}
+	void End(){
+		intake->TurnOff();
+	}
+	void Interrupted(){
+		End();
+	}
 };
 
 #endif

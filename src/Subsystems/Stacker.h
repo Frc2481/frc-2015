@@ -12,8 +12,9 @@ private:
 	// It's desirable that everything possible under private except
 	// for methods that implement subsystem capabilities
 	Lift2481* mRightLift;
-	Lift2481* mLeftLift;
 	int mToteCount;
+	float mMaxPower;
+	PowerDistributionPanel p;
 
 	enum Direction{
 		Raising,
@@ -35,15 +36,21 @@ public:
 	void InitDefaultCommand();
 	void Reset();
 	bool OnTarget();
-	void SetPosition(float);
+	void SetPosition(float, bool loaded = false);
 	void PeriodicUpdate();
-	void Stop();
+	void Disable(bool motor = true, bool brake = true);
+	void Enable(bool motor = true);
 	bool IsResetting();
 	int GetToteCount() const;
+	void ResetToteCount();
+	void UpdateToteCount();
 	void SetToteCount(int toteCount);
 	void IncrementToteCount();
 	void DecrementToteCount();
 	void SetFeedbackEnable(StackerLiftID id, bool state);
+	void Set(float output);
+	float GetPosition();
+	void StackerManual(float yValue);
 };
 
 #endif
