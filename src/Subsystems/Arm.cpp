@@ -7,41 +7,66 @@
 
 #include "Arm.h"
 #include <algorithm>
+#include "RobotParameters.h"
 
-Arm::Arm(int armExtentionID, int gripperID, int pivotRightTalonID,
-		int pivotLeftTalonID, int gripperTalonID):
+Arm::Arm(int armExtentionID, int gripperID, uint32_t shoulderEncoderID,
+		uint32_t wristEncoderID, int shoulderTalonID, int wristTalonID):
 		Subsystem("Arm"),
-		mArmExtention(new Solenoid(armExtentionID)),
-		mGripper(new Solenoid(gripperID)),
-		mPivotArmRightTalon(new CANTalon(pivotRightTalonID)),
-		mPivotArmLeftTalon(new CANTalon(pivotLeftTalonID)),
-		mPivotGripperTalon(new CANTalon(gripperTalonID)),
-		mArmPosition(mPivotArmLeftTalon->GetAnalogIn()),
-		mGripperPosition(mPivotGripperTalon->GetAnalogIn()),
-		mLocked(true)
+		mShoulderEncoder     (new ContinuousEncoder(shoulderEncoderID)),
+		mWristEncoder        (new ContinuousEncoder(wristEncoderID)),
+		mArmExtention        (new Solenoid(armExtentionID)),
+		mGripper             (new Solenoid(gripperID)),
+		mPivotShoulderTalon  (new CANTalon(shoulderTalonID)),
+		mPivotWristTalon     (new CANTalon(wristTalonID)),
+		mPIDShoulder         (new PIDController2481(
+								Preferences::GetInstance()->GetFloat("SHOULDER_P", .066),
+								Preferences::GetInstance()->GetFloat("SHOULDER_I", .001),
+								0,mShoulderEncoder,mPivotShoulderTalon)),
+		mPIDWrist            (new PIDController2481(
+								Preferences::GetInstance()->GetFloat("WRIST_P", .066),
+								Preferences::GetInstance()->GetFloat("WRIST_I", .001),
+								0,mWristEncoder,mPivotWristTalon)),
+		mWristOffset(0.0f)
 		{
+
+	mShoulderEncoder->SetOffset(Preferences::GetInstance()->GetFloat("SHOULDER_ENCODER_OFFSET", 0));
+	mWristEncoder->SetOffset(Preferences::GetInstance()->GetFloat("WRIST_ENCODER_OFFSET", 0));
 }
 
-float max(float a, float b) {
-	if (a > b)
-		return a;
-	return b;
+void Arm::SetWristOffset(float wristOffset) {
+	mWristOffset = wristOffset;
+}
+
+void Arm::PeriodicUpdate() {
+
+	mPIDWrist->SetSetpoint(-mShoulderEncoder->GetAngle() + mWristOffset);
+
+	if (mPIDShoulder->GetError() > 30){
+		mPIDShoulder->ResetError();
+	}
+	if (mPIDWrist->GetError() > 30){
+		mPIDWrist->ResetError();
+	}
+
+#ifdef DEBUGGING
+
+	float shoulderP = Preferences::GetInstance()->GetFloat("SHOULDER_P", .066);
+	float shoulderI = Preferences::GetInstance()->GetFloat("SHOULDER_I", .001);
+	float wristP = Preferences::GetInstance()->GetFloat("WRIST_P", .066);
+	float wristI = Preferences::GetInstance()->GetFloat("WRIST_I", .001);
+
+	mPIDShoulder->SetPID(shoulderP, shoulderI, 0);
+	mPIDWrist->SetPID(wristP, wristI, 0);
+#endif
 }
 
 void Arm::SetPivotArmAbs(float position) {
-
-	mArmPosition = std::fmin(5, std::fmax(0, position));
-
-	mPivotArmRightTalon->Set(mArmPosition);
-	mPivotArmLeftTalon->Set(mArmPosition);
-	mPivotArmRightTalon->EnableControl();
-	mPivotArmLeftTalon->EnableControl();
+	mPIDShoulder->SetSetpoint(position);
+	mPIDShoulder->Enable();
 }
 
-
 void Arm::SetPivotArmRelative(float position) {
-	mArmPosition += position;
-	SetPivotArmAbs(mArmPosition);
+	SetPivotArmAbs(position + mShoulderEncoder->GetAngle());
 }
 
 void Arm::CloseGripper() {
@@ -52,12 +77,6 @@ void Arm::OpenGripper() {
 	mGripper->Set(false);
 }
 
-void Arm::SetWristAbs(float position) {
-	mGripperPosition = std::fmin(5, std::fmax(0, position));
-
-	mPivotGripperTalon->Set(mGripperPosition);
-}
-
 void Arm::ExtendArm() {
 	mArmExtention->Set(true);
 }
@@ -66,27 +85,38 @@ void Arm::RetractArm() {
 	mArmExtention->Set(false);
 }
 
-bool Arm::IsLiftOnTarget() {
-	int rError = mPivotArmRightTalon->GetClosedLoopError();
-	int lError = mPivotArmLeftTalon->GetClosedLoopError();
-	return rError < 1 && lError < 1;
+bool Arm::IsExtended(){
+	return mArmExtention->Get();
+}
+
+bool Arm::IsGripper(){
+	return mGripper->Get();
+}
+
+bool Arm::IsArmOnTarget() {
+	return mPIDShoulder->OnTarget();
 }
 
 void Arm::StopPivotArm() {
-	mPivotArmLeftTalon->Disable();
-	mPivotArmRightTalon->Disable();
-}
-
-bool Arm::IsLocked() {
-	return mLocked;
+	mPivotShoulderTalon->Disable();
 }
 
 float Arm::GetPivotPos() {
-	return mPivotArmLeftTalon->GetAnalogIn();
+	return mPivotShoulderTalon->GetAnalogIn();
 }
 
-void Arm::ToggleLock(){
-	mLocked = !mLocked;
+float Arm::GetRawShoulderAngle() {
+	return mShoulderEncoder->GetRawAngle();
 }
 
+float Arm::GetRawWristAngle() {
+	return mWristEncoder->GetRawAngle();
+}
 
+void Arm::SetShoulderEncoderOffset(float shoulderOffset) {
+	mShoulderEncoder->SetOffset(shoulderOffset);
+}
+
+void Arm::SetWristEncoderOffset(float wristOffset) {
+	mWristEncoder->SetOffset(wristOffset);
+}
