@@ -10,22 +10,13 @@
 ContinuousEncoder::ContinuousEncoder(uint32_t encoderChannel)
 		:	mEncoder(new AnalogInput(encoderChannel)),
 		 	mOffset(0) {
-	
-	// TODO Auto-generated constructor stub
-	sum = 0;
-	index = 0;
-	memset(prevEncoderValues, 0, sizeof(float) * 5);
 }
 
 ContinuousEncoder::~ContinuousEncoder() {
 	delete mEncoder;
 }
 double ContinuousEncoder::PIDGet(){
-	sum -= prevEncoderValues[index];
-	prevEncoderValues[index] = GetAngle();
-	sum += prevEncoderValues[index];
-	index = ++index % 5;
-	return sum / 5;
+	return GetAngle();
 }
 	
 double ContinuousEncoder::GetAngle() {
@@ -36,7 +27,9 @@ double ContinuousEncoder::GetAngle() {
 }
 
 double ContinuousEncoder::GetRawAngle() {
-	return ((mEncoder->GetAverageVoltage() - 0.015) / 4.972) * 360;
+	return ((getVoltage()- 0.015) / (4.987 - .015)) * 360;
+//	return (mEncoder->GetAverageVoltage());// /5 )* 360;
+//	return mEncoder->GetAverageVoltage();
 }
 
 float ContinuousEncoder::GetOffset() const
@@ -44,11 +37,16 @@ float ContinuousEncoder::GetOffset() const
     return mOffset;
 }
 
-void ContinuousEncoder::SetOffset(float mOffset)
-{
+void
+ContinuousEncoder::SetOffset(float mOffset){
     this->mOffset = mOffset;
 }
 
 float ContinuousEncoder::getVoltage() {
-	return mEncoder->GetAverageVoltage();
+	return (mEncoder->GetVoltage() / ControllerPower::GetVoltage5V()) * 5;
 }
+
+float ContinuousEncoder::GetRawVoltage() {
+	return mEncoder->GetVoltage();
+}
+

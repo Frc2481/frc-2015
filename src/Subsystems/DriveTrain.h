@@ -35,6 +35,11 @@ private:
 	float prevAngleBL;
 	float angleOffset;
 	float heading;
+	float roll;
+	float pitch;
+
+	float originX;
+	float originY;
 
 	bool isFieldCentric;
 	bool isForward;
@@ -44,10 +49,14 @@ public:
 	virtual ~DriveTrain();
 	void InitDefaultCommand();
 	void Crab(double xPos, double yPos, double twist);
+	void CrabV2(double xPos, double yPos, double twist);    // Work in progress
 	double degToRad(double deg);
 	double radToDeg(double rad);
 	double limitAngle(double angle);
 	void SetLengthAndWidth(double robotLength, double robotWidth);
+	void SetOrigin(double xPos, double yPos);
+	double GetXOrigin();
+	double GetYOrigin();
 	float GetEncoderValue(int wheel);
 	void SetEncoderOffset(int wheel, float offset);
 	void SetP(float p);
@@ -56,6 +65,8 @@ public:
 	float GetI();
 	void ResetGyro();
 	float GetHeading();
+	float GetRoll();
+	float GetPitch();
 	void Stop();
 	void SetFieldCentric(bool fieldCentric);
 	float GetWheelAngle(int wheel);

@@ -13,9 +13,6 @@ class ContinuousEncoder: public PIDSource {
 private:
 	AnalogInput *mEncoder;
 	float mOffset;
-	float prevEncoderValues[5];
-	int index;
-	float sum;
 	
 public:
 	ContinuousEncoder(uint32_t encoderChannel);
@@ -26,6 +23,7 @@ public:
 	float getVoltage();
     float GetOffset() const;
     void SetOffset(float mOffset);
+    float GetRawVoltage();
 	
 };
 

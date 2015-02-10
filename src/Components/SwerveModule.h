@@ -2,6 +2,7 @@
 #define SWERVEMODULE_H_
 #include <WPILib.h>
 #include "ContinuousEncoder.h"
+#include "PController.h"
 
 
 class SwerveModule {
@@ -9,7 +10,7 @@ private:
     CANTalon *mDrive;
     CANTalon *mSteer;
     ContinuousEncoder *mEncoder;
-    PIDController *mSteerController;
+    PController *mSteerController;
     float prevAngle;
     float offset;
     bool optimized;
@@ -25,8 +26,10 @@ public:
 	float GetOffset() const;
 	void SetOffset(float offset);
 	float DegToVolts(float deg);
-	PIDController* GetController();
+	PController* GetController();
 	void SetOptimized(bool isOptimized);
+	float GetVoltage();
+	float GetRawVoltage();
 };
 
 #endif /*SWERVEMODULE_H_*/

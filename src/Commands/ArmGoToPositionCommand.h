@@ -18,13 +18,9 @@ public:
 	void Initialize(){
 		arm->SetPivotArmAbs(mPosition);
 	}
-	void Execute(){
-		if(arm->IsLocked()) {
-			arm->SetWristAbs(5- arm->GetPivotPos());
-		}
-	}
+	void Execute(){}
 	bool IsFinished(){
-		return arm->IsLiftOnTarget();
+		return arm->IsArmOnTarget();
 	}
 	void End(){
 		arm->StopPivotArm();

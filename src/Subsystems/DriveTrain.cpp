@@ -2,7 +2,7 @@
  * DriveTrain.cpp
  *
  *  Created on: Jan 9, 2014
- *      Author: johnny
+ *      Author: johnnyBaurer
  *      Editor: thomasSpeciale
  */
 
@@ -10,6 +10,7 @@
 #include <algorithm>
 #include "DriveTrain.h"
 #include "../RobotMap.h"
+#include "Commands/DriveCommand.h"
 
 
 DriveTrain::DriveTrain() : Subsystem("DriveTrain"),
@@ -30,6 +31,9 @@ DriveTrain::DriveTrain() : Subsystem("DriveTrain"),
 	BLWheel->SetOffset(Preferences::GetInstance()->GetFloat("BL_ENCODER_OFFSET"));
 	gyroCorrection = false;
 
+	originX = 0.0f;
+	originY = 0.0f;
+
 	bool is_calibrating = imu->IsCalibrating();
 	if(!is_calibrating)
 	{
@@ -40,14 +44,14 @@ DriveTrain::DriveTrain() : Subsystem("DriveTrain"),
 }
 
 void DriveTrain::InitDefaultCommand() {
-//	SetDefaultCommand(new CrabDriveCommand());
+	SetDefaultCommand(new DriveCommand());
 }
 
 void DriveTrain::Stop() {
 	Crab(0,0,0);
 }
 
-void DriveTrain::Crab(double xPos, double yPos, double twist){
+void DriveTrain::CrabV2(double xPos, double yPos, double twist){
 	double FWD;
 	double STR;
 
@@ -57,8 +61,6 @@ void DriveTrain::Crab(double xPos, double yPos, double twist){
 	if(fabs(gyroAngle) > 50){
 		gyroCorrection = false;
 	}
-
-	printf("Xpos: %f  YPos:  %f  Twist: %f Command: %s Gyro: %f\n", xPos, yPos, twist, GetCurrentCommand()->GetName().c_str(), gyroAngle);
 
 	//stop Gryo from correcting while sitting still
 	if (gyroCorrection) {
@@ -71,7 +73,6 @@ void DriveTrain::Crab(double xPos, double yPos, double twist){
 		}
 	}
 
-	printf("Xpos: %f  YPos:  %f  Twist: %f\n", xPos, yPos, twist);
 
 	twist = -twist;
 	if (isFieldCentric) {
@@ -86,9 +87,10 @@ void DriveTrain::Crab(double xPos, double yPos, double twist){
 	}
 	if (isForward) {
 		FWD = -FWD;
+		STR = -STR;
 	}
 	else {
-		STR = -STR;
+
 	}
 	
 //	SmartDashboard::PutNumber("FWD", FWD);
@@ -134,14 +136,29 @@ void DriveTrain::Crab(double xPos, double yPos, double twist){
 		wheelSpeedBL /= maxWheelSpeed;
 	}
 	
-//	SmartDashboard::PutNumber("wheelSpeedFR", wheelSpeedFR);
-//	SmartDashboard::PutNumber("wheelSpeedFL", wheelSpeedFL);
-//	SmartDashboard::PutNumber("wheelSpeedBR", wheelSpeedBR);
-//	SmartDashboard::PutNumber("wheelSpeedBL", wheelSpeedBL);
-//	SmartDashboard::PutNumber("wheelAngleFR", FRWheel->GetAngle());
-//	SmartDashboard::PutNumber("wheelAngleFL", FLWheel->GetAngle());
-//	SmartDashboard::PutNumber("wheelAngleBR", BRWheel->GetAngle());
-//	SmartDashboard::PutNumber("wheelAngleBL", BLWheel->GetAngle());
+	SmartDashboard::PutNumber("wheelSpeedFR", wheelSpeedFR);
+	SmartDashboard::PutNumber("wheelSpeedFL", wheelSpeedFL);
+	SmartDashboard::PutNumber("wheelSpeedBR", wheelSpeedBR);
+	SmartDashboard::PutNumber("wheelSpeedBL", wheelSpeedBL);
+
+	SmartDashboard::PutNumber("wheelAngleFR", FRWheel->GetRawAngle());
+	SmartDashboard::PutNumber("wheelAngleFRV", FRWheel->GetVoltage());
+
+	SmartDashboard::PutNumber("wheelAngleFL", FLWheel->GetRawAngle());
+	SmartDashboard::PutNumber("wheelAngleFLV", FLWheel->GetVoltage());
+
+	SmartDashboard::PutNumber("wheelAngleBR", BRWheel->GetRawAngle());
+	SmartDashboard::PutNumber("wheelAngleBRV", BRWheel->GetVoltage());
+
+	SmartDashboard::PutNumber("wheelAngleBL", BLWheel->GetRawAngle());
+	SmartDashboard::PutNumber("wheelAngleBLV", BLWheel->GetVoltage());
+
+	SmartDashboard::PutNumber("aref", ControllerPower::GetVoltage5V());
+
+	SmartDashboard::PutNumber("commandedAngleFR", wheelAngleFR);
+	SmartDashboard::PutNumber("commandedAngleFL", wheelAngleFL);
+	SmartDashboard::PutNumber("commandedAngleBR", wheelAngleBR);
+	SmartDashboard::PutNumber("commandedAngleBL", wheelAngleBL);
 	
 	//if (fieldCentric) {
 	/*
@@ -155,17 +172,14 @@ void DriveTrain::Crab(double xPos, double yPos, double twist){
 	
 	//printf("%f\n", FLWheel->GetAngle());
 	//printf("setPoint  = %f\n",FLWheel->GetController()->GetSetPoint());
-	FLWheel->Set(wheelSpeedFL, wheelAngleFL + 180);
-	FRWheel->Set(wheelSpeedFR, wheelAngleFR + 180);
-	BRWheel->Set(wheelSpeedBR, wheelAngleBR + 180);
-	BLWheel->Set(wheelSpeedBL, wheelAngleBL + 180);
+	FLWheel->Set(wheelSpeedFL, wheelAngleFL);
+	FRWheel->Set(-wheelSpeedFR, wheelAngleFR);
+	BRWheel->Set(-wheelSpeedBR, wheelAngleBR);
+	BLWheel->Set(wheelSpeedBL, wheelAngleBL);
+
+
 	
-//	FLWheel->Set(wheelSpeedFL, wheelAngleFL + 180);
-//	FRWheel->Set(wheelSpeedFR, wheelAngleFR + 180);
-//	BRWheel->Set(wheelSpeedBR, 0);
-//	BLWheel->Set(wheelSpeedBL, wheelAngleBL + 180);
-	
-	angleOffset = wheelAngleFL + 180;
+	//angleOffset = wheelAngleFL + 180;
 	
 	//printf("%f %f %f %f \n", FLWheel->GetRawAngle(), FRWheel->GetRawAngle(), BLWheel->GetRawAngle(), BRWheel->GetRawAngle());
 }
@@ -221,10 +235,10 @@ float DriveTrain::GetP() {
 }
 
 void DriveTrain::SetP(float p) {
-	FLWheel->GetController()->SetPID(p,FLWheel->GetController()->GetI(),FLWheel->GetController()->GetD());
-	FRWheel->GetController()->SetPID(p,FRWheel->GetController()->GetI(),FRWheel->GetController()->GetD());
-	BRWheel->GetController()->SetPID(p,BRWheel->GetController()->GetI(),BRWheel->GetController()->GetD());
-	BLWheel->GetController()->SetPID(p,BLWheel->GetController()->GetI(),BLWheel->GetController()->GetD());
+	FLWheel->GetController()->SetP(p);
+	FRWheel->GetController()->SetP(p);
+	BRWheel->GetController()->SetP(p);
+	BLWheel->GetController()->SetP(p);
 }
 
 float DriveTrain::GetI() { 
@@ -232,10 +246,10 @@ float DriveTrain::GetI() {
 }
 
 void DriveTrain::SetI(float i) {
-	FLWheel->GetController()->SetPID(FLWheel->GetController()->GetP(),i,FLWheel->GetController()->GetD());
-	FRWheel->GetController()->SetPID(FRWheel->GetController()->GetP(),i,FRWheel->GetController()->GetD());
-	BRWheel->GetController()->SetPID(BRWheel->GetController()->GetP(),i,BRWheel->GetController()->GetD());
-	BLWheel->GetController()->SetPID(BLWheel->GetController()->GetP(),i,BLWheel->GetController()->GetD());
+	FLWheel->GetController()->SetI(i);
+	FRWheel->GetController()->SetI(i);
+	BRWheel->GetController()->SetI(i);
+	BLWheel->GetController()->SetI(i);
 }
 void DriveTrain::ResetGyro(){
 	printf("\n\n reset wii in driveTrain \n \n");
@@ -259,8 +273,6 @@ float DriveTrain::GetWheelAngle(int wheel){
 }
 
 void DriveTrain::SetWheelAngle(int wheel, float angle){
-	printf("actual angle %f \n", BRWheel->GetAngle());
-	printf("angle %f wheel %d \n", angle, wheel);
 	if (wheel == FRONT_LEFT_ENCODER) 		FLWheel->Set(0, angle);
 	else if (wheel == FRONT_RIGHT_ENCODER) 	FRWheel->Set(0, angle);
 	else if (wheel == BACK_LEFT_ENCODER) 	BLWheel->Set(0, angle);
@@ -284,7 +296,166 @@ bool DriveTrain::IsGyroCorrection() const {
 	return gyroCorrection;
 }
 
-IMU* DriveTrain::GetIMU()
-{
+IMU* DriveTrain::GetIMU(){
 	return imu;
+}
+
+void DriveTrain::Crab(double xPos, double yPos, double twist) {
+	double FWD;
+	double STR;
+
+		float gyroAngle = imu->GetYaw();
+
+		//sanity check on Gyro, if Gyro angle is too far off ignore
+		if(fabs(gyroAngle) > 50){
+			gyroCorrection = false;
+		}
+
+		//stop Gryo from correcting while sitting still
+		if (gyroCorrection) {
+			if (xPos != 0 || yPos != 0) {
+
+				//TODO: Decide if we want this.
+				gyroAngle = std::max(std::min(gyroAngle, 10.0f), -10.0f);
+				twist = gyroAngle / 30.0;
+				printf("GYRO CORRECTION\n");
+			}
+		}
+
+
+		twist = -twist;
+		if (isFieldCentric) {
+			heading = -gyroAngle;
+			FWD = yPos * cos(heading * pi / 180) + xPos *sin(heading * pi / 180);
+			STR = xPos * cos(heading * pi / 180) - yPos * sin(heading * pi / 180);
+		}
+		else {
+			twist = twist * .05;   //limit twist speed while not in field centric
+			printf("%f/n",twist);
+			FWD = yPos;
+			STR = xPos;
+		}
+		if (isForward) {
+			FWD = -FWD;
+			STR = -STR;
+		}
+		else {
+
+		}
+		if(fabs(originX) > 0.1f || fabs(originY) > 0.1f){
+			twist *= -1;
+		}
+	//	SmartDashboard::PutNumber("FWD", FWD);
+	//	SmartDashboard::PutNumber("STR", STR);
+	//	SmartDashboard::PutNumber("twist", twist);
+	//	SmartDashboard::PutNumber("Gyro Angle", gyroAngle);
+
+		//Above mathematics, converted to use the same A,B,C,D pairs on each wheel as the working version with fixed pivot -JE
+	    double A = STR - twist * ((baseLength / 2.0)+originY);
+		double B = STR + twist * ((baseLength / 2.0)-originY);
+		double C = FWD - twist * ((baseWidth / 2.0)+originX);
+		double D = FWD + twist * ((baseWidth / 2.0)-originX);
+	//	SmartDashboard::PutNumber("A", A);
+	//	SmartDashboard::PutNumber("B", B);
+	//	SmartDashboard::PutNumber("C", C);
+	//	SmartDashboard::PutNumber("D", D);
+	//	SmartDashboard::PutNumber("twist", twist);
+		double wheelSpeedFL = sqrt(pow(B, 2) + pow(C, 2));
+		double wheelSpeedFR = sqrt(pow(B, 2) + pow(D, 2));
+		double wheelSpeedBL = sqrt(pow(A, 2) + pow(C, 2));
+		double wheelSpeedBR = sqrt(pow(A, 2) + pow(D, 2));
+		double wheelAngleFL = atan2(B, C) * 180 / pi;
+		double wheelAngleFR = atan2(B, D) * 180 / pi;
+		double wheelAngleBL = atan2(A, C) * 180 / pi;
+		double wheelAngleBR = atan2(A, D) * 180 / pi;
+
+
+		//speeds normalized 0 to 1
+		//maybe eventually reverse motor instead of turning far and going forward
+		double maxWheelSpeed = wheelSpeedFR;
+		if (wheelSpeedFL > maxWheelSpeed) {
+			maxWheelSpeed = wheelSpeedFL;
+		}
+		if (wheelSpeedBR > maxWheelSpeed) {
+			maxWheelSpeed = wheelSpeedBR;
+		}
+		if (wheelSpeedBL > maxWheelSpeed) {
+			maxWheelSpeed = wheelSpeedBL;
+		}
+		if (maxWheelSpeed > 1) {
+			wheelSpeedFR /= maxWheelSpeed;
+			wheelSpeedFL /= maxWheelSpeed;
+			wheelSpeedBR /= maxWheelSpeed;
+			wheelSpeedBL /= maxWheelSpeed;
+		}
+
+		SmartDashboard::PutNumber("wheelSpeedFR", wheelSpeedFR);
+		SmartDashboard::PutNumber("wheelSpeedFL", wheelSpeedFL);
+		SmartDashboard::PutNumber("wheelSpeedBR", wheelSpeedBR);
+		SmartDashboard::PutNumber("wheelSpeedBL", wheelSpeedBL);
+
+		SmartDashboard::PutNumber("wheelAngleFR", FRWheel->GetRawAngle());
+		SmartDashboard::PutNumber("wheelAngleFRV", FRWheel->GetVoltage());
+
+		SmartDashboard::PutNumber("wheelAngleFL", FLWheel->GetRawAngle());
+		SmartDashboard::PutNumber("wheelAngleFLV", FLWheel->GetVoltage());
+
+		SmartDashboard::PutNumber("wheelAngleBR", BRWheel->GetRawAngle());
+		SmartDashboard::PutNumber("wheelAngleBRV", BRWheel->GetVoltage());
+
+		SmartDashboard::PutNumber("wheelAngleBL", BLWheel->GetRawAngle());
+		SmartDashboard::PutNumber("wheelAngleBLV", BLWheel->GetVoltage());
+
+		SmartDashboard::PutNumber("aref", ControllerPower::GetVoltage5V());
+
+		SmartDashboard::PutNumber("commandedAngleFR", wheelAngleFR);
+		SmartDashboard::PutNumber("commandedAngleFL", wheelAngleFL);
+		SmartDashboard::PutNumber("commandedAngleBR", wheelAngleBR);
+		SmartDashboard::PutNumber("commandedAngleBL", wheelAngleBL);
+
+		//if (fieldCentric) {
+		/*
+			float heading = headingSource->GetHeading();
+			wheelAngleFR += heading;
+			wheelAngleFL += heading;
+			wheelAngleBR += heading;
+			wheelAngleBL += heading;
+			*/
+		//}
+
+		//printf("%f\n", FLWheel->GetAngle());
+		//printf("setPoint  = %f\n",FLWheel->GetController()->GetSetPoint());
+		FLWheel->Set(wheelSpeedFL, wheelAngleFL);
+		FRWheel->Set(-wheelSpeedFR, wheelAngleFR);
+		BRWheel->Set(-wheelSpeedBR, wheelAngleBR);
+		BLWheel->Set(wheelSpeedBL, wheelAngleBL);
+
+
+
+		//angleOffset = wheelAngleFL + 180;
+
+		//printf("%f %f %f %f \n", FLWheel->GetRawAngle(), FRWheel->GetRawAngle(), BLWheel->GetRawAngle(), BRWheel->GetRawAngle());
+}
+
+void DriveTrain::SetOrigin(double xPos, double yPos) {
+	originX = xPos;
+	originY = yPos;
+}
+
+double DriveTrain::GetXOrigin() {
+	return originX;
+}
+
+double DriveTrain::GetYOrigin() {
+	return originY;
+}
+
+float DriveTrain::GetRoll() {
+	roll = imu->GetRoll();
+	return roll;
+}
+
+float DriveTrain::GetPitch() {
+	pitch = imu->GetPitch();
+	return pitch;
 }
