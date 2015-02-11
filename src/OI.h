@@ -5,6 +5,7 @@
 #include "ControllerMap.h"
 #include "Components/Joystick2481.h"
 #include "Components/AnalogJoystickButton.h"
+#include "Components/POVJoystickButton.h"
 
 
 class OI
@@ -38,14 +39,16 @@ private:
 	Button* stackerOn;
 	Button* stackerPickup;
 	Button* scoringPlatformHeight;
-	Button* armExtend;
-	Button* armRetract;
-	Button* gripperOpen;
-	Button* gripperClose;
-	AnalogJoystickButton* armRaise;
-	AnalogJoystickButton* armLower;
+	POVJoystickButton* armExtend;
+	POVJoystickButton* armRetract;
+	POVJoystickButton* gripperOpen;
+	POVJoystickButton* gripperClose;
+	Button* armRaise;
+	Button* armLower;
 	AnalogJoystickButton* armTop;
 	AnalogJoystickButton* armBottom;
+	AnalogJoystickButton* wristTiltUp;
+	AnalogJoystickButton* wristTiltDown;
 
 
 public:

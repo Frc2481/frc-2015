@@ -7,7 +7,9 @@
 class ArmExtendCommand: public CommandBase
 {
 public:
-	ArmExtendCommand(){}
+	ArmExtendCommand(){
+		Requires(arm);
+	}
 	void Initialize(){
 		arm->ExtendArm();
 	}

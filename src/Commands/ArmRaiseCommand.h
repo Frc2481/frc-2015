@@ -7,7 +7,9 @@
 class ArmRaiseCommand: public CommandBase
 {
 public:
-	ArmRaiseCommand(){}
+	ArmRaiseCommand(){
+		Requires(arm);
+	}
 	void Initialize(){
 		arm->SetPivotArmRelative(5.0f);
 	}

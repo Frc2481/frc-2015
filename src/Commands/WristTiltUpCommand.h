@@ -1,24 +1,24 @@
-#ifndef ArmLowerCommand_H
-#define ArmLowerCommand_H
+#ifndef WristTiltUpCommand_H
+#define WristTiltUpCommand_H
 
 #include "../CommandBase.h"
 #include "WPILib.h"
 
-class ArmLowerCommand: public CommandBase
+class WristTiltUpCommand: public CommandBase
 {
 public:
-	ArmLowerCommand(){
+	WristTiltUpCommand(){
 		Requires(arm);
 	}
 	void Initialize(){
-		arm->SetPivotArmRelative(-5.0f);
+		arm->SetWristOffsetRelative(5.0f);
 	}
 	void Execute(){}
 	bool IsFinished(){
-		return false;
+		return true;
 	}
 	void End(){
-		arm->StopPivotArm();
+		arm->StopPivotWrist();
 	}
 	void Interrupted(){
 		End();

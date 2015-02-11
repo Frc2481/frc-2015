@@ -9,6 +9,8 @@
 #include "AcquireToteCommand.h"
 #include "AutoMoveRCOutOfWayCommand.h"
 #include "WaitForToteCommand.h"
+#include "ArmGoToPositionCommand.h"
+#include "ArmGripperCloseCommand.h"
 
 
 
@@ -16,6 +18,8 @@ class ThreeToteStackAutoCommandGroup: public CommandGroup
 {
 public:
 	ThreeToteStackAutoCommandGroup(){
+		AddParallel(new ArmGripperCloseCommand());
+		AddParallel(new ArmGoToPositionCommand(ARM_PIVOT_POSITION_TOP));
 		AddParallel(new AcquireToteCommand());
 		AddSequential(new WaitForToteCommand());
 		AddSequential(new AutoMoveRCOutOfWayCommand());

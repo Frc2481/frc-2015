@@ -27,6 +27,9 @@
 #define INTAKE_LEFT 11
 #define INTAKE_RIGHT 12
 
+#define ARM_SHOULDER_PIVOT 13
+#define ARM_WRIST_PIVOT 14
+
 //Analog Channels
 #define FRONT_LEFT_ENCODER 0
 #define FRONT_RIGHT_ENCODER 1
@@ -43,6 +46,12 @@
 #define ARM_PIVOT_POSITION_TOP 90
 #define ARM_PIVOT_POSITION_BOT 0
 
+#define SHOULDER_ENCODER 4
+#define WRIST_ENCODER 5
+
+#define EXTENTION_SOLENOID 1
+#define GRIPPER_SOLENOID 2
+
 //Stacker Define
 #define STACKER_POSITION_UP 10981
 #define STACKER_POSITION_DOWN 1600
@@ -53,6 +62,7 @@
 #define STACKER_RIGHT_TOP_LIMIT 0
 #define STACKER_UP_SPEED Preferences::GetInstance()->GetFloat("STACKER_UP_SPEED", .6)
 #define STACKER_DOWN_SPEED Preferences::GetInstance()->GetFloat("STACKER_DOWN_SPEED", .6) * -1
+#define STACKER_BRAKE 0
 
 //Tote Count
 #define TOTE_COUNT_1_CURRENT_THRESHOLD 40

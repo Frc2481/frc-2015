@@ -29,6 +29,8 @@
 #include "Commands/ArmGotoPositionCommand.h"
 #include "Commands/ArmExtendCommand.h"
 #include "Commands/ArmRetractCommand.h"
+#include "Commands/WristTiltUpCommand.h"
+#include "Commands/WristTiltDownCommand.h"
 
 
 #include "Commands/SetICommand.h"
@@ -101,6 +103,13 @@ OI::OI()
 
 	armBottom = ARM_TO_BOTTOM_BUTTON;
 	armBottom->WhenPressed(new ArmGoToPositionCommand(ARM_PIVOT_POSITION_BOT));
+
+	//Wrist Tilting
+	wristTiltUp = WRIST_TILT_UP_BUTTON;
+	wristTiltUp->WhileHeld(new WristTiltUpCommand());
+
+	wristTiltDown = WRIST_TILT_DOWN_BUTTON;
+	wristTiltDown->WhileHeld(new WristTiltDownCommand());
 
     //Set Stacker
 	stackerOn = STACKER_ON_BUTTON;

@@ -9,7 +9,7 @@ Stacker::Stacker() :
 	float i = Preferences::GetInstance()->GetFloat("STACKER_I", .0001);
 	printf ("%f %f \n", p, i);
 
-	mRightLift = new Lift2481(9, 2, 3, p, i, 0, STACKER_RIGHT_TOP_LIMIT, STACKER_RIGHT_BOTTOM_LIMIT, 0);
+	mRightLift = new Lift2481(9, 2, 3, p, i, 0, STACKER_RIGHT_TOP_LIMIT, STACKER_RIGHT_BOTTOM_LIMIT, STACKER_BRAKE);
 	mLiftLastExtreme = Down;
 }
 

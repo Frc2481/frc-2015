@@ -28,7 +28,7 @@ void CommandBase::init()
 	driveTrain = new DriveTrain();
 	intake = new Intake(11,12,4);
 	stacker = new Stacker();
-	arm = new Arm(0,1,13,14,15,0);
+	arm = new Arm();
 
 	oi = new OI();
 

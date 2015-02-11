@@ -109,6 +109,9 @@ private:
 		Scheduler::GetInstance()->Run();
 		CommandBase::stacker->PeriodicUpdate();
 		CommandBase::intake->PeriodicUpdate();
+		CommandBase::arm->PeriodicUpdate();
+
+		SmartDashboard::PutNumber("POV Values", CommandBase::oi->GetAuxStick()->GetPOV());
 
 
 	}

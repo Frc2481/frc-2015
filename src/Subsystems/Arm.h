@@ -16,16 +16,17 @@ private:
 	CANTalon* mPivotWristTalon;
 	PIDController2481* mPIDShoulder;
 	PIDController2481* mPIDWrist;
-	float mWristOffset;
+	int mWristOffset;
 
 public:
-	Arm(int armExtentionID, int gripperID, uint32_t shoulderEncoderID,
-		uint32_t wristEncoderID, int shoulderTalonID, int gripperTalonID);
+	Arm();
 	void PeriodicUpdate();
 	void SetWristOffset(float wristOffset);
+	void SetWristOffsetRelative(int offsetWrist);
 	void SetPivotArmAbs(float position);
 	void SetPivotArmRelative(float position);
 	void StopPivotArm();
+	void StopPivotWrist();
 	void CloseGripper();
 	void OpenGripper();
 	void ExtendArm();

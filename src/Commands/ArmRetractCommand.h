@@ -7,7 +7,9 @@
 class ArmRetractCommand: public CommandBase
 {
 public:
-	ArmRetractCommand(){}
+	ArmRetractCommand(){
+		Requires(arm);
+	}
 	void Initialize(){
 		arm->RetractArm();
 	}
