@@ -1,4 +1,5 @@
 //#include <Commands/CalibrateEncoderOffsetsCommand.h>
+#include <unistd.h>
 #include <Commands/PickUpToteCommand.h>
 #include "WPILib.h"
 #include "Commands/Command.h"
@@ -17,13 +18,21 @@
 #include "Commands/StackerZeroEncodersCommand.h"
 #include "Commands/StackerGoToTopCommand.h"
 #include "Commands/CalibrateEncoderOffsetsCommand.h"
-#include "Commands/SaveCommand.h"
 #include "Commands/StackerDisableBrakeCommand.h"
 #include "Commands/AcquireToteCommand.h"
 #include "Commands/StackerGoToScoringPlatformCommand.h"
 #include "Commands/PickUpToteToScoringPlatformCommand.h"
 #include "Commands/CalibrateArmEncoderOffsetsCommand.h"
-
+#include "Commands/ArmWristToSetPoint.h"
+#include "Commands/ArmWristManual.h"
+#include "Commands/ArmShoulderManual.h"
+#include "Commands/ArmShoulderToSetPoint.h"
+#include "Commands/ExtendSlideCommand.h"
+#include "Commands/RetractSlideCommand.h"
+#include "Commands/CalibrateShoulderEncoderOffsetsCommand.h"
+#include "Commands/CalibrateWristEncoderOffsetsCommand.h"
+#include "Commands/ArmWristResetStall.h"
+#include "Commands/RemoveRCFromStepCommand.h"
 
 #include "RobotParameters.h"
 
@@ -41,7 +50,6 @@ private:
 		lw = LiveWindow::GetInstance();
 
 		SmartDashboard::PutData(Scheduler::GetInstance());
-		SmartDashboard::PutData("SAVE", new SaveCommand());
 		SmartDashboard::PutData("Increment Tote Count", new IncrementToteCountCommand());
 		SmartDashboard::PutData("Decrement Tote Count", new DecrementToteCountCommand());
 		SmartDashboard::PutData("Reset Stacker", new StackerResetCommand());
@@ -58,7 +66,11 @@ private:
 //		SmartDashboard::PutData("ArmTop", new ArmGoToPositionCommand(ARM_PIVOT_POSITION_TOP));
 //		SmartDashboard::PutData("ArmBot", new ArmGoToPositionCommand(ARM_PIVOT_POSITION_BOT));
 		SmartDashboard::PutData("Zero Stacker Encoders", new StackerZeroEncodersCommand());
-		SmartDashboard::PutData("Calibrate Arm Encoder Offsets", new CalibrateArmEncoderOffsetsCommand());
+
+		SmartDashboard::PutData("Calibrate Shoulder Encoder Offsets", new CalibrateShoulderEncoderOffsetsCommand());
+		SmartDashboard::PutData("Calibrate Wrist Encoder Offsets", new CalibrateWristEncoderOffsetsCommand());
+
+		SmartDashboard::PutData("Reset Wrist Stalled", new ArmWristResetStall());
 
 		SmartDashboard::PutData("Disable Right Lift", new StackerSetFeedbackCommand(Stacker::RIGHT, false));
 		SmartDashboard::PutData("Enable Right Lift", new StackerSetFeedbackCommand(Stacker::RIGHT, true));
@@ -74,7 +86,36 @@ private:
 		SmartDashboard::PutNumber("IMU pitch", CommandBase::driveTrain->GetPitch());
 		SmartDashboard::PutNumber("IMU heading", CommandBase::driveTrain->GetHeading());
 
+		SmartDashboard::PutData("Wrist 180", new ArmWristToSetPoint(180));
+		SmartDashboard::PutData("Wrist 90", new ArmWristToSetPoint(90));
+		SmartDashboard::PutData("Wrist 270", new ArmWristToSetPoint(280));
 
+		SmartDashboard::PutData("Wrist Down", new ArmWristManual(1));
+		SmartDashboard::PutData("Wrist Up", new ArmWristManual(-1));
+
+		SmartDashboard::PutData("Shoulder 1", new ArmShoulderManual(1));
+		SmartDashboard::PutData("Shoulder -1", new ArmShoulderManual(-1));
+
+		SmartDashboard::PutData("Shoulder 5", new ArmShoulderToSetPoint(2));
+		SmartDashboard::PutData("Shoulder 99", new ArmShoulderToSetPoint(99));
+		SmartDashboard::PutData("Shoulder 45", new ArmShoulderToSetPoint(45));
+		SmartDashboard::PutData("shoulder 80", new ArmShoulderToSetPoint(80));
+
+		SmartDashboard::PutData("Slide Extend", new ExtendSlideCommand());
+		SmartDashboard::PutData("Slide Retract", new RetractSlideCommand());
+
+		SmartDashboard::PutData("Get RC From Step", new RemoveRCFromStepCommand());
+
+		PersistedSettings::GetInstance().Set("STACKER_P", STACKER_P);
+		PersistedSettings::GetInstance().Set("STACKER_I", STACKER_I);
+		PersistedSettings::GetInstance().Set("STACKER_D", STACKER_D);
+//		PersistedSettings::GetInstance().Set("I", STACKER_P);
+//
+//		PersistedSettings::GetInstance().Set("INTAKE_FORWARD_SPEED", .8);
+//		PersistedSettings::GetInstance().Set("INTAKE_REVERSE_SPEED", .8);
+//
+//		PersistedSettings::GetInstance().Set("WRIST_P", .05);
+//		PersistedSettings::GetInstance().Set("SHOULDER_P", .05);
 	}
 	
 	void DisabledPeriodic()

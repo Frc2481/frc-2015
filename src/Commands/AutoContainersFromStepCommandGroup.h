@@ -21,7 +21,7 @@ public:
 		AddSequential(new ArmRetractCommand());
 		AddParallel(new ArmGripperOpenCommand());
 		AddSequential(new WaitCommand(.25));
-		AddSequential(new AutoDriveCommand(0, 1, 0, 1.5));
+		AddSequential(new AutoDriveCommand(1,0,0,1.5));
 
 		AddSequential(new ArmExtendCommand());
 		AddParallel(new ArmGripperCloseCommand());
@@ -29,7 +29,7 @@ public:
 		AddSequential(new ArmRetractCommand());
 		AddParallel(new ArmGripperOpenCommand());
 		AddSequential(new WaitCommand(.25));
-		AddSequential(new AutoDriveCommand(0, 1, 0, 1.5));
+		AddSequential(new AutoDriveCommand(1,0,0,1.5));
 
 		AddSequential(new ArmExtendCommand());
 		AddParallel(new ArmGripperCloseCommand());
@@ -37,13 +37,13 @@ public:
 		AddSequential(new ArmRetractCommand());
 		AddParallel(new ArmGripperOpenCommand());
 		AddSequential(new WaitCommand(.25));
-		AddSequential(new AutoDriveCommand(0, 1, 0, 1.5));
+		AddSequential(new AutoDriveCommand(1,0,0,1.5));
 
 		AddSequential(new ArmExtendCommand());
 		AddParallel(new ArmGripperCloseCommand());
 		AddSequential(new WaitCommand(.25));
 		AddSequential(new ArmRetractCommand());
-		AddSequential(new AutoDriveCommand(0, 0, 1, 1.0));
+		AddSequential(new AutoDriveCommand(0,0,1,1.0));
 	}
 };
 

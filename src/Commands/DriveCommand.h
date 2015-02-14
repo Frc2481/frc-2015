@@ -20,7 +20,13 @@ public:
 //		if (fabs(y) < .2) y = 0;
 //		if (fabs(z) < .2) z = 0;
 
+//		double wrist = oi->GetAuxStick()->GetRawAxis(XboxController::xbLeftYAxis);
+//		if (fabs(wrist) > .2) {
+//			arm->SetWristManual(wrist);
+//		}
+
 		driveTrain->Crab(x,y,z);
+
 	}
 	bool IsFinished(){
 		return false;

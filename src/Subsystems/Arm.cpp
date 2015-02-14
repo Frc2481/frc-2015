@@ -8,6 +8,7 @@
 #include "Arm.h"
 #include <algorithm>
 #include "RobotParameters.h"
+#include "Components/PersistedSettings.h"
 
 Arm::Arm() : Subsystem("Arm"),
 		mShoulderEncoder     (new ContinuousEncoder(SHOULDER_ENCODER)),
@@ -16,27 +17,36 @@ Arm::Arm() : Subsystem("Arm"),
 		mGripper             (new Solenoid(GRIPPER_SOLENOID)),
 		mPivotShoulderTalon  (new CANTalon(ARM_SHOULDER_PIVOT)),
 		mPivotWristTalon     (new CANTalon(ARM_WRIST_PIVOT)),
-		mPIDShoulder         (new PIDController2481(
-								Preferences::GetInstance()->GetFloat("SHOULDER_P", .066),
-								Preferences::GetInstance()->GetFloat("SHOULDER_I", .001),
-								0,mShoulderEncoder,mPivotShoulderTalon)),
-		mPIDWrist            (new PIDController2481(
-								Preferences::GetInstance()->GetFloat("WRIST_P", .066),
-								Preferences::GetInstance()->GetFloat("WRIST_I", .001),
-								0,mWristEncoder,mPivotWristTalon)),
+		mPIDShoulder         (new PController(mShoulderEncoder,mPivotShoulderTalon,
+								.5,0)),
+		mPIDWrist            (new PController(mWristEncoder,mPivotWristTalon,
+								PersistedSettings::GetInstance().Get("WRIST_P"),0)),
 		mWristOffset(0.0f)
 		{
 
-	mShoulderEncoder->SetOffset(Preferences::GetInstance()->GetFloat("SHOULDER_ENCODER_OFFSET", 0));
-	mWristEncoder->SetOffset(Preferences::GetInstance()->GetFloat("WRIST_ENCODER_OFFSET", 0));
+	mPivotWristTalon->ConfigNeutralMode(CANTalon::kNeutralMode_Brake);
+
+	mShoulderEncoder->SetOffset(PersistedSettings::GetInstance().Get("SHOULDER_ENCODER_OFFSET"));
+	mWristEncoder->SetOffset(PersistedSettings::GetInstance().Get("WRIST_ENCODER_OFFSET"));
 
 	mPIDShoulder->SetInputRange(0.0, 360.0);
 	mPIDWrist->SetInputRange(0.0, 360.0);
 
-	mPIDShoulder->SetAbsoluteTolerance(3.0);
-	mPIDWrist->SetAbsoluteTolerance(3.0);
+	mPIDShoulder->SetTolerance(3.0);
+	mPIDWrist->SetTolerance(5.0);
 
-	mPIDWrist->SetOutputRange(-.5, .5);
+	mPIDWrist->SetContinuous(false);
+	mPIDShoulder->SetContinuous(false);
+
+	mPIDWrist->SetOutputRange(-.3, .4);
+	mPIDWrist->Disable();
+
+	mPIDShoulder->Disable();
+
+	mWristStalled = false;
+	mWristLocked = false;
+
+//	mPIDShoulder->SetBrakeMode(true);
 }
 
 void Arm::SetWristOffset(float wristOffset) {
@@ -45,40 +55,93 @@ void Arm::SetWristOffset(float wristOffset) {
 
 void Arm::PeriodicUpdate() {
 
-	printf("%d \n", IsExtended());
+//	float wristAngle = -mShoulderEncoder->GetAngle() + mWristOffset;
+//	while (wristAngle < 0){
+//		wristAngle += 360;
+//	}
 
-	float wristAngle = -mShoulderEncoder->GetAngle() + mWristOffset;
-	while (wristAngle < 0){
-		wristAngle += 360;
-	}
-	mPIDWrist->SetSetpoint(wristAngle);
+//	if (mPIDShoulder->OnTarget()){
+//		mPIDShoulder->SetP(.00000000001);
+//	}
+//	else {
+//		mPIDShoulder->SetP(.5);
+//	}
 
-	if (mPIDShoulder->GetError() > 30){
-		mPIDShoulder->ResetError();
-	}
-	if (mPIDWrist->GetError() > 30){
-		mPIDWrist->ResetError();
+//	if (mShoulderEncoder->GetAngle() < 70){
+//		mArmExtention->Set(false);
+//	}
+
+	if (mPivotWristTalon->GetOutputCurrent() > 14.5){
+		mWristStalled = true;
 	}
 
-	if (mShoulderEncoder->GetAngle() > 15){
-		RetractArm();
+	if (mWristStalled == true) {
+		mPivotWristTalon->Set(0.0);
+		mPIDWrist->Disable();
 	}
+
+	if (mGripper->Get()){
+		mPIDWrist->SetP(.5);
+	}
+	else {
+		mPIDWrist->SetP(.02);
+	}
+
+	if (mWristLocked){
+		SetWristPosition(GetParallel());
+	}
+	//mPIDWrist->SetSetpoint(wristAngle);
+
+//	if (mPIDShoulder->GetError() > 30){
+//		mPIDShoulder->ResetError();
+//	}
+//	if (mPIDWrist->GetError() > 30){
+//		mPIDWrist->ResetError();
+//	}
+
+//	if (mShoulderEncoder->GetAngle() > 15){
+//		RetractArm();
+//	}
+
+//	if (mPIDWrist->OnTarget()) {
+//		mPIDWrist->Disable();
+//	}
+
+//	if (mPIDWrist->IsEnabled()) {
+//		static bool first = true;
+//		if (first) {
+//			first = false;
+//			mShoulderEncoder->SetOffset(PersistedSettings::GetInstance().Get("SHOULDER_ENCODER_OFFSET"));
+//			mWristEncoder->SetOffset(PersistedSettings::GetInstance().Get("WRIST_ENCODER_OFFSET"));
+//		}
+//	}
 
 #ifdef DEBUGGING
 
-	float shoulderP = Preferences::GetInstance()->GetFloat("SHOULDER_P", .066);
-	float shoulderI = Preferences::GetInstance()->GetFloat("SHOULDER_I", .001);
-	float wristP = Preferences::GetInstance()->GetFloat("WRIST_P", .066);
-	float wristI = Preferences::GetInstance()->GetFloat("WRIST_I", .001);
+	float shoulderP = PersistedSettings::GetInstance().Get("SHOULDER_P");
+	float shoulderI = PersistedSettings::GetInstance().Get("SHOULDER_I");
+	float wristP = PersistedSettings::GetInstance().Get("WRIST_P");
+	float wristI = PersistedSettings::GetInstance().Get("WRIST_I");
 
-	SmartDashboard::PutData("Wrist PID", mPIDWrist);
-	SmartDashboard::PutData("Shoulder PID", mPIDShoulder);
-	SmartDashboard::PutNumber("current arm position", mShoulderEncoder->GetAngle());
-	SmartDashboard::PutBoolean("gripper solenoid", mGripper->Get());
+//	SmartDashboard::PutData("Wrist PID", mPIDWrist);
+//	SmartDashboard::PutData("Shoulder PID", mPIDShoulder);
+	SmartDashboard::PutNumber("Current Arm Position", mShoulderEncoder->GetAngle());
+	SmartDashboard::PutNumber("Current Arm Position Raw", mShoulderEncoder->GetRawAngle());
+	SmartDashboard::PutNumber("Current Wrist Position", mWristEncoder->GetAngle());
+	SmartDashboard::PutNumber("Current Wrist Position Raw", mWristEncoder->GetRawAngle());
+	SmartDashboard::PutNumber("Wrist Set Point", mPIDWrist->GetSetPoint());
+	SmartDashboard::PutBoolean("Wrist Stalled", mWristStalled);
+	SmartDashboard::PutBoolean("Gripper Solenoid", mGripper->Get());
 	SmartDashboard::PutBoolean("Extender Solenoid", mArmExtention->Get());
+	SmartDashboard::PutNumber("Wrist Motor Speed", mPivotWristTalon->Get());
+	SmartDashboard::PutNumber("Shoulder Motor Speed", mPivotShoulderTalon->Get());
+	SmartDashboard::PutNumber("Wrist Current Draw", mPivotWristTalon->GetOutputCurrent());
+	SmartDashboard::PutNumber("Wrist Offset", mWristEncoder->GetOffset());
+	SmartDashboard::PutBoolean("Shoulder On Target", mPIDShoulder->OnTarget());
+	SmartDashboard::PutNumber("Shoulder Current Draw", mPivotShoulderTalon->GetOutputCurrent());
 
-	mPIDShoulder->SetPID(shoulderP, shoulderI, 0);
-	mPIDWrist->SetPID(wristP, wristI, 0);
+	//mPIDShoulder->SetP(shoulderP);
+	//mPIDWrist->SetP(wristP);
 #endif
 }
 
@@ -100,9 +163,9 @@ void Arm::OpenGripper() {
 }
 
 void Arm::ExtendArm() {
-	if (mShoulderEncoder->GetAngle() <= 15){
+//	if (mShoulderEncoder->GetAngle() <= 15){
 		mArmExtention->Set(true);
-	}
+//	}
 }
 
 void Arm::RetractArm() {
@@ -125,9 +188,9 @@ void Arm::StopPivotArm() {
 	mPIDShoulder->Disable();
 }
 
-float Arm::GetPivotPos() {
-	return mPivotShoulderTalon->GetAnalogIn();
-}
+//float Arm::GetPivotPos() {
+//	return mPivotShoulderTalon->GetAnalogIn();
+//}
 
 float Arm::GetRawShoulderAngle() {
 	return mShoulderEncoder->GetRawAngle();
@@ -143,7 +206,6 @@ void Arm::SetShoulderEncoderOffset(float shoulderOffset) {
 
 void Arm::SetWristOffsetRelative(int offsetWrist) {
 	mWristOffset = std::min(std::max(mWristOffset + offsetWrist, -90), 90);
-
 }
 
 void Arm::StopPivotWrist() {
@@ -152,4 +214,54 @@ void Arm::StopPivotWrist() {
 
 void Arm::SetWristEncoderOffset(float wristOffset) {
 	mWristEncoder->SetOffset(wristOffset);
+}
+
+bool Arm::IsWristOnTarget() {
+	return mPIDWrist->OnTarget();
+}
+
+void Arm::SetWristPosition(double pos) {
+	if (!mWristStalled){
+		double minWrist = 90;
+		if (mShoulderEncoder->GetAngle() < 45) {
+			minWrist = GetParallel();
+		}
+		pos = std::min(std::max(pos , minWrist), 270.0);
+		mPIDWrist->SetSetpoint(pos);
+		mPIDWrist->Enable();
+	}
+}
+
+void Arm::SetWristManual(double speed) {
+	mPIDWrist->Disable();
+	mPivotWristTalon->Set(speed * .5);
+}
+
+bool Arm::GetStalled() {
+	return mWristStalled;
+}
+
+void Arm::SetStalled(bool stalled) {
+	mWristStalled = stalled;
+}
+
+void Arm::SetWristLinked(bool linked) {
+	if(mWristLocked != linked){
+		if(linked){
+			mPIDWrist->Enable();
+		}
+		else{
+			mPIDWrist->Disable();
+		}
+	}
+	mWristLocked = linked;
+}
+
+double Arm::GetParallel() {
+	return -mShoulderEncoder->GetAngle() + 270;
+}
+
+void Arm::SetShoulderManual(double speed) {
+	mPIDShoulder->Disable();
+	mPivotShoulderTalon->Set(speed);
 }

@@ -24,6 +24,8 @@ private:
 	Button* setOrigin;
 	Button* unloadStacker;
 	Button* toggleFieldCentric;
+//	Button* slideExtend;
+//	Button* slideRetract;
 	bool boosting;
 
 	//debug stick

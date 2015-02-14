@@ -16,12 +16,17 @@ public:
 	}
 	void Initialize(){
 		if(stacker->GetToteCount() < 5){
-			mPos = 15.0f;
+			mPos = 15.25f;
 		}
 		else {
 			mPos = 3.0f;
 		}
-		if (CommandBase::stacker->GetPosition() < (mPos * 578)){
+
+		if (stacker->GetToteCount() >= 4){
+			arm->OpenGripper();
+		}
+
+		if (CommandBase::stacker->GetPosition() < ((mPos - 1) * 578)){
 			CommandBase::stacker->SetPosition(mPos);
 			mSkipOnTarget = false;
 		} else {
@@ -34,6 +39,7 @@ public:
 	}
 	void End(){
 		CommandBase::stacker->Disable();
+		arm->CloseGripper();
 //		CommandBase::stacker->UpdateToteCount();
 	}
 	void Interrupted(){

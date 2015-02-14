@@ -29,7 +29,7 @@ private:
 	// It's desirable that everything possible under private except
 	// for methods that implement subsystem capabilities
 public:
-	Intake(int leftCANID,int rightCANID,int limitID);
+	Intake();
 	void InitDefaultCommand();
 	void TurnOn();
 	void TurnOff();

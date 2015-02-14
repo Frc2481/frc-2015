@@ -7,6 +7,7 @@
 #include "Subsystems/DriveTrain.h"
 #include "Subsystems/Intake.h"
 #include "Subsystems/Arm.h"
+#include "Subsystems/Slide.h"
 #include "OI.h"
 #include "WPILib.h"
 
@@ -23,11 +24,13 @@ public:
 	static void init();
 
 	// Create a single static instance of all of your subsystems
-	static Stacker *stacker;
-	static OI *oi;
 	static DriveTrain* driveTrain;
 	static Intake* intake;
+	static Stacker *stacker;
 	static Arm* arm;
+	static Slide* slide;
+
+	static OI *oi;
 };
 
 #endif

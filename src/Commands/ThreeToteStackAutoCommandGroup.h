@@ -22,8 +22,7 @@ public:
 		AddParallel(new ArmGoToPositionCommand(ARM_PIVOT_POSITION_TOP));
 		AddParallel(new AcquireToteCommand());
 		AddSequential(new WaitForToteCommand());
-		AddSequential(new AutoMoveRCOutOfWayCommand());
-		AddParallel(new AutoDriveCommand(0,1,0,.5));
+		AddParallel(new AutoDriveCommand(0,1,0,1.5));
 		AddParallel(new AcquireToteCommand());
 		AddSequential(new WaitForToteCommand());
 		AddSequential(new AutoMoveRCOutOfWayCommand());

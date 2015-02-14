@@ -31,6 +31,8 @@
 #include "Commands/ArmRetractCommand.h"
 #include "Commands/WristTiltUpCommand.h"
 #include "Commands/WristTiltDownCommand.h"
+#include "Commands/ExtendSlideCommand.h"
+#include "Commands/RetractSlideCommand.h"
 
 
 #include "Commands/SetICommand.h"
@@ -56,6 +58,13 @@ OI::OI()
 	//OI Set Boosting
 	setBoosting = SET_BOOSTING_BUTTON;
 	setBoosting->WhileHeld(new OISetBoosting());
+
+	//Slide Extend/Retract
+//	slideExtend = SLIDE_EXTEND_BUTTON;
+//	slideExtend->WhenPressed(new ExtendSlideCommand());
+//
+//	slideRetract = SLIDE_RETRACT_BUTTON;
+//	slideRetract->WhenPressed(new RetractSlideCommand());
 
 	//Unload Stacker
 	unloadStacker = UNLOAD_STACKER_BUTTON;
@@ -99,17 +108,17 @@ OI::OI()
 
 	//Arm Go To Set Position
 	armTop = ARM_TO_TOP_BUTTON;
-	armTop->WhenPressed(new ArmGoToPositionCommand(ARM_PIVOT_POSITION_TOP));
+	//armTop->WhenPressed(new ArmGoToPositionCommand(ARM_PIVOT_POSITION_TOP));
 
 	armBottom = ARM_TO_BOTTOM_BUTTON;
-	armBottom->WhenPressed(new ArmGoToPositionCommand(ARM_PIVOT_POSITION_BOT));
+	//armBottom->WhenPressed(new ArmGoToPositionCommand(ARM_PIVOT_POSITION_BOT));
 
 	//Wrist Tilting
 	wristTiltUp = WRIST_TILT_UP_BUTTON;
-	wristTiltUp->WhileHeld(new WristTiltUpCommand());
+	//wristTiltUp->WhileHeld(new WristTiltUpCommand());
 
 	wristTiltDown = WRIST_TILT_DOWN_BUTTON;
-	wristTiltDown->WhileHeld(new WristTiltDownCommand());
+	//wristTiltDown->WhileHeld(new WristTiltDownCommand());
 
     //Set Stacker
 	stackerOn = STACKER_ON_BUTTON;

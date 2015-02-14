@@ -3,6 +3,7 @@
 
 #include "../CommandBase.h"
 #include "WPILib.h"
+#include "Components/PersistedSettings.h"
 
 class CalibrateArmEncoderOffsetsCommand: public CommandBase
 {
@@ -11,16 +12,15 @@ public:
 		SetRunWhenDisabled(true);
 	}
 	void Initialize(){
-		float wrist = arm->GetRawWristAngle();
-		float shoulder = arm->GetRawShoulderAngle();
+		double shoulder = arm->GetRawShoulderAngle();
+		double wrist = arm->GetRawWristAngle();
 
 		arm->SetShoulderEncoderOffset(shoulder);
-		arm->SetWristEncoderOffset(wrist);
+		arm->SetWristEncoderOffset(wrist - 180);
 
-		Preferences::GetInstance()->PutFloat("WRIST_ENCODER_OFFSET", wrist);
-		Preferences::GetInstance()->PutFloat("SHOULDER_ENCODER_OFFSET", shoulder);
+		PersistedSettings::GetInstance().Set("WRIST_ENCODER_OFFSET", wrist - 180);
+		PersistedSettings::GetInstance().Set("SHOULDER_ENCODER_OFFSET", shoulder);
 
-		Preferences::GetInstance()->Save();
 	}
 	void Execute(){}
 	bool IsFinished(){

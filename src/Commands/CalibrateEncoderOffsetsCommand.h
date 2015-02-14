@@ -4,6 +4,7 @@
 #include "../CommandBase.h"
 #include "WPILib.h"
 #include "../RobotParameters.h"
+#include "Components/PersistedSettings.h"
 
 class CalibrateEncoderOffsetsCommand: public CommandBase
 {
@@ -25,7 +26,6 @@ public:
 		//set encoder value of back right swerve module
 		saveAndApplyEncoderOffset(BACK_RIGHT_ENCODER, "BR_ENCODER_OFFSET");
 
-		Preferences::GetInstance()->Save();
 	}
 	void Execute() {}
 	bool IsFinished() {
@@ -38,7 +38,7 @@ private:
 	void saveAndApplyEncoderOffset(int encoder, const std::string& key) {
 		float temp = driveTrain->GetEncoderValue(encoder);
 		driveTrain->SetEncoderOffset(encoder, temp);
-		Preferences::GetInstance()->PutFloat(key.c_str(),temp);
+		PersistedSettings::GetInstance().Set(key.c_str(),temp);
 	}
 };
 

@@ -8,7 +8,7 @@ class StackerManualCommand: public CommandBase
 {
 public:
 	StackerManualCommand(){
-		Requires(stacker);
+		//Requires(stacker);
 	}
 	void Initialize(){
 		CommandBase::stacker->Enable(false);

@@ -93,6 +93,8 @@ void PIDController2481::Initialize(float Kp, float Ki, float Kd, float Kf,
 	m_pidOutput = output;
 	m_period = period;
 
+	m_inverted = false;
+
 	m_controlLoop->StartPeriodic(m_period);
 
 	static int32_t instances = 0;
@@ -207,7 +209,9 @@ void PIDController2481::Calculate()
 
 			pidOutput = m_pidOutput;
 			result = m_result;
-
+			if (m_inverted) {
+				result *= -1;
+			}
       pidOutput->PIDWrite(result);
 		}
 	}
@@ -629,4 +633,8 @@ void PIDController2481::StartLiveWindowMode() {
 
 void PIDController2481::StopLiveWindowMode() {
 
+}
+
+void PIDController2481::Invert() {
+	m_inverted = true;
 }

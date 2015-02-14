@@ -9,12 +9,14 @@
 #include <cmath>
 #include "SwerveModule.h"
 
-PController::PController(PIDSource* userInput, PIDOutput* userOutput, float pValue, float iValue) :
+PController::PController(PIDSource* userInput, PIDOutput* userOutput, float pValue, float iValue, float dValue) :
 			input(userInput), 
 			output(userOutput), 
 			p(pValue),
 			i(iValue),
+			d(dValue),
 			totalError(0),
+			prevError(0),
 			tolerance(0),
 			inputRangeUpper(0),
 			inputRangeLower(5),
@@ -25,6 +27,8 @@ PController::PController(PIDSource* userInput, PIDOutput* userOutput, float pVal
 			onTarget(false),
 			pidOutput(0),
 			setPoint(0),
+			mContinuous(false),
+			mBrake(false),
 			pSemaphore(initializeMutexNormal()),
 			pUpdate(new Notifier(PController::UpdateController, this)){
 	pUpdate->StartPeriodic(.004);
@@ -61,6 +65,17 @@ float PController::GetI(){
 	return i;
 }
 
+void PController::SetD(float dValue){
+	CRITICAL_REGION(pSemaphore){
+		d = dValue;
+	}
+	END_REGION;
+}
+
+float PController::GetD(){
+	return d;
+}
+
 void PController::SetTolerance(float userTolerance){
 	tolerance = userTolerance;
 }
@@ -79,7 +94,7 @@ void PController::Update() {
 	float setPoint;
 	float tolerance;
 	float inputRange;
-	bool onTarget;
+	bool onTarget = false;
 	bool enabled;
 	
 	CRITICAL_REGION(pSemaphore) {
@@ -87,67 +102,71 @@ void PController::Update() {
 		tolerance = this->tolerance;
 		inputRange = this->inputRange;
 		enabled = this->enabled;
-	}
-	END_REGION;
+
+		if(enabled){
+			float feedback = input->PIDGet();
+			float error = setPoint - feedback;
+			float correctedError = error;
+			if (error < 0){
+				error +=360;
+			}
+
+			if (mContinuous){
+				if (error < -inputRange / 2){
+					onTarget = false;
+					correctedError = error + inputRange;
+				}
 	
-	if(enabled){
-		float feedback = input->PIDGet();
-		float error = setPoint - feedback;
-		float correctedError = 0;
-		if (error < 0){
-			error +=360;
-		}
-		
-		if (fabs(error) < tolerance){
-			correctedError = 0;
-			onTarget = true;
-		}
-		else if (error < -inputRange / 2){
-			onTarget = false;
-			correctedError = error + inputRange;
-		}
-		
-		else if(error  > inputRange / 2) {
-			onTarget = false;
-			correctedError = error - inputRange;
-		}
-		else {
-			onTarget = false;
-			correctedError = error;
+				else if(error  > inputRange / 2) {
+					onTarget = false;
+					correctedError = error - inputRange;
+				}
+				else {
+					onTarget = false;
+					correctedError = error;
+				}
+			}
+			if (fabs(error) < tolerance){
+				if (mBrake){
+					correctedError = error;
+				}
+				else {
+					correctedError = 0;
+				}
+				onTarget = true;
+			}
+
+			SmartDashboard::PutNumber("CE", correctedError);
+			/*
+			if(i > 0.0)
+			{
+				double potIGain = (totalError + correctedError) * i;
+				if (potIGain < outputRangeUpper)
+				{
+					if(potIGain > outputRangeLower)
+						totalError += correctedError;
+					else
+						totalError = outputRangeLower/i;
+				}
+				else
+				{
+					totalError = outputRangeUpper/i;
+				}
+			}
+		*/
+			pidOutput = -correctedError * p + d*(correctedError - prevError);// + i*totalError;
+
+			if (pidOutput > outputRangeUpper){
+				pidOutput = outputRangeUpper;
+			}
+			else if (pidOutput < outputRangeLower){
+				pidOutput = outputRangeLower;
+			}
+			output->PIDWrite(-pidOutput);
+
+			prevError = correctedError;
 		}
 
-		/*
-		if(i > 0.0)
-		{
-			double potIGain = (totalError + correctedError) * i;
-			if (potIGain < outputRangeUpper)
-			{
-				if(potIGain > outputRangeLower)
-					totalError += correctedError;
-				else
-					totalError = outputRangeLower/i;
-			}
-			else
-			{
-				totalError = outputRangeUpper/i;
-			}
-		}
-	*/
-		pidOutput = -correctedError * p;// + i*totalError;
-		
-		if (pidOutput > outputRangeUpper){
-			pidOutput = outputRangeUpper;
-		}
-		else if (pidOutput < outputRangeLower){
-			pidOutput = outputRangeLower;
-		}
-		output->PIDWrite(-pidOutput);
-	}
-	else {
-		output->PIDWrite(0);
-	}
-	
-	CRITICAL_REGION(pSemaphore) {
 		this->onTarget = onTarget;
 	}
 	END_REGION;
@@ -180,8 +199,10 @@ void PController::Enable(){
 void PController::Disable(){
 	CRITICAL_REGION(pSemaphore) {
 		enabled = false;
+		output->PIDWrite(0);
 	}
 	END_REGION;
+
 }
 
 bool PController::IsEnabled(){
@@ -193,4 +214,12 @@ bool PController::OnTarget(){
 }
 float PController::GetSetPoint(){
 	return setPoint;
+}
+
+bool PController::SetContinuous(bool continuous) {
+	mContinuous = continuous;
+}
+
+void PController::SetBrakeMode(bool brake) {
+	mBrake = brake;
 }

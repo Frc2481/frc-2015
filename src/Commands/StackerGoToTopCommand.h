@@ -14,8 +14,8 @@ public:
 		mSkipOnTarget = false;
 	}
 	void Initialize(){
-		if (CommandBase::stacker->GetPosition() < (15 * 578)){
-			CommandBase::stacker->SetPosition(15.0f);
+		if (CommandBase::stacker->GetPosition() < (15.25 * 578)){
+			CommandBase::stacker->SetPosition(15.25f);
 			mSkipOnTarget = false;
 		} else {
 			mSkipOnTarget = true;
@@ -23,7 +23,7 @@ public:
 	}
 	void Execute() {}
 	bool IsFinished(){
-		return (CommandBase::stacker->GetPosition() > (15 * 578)) || mSkipOnTarget;
+		return (CommandBase::stacker->GetPosition() > (15.57 * 578)) || mSkipOnTarget;
 	}
 	void End(){
 		CommandBase::stacker->Disable();

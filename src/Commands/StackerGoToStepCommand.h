@@ -19,7 +19,7 @@ public:
 	}
 	void End(){
 		CommandBase::stacker->Disable();
-		CommandBase::stacker->UpdateToteCount();
+//		CommandBase::stacker->UpdateToteCount();
 	}
 	void Interrupted(){
 		End();

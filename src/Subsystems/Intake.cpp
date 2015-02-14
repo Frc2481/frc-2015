@@ -5,11 +5,10 @@
 
 
 
-Intake::Intake(int leftCANID, int rightCANID, int limitID):
-	Subsystem("Intake"),
-	mRightMotor(new CANTalon(rightCANID)),
-	mLeftMotor(new CANTalon(leftCANID)),
-	mIntakeLimit(new DigitalInput(limitID)){
+Intake::Intake() : Subsystem("Intake"),
+	mRightMotor(new CANTalon(INTAKE_RIGHT)),
+	mLeftMotor(new CANTalon(INTAKE_LEFT)),
+	mIntakeLimit(new DigitalInput(INTAKE_CONTAIN_LIMIT)){
 }
 
 void Intake::InitDefaultCommand(){}

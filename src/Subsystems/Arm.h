@@ -4,7 +4,7 @@
 #include "WPILib.h"
 #include "Commands/Subsystem.h"
 #include "Components/ContinuousEncoder.h"
-#include "PIDController2481.h"
+#include "Components/PController.h"
 
 class Arm: public Subsystem {
 private:
@@ -14,9 +14,11 @@ private:
 	Solenoid* mGripper;
 	CANTalon* mPivotShoulderTalon;
 	CANTalon* mPivotWristTalon;
-	PIDController2481* mPIDShoulder;
-	PIDController2481* mPIDWrist;
+	PController* mPIDShoulder;
+	PController* mPIDWrist;
 	int mWristOffset;
+	bool mWristStalled;
+	bool mWristLocked;
 
 public:
 	Arm();
@@ -25,6 +27,7 @@ public:
 	void SetWristOffsetRelative(int offsetWrist);
 	void SetPivotArmAbs(float position);
 	void SetPivotArmRelative(float position);
+	void SetWristLinked(bool linked);
 	void StopPivotArm();
 	void StopPivotWrist();
 	void CloseGripper();
@@ -34,12 +37,18 @@ public:
 	bool IsExtended();
 	void RetractArm();
 	bool IsArmOnTarget();
-	float GetPivotPos();
+	bool IsWristOnTarget();
+//	float GetPivotPos();
 	float GetRawShoulderAngle();
 	float GetRawWristAngle();
+	double GetParallel();
+	bool GetStalled();
+	void SetStalled(bool stalled);
 	void SetShoulderEncoderOffset(float shoulderOffset);
 	void SetWristEncoderOffset(float wristOffset);
-
+	void SetWristPosition(double pos);
+	void SetWristManual(double speed);
+	void SetShoulderManual(double speed);
 };
 
 

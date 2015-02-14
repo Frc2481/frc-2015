@@ -5,8 +5,8 @@
 Stacker::Stacker() :
 		Subsystem("Stacker"), mToteCount(0), mLiftLastExtreme(Up), mMaxPower(0)
 {
-	float p = Preferences::GetInstance()->GetFloat("STACKER_P", .0002);
-	float i = Preferences::GetInstance()->GetFloat("STACKER_I", .0001);
+	float p = PersistedSettings::GetInstance().Get("STACKER_P");
+	float i = PersistedSettings::GetInstance().Get("STACKER_I");
 	printf ("%f %f \n", p, i);
 
 	mRightLift = new Lift2481(9, 2, 3, p, i, 0, STACKER_RIGHT_TOP_LIMIT, STACKER_RIGHT_BOTTOM_LIMIT, STACKER_BRAKE);
@@ -31,9 +31,9 @@ bool Stacker::OnTarget() {
 void Stacker::SetPosition(float pos, bool loaded) {
 	pos *= STACKER_TICKS_PER_INCH;
 
-	float i = Preferences::GetInstance()->GetFloat("STACKER_I", .0001);
-	float p = Preferences::GetInstance()->GetFloat("STACKER_P", .0002);
-	float d = Preferences::GetInstance()->GetFloat("STACKER_D", .00001);
+	float i = PersistedSettings::GetInstance().Get("STACKER_I");
+	float p = PersistedSettings::GetInstance().Get("STACKER_P");
+	float d = PersistedSettings::GetInstance().Get("STACKER_D");
 
 	mRightLift->SetI(loaded ? 0.0 : i);
 	mRightLift->SetP(loaded ? 0.0001 : p);
@@ -47,10 +47,7 @@ float Stacker::GetPosition() {
 }
 
 void Stacker::PeriodicUpdate() {
-//	SmartDashboard::PutNumber("Left Current", p.GetCurrent(0));
 	SmartDashboard::PutNumber("Stacker Current AVG Power", mRightLift->GetAverageCurrent() * mRightLift->GetAverageVoltage());
-//	SmartDashboard::PutNumber("Stacker Current", p.GetCurrent(0));
-
 
 	mRightLift->PeriodicUpdate();
 	float rpos = mRightLift->GetCurrentPostion();
@@ -68,12 +65,10 @@ void Stacker::PeriodicUpdate() {
 			(rpos > (STACKER_POSITION_UP - (STACKER_TICKS_PER_INCH + 100)))){
 
 		mLiftLastExtreme = Up;
-
-		mToteCount++;
 	}
 	else if (mCounterState == Lowering &&
 			mLiftLastExtreme == Up &&
-			(rpos > (STACKER_POSITION_DOWN + (STACKER_TICKS_PER_INCH + 100)))){
+			(rpos < (STACKER_POSITION_DOWN + (STACKER_TICKS_PER_INCH + 100)))){
 
 		mLiftLastExtreme = Down;
 	}

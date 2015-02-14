@@ -11,6 +11,7 @@
 #include "DriveTrain.h"
 #include "../RobotMap.h"
 #include "Commands/DriveCommand.h"
+#include "Components/PersistedSettings.h"
 
 
 DriveTrain::DriveTrain() : Subsystem("DriveTrain"),
@@ -25,10 +26,10 @@ DriveTrain::DriveTrain() : Subsystem("DriveTrain"),
 
 	printf("Pre DriveTrain Constructor \n");
 	prevAngle = 90.0;
-	FLWheel->SetOffset(Preferences::GetInstance()->GetFloat("FL_ENCODER_OFFSET"));
-	FRWheel->SetOffset(Preferences::GetInstance()->GetFloat("FR_ENCODER_OFFSET"));
-	BRWheel->SetOffset(Preferences::GetInstance()->GetFloat("BR_ENCODER_OFFSET"));
-	BLWheel->SetOffset(Preferences::GetInstance()->GetFloat("BL_ENCODER_OFFSET"));
+	FLWheel->SetOffset(PersistedSettings::GetInstance().Get("FL_ENCODER_OFFSET"));
+	FRWheel->SetOffset(PersistedSettings::GetInstance().Get("FR_ENCODER_OFFSET"));
+	BRWheel->SetOffset(PersistedSettings::GetInstance().Get("BR_ENCODER_OFFSET"));
+	BLWheel->SetOffset(PersistedSettings::GetInstance().Get("BL_ENCODER_OFFSET"));
 	gyroCorrection = false;
 
 	originX = 0.0f;
@@ -331,7 +332,6 @@ void DriveTrain::Crab(double xPos, double yPos, double twist) {
 		}
 		else {
 			twist = twist * .05;   //limit twist speed while not in field centric
-			printf("%f/n",twist);
 			FWD = yPos;
 			STR = xPos;
 		}

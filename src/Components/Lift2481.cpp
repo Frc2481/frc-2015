@@ -55,9 +55,8 @@ void Lift2481::PeriodicUpdate() {
 			mMotorOffCount++;
 		}
 
-		if (mMotorOffCount >= 10) {
+		if (mMotorOffCount >= 3) {
 			mPIDController->Disable();
-			mMotorOffCount = 0;
 			mBrakeState = STATIC;
 		}
 
@@ -70,8 +69,10 @@ void Lift2481::PeriodicUpdate() {
 
 		if (mMotorOnCount >= 3) {
 			mPIDController->Enable();
-			mMotorOnCount = 0;
 			mBrakeState = STATIC;
+		}
+		if (mBrakeState == STATIC){
+			mMotorOnCount = mMotorOffCount = 0;
 		}
 	}
 
@@ -192,6 +193,7 @@ void Lift2481::Enable(bool motor){
 		mBrakeState = RELEASING;
 	}
 	else {
+		mBrakeState = STATIC;
 		mBrake->Set(true);
 	}
 }

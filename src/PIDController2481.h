@@ -60,6 +60,8 @@ public:
 
 	void ResetError();
 
+	void Invert();
+
 private:
 	float m_P;			// factor for "proportional" control
 	float m_I;			// factor for "integral" control
@@ -92,6 +94,8 @@ private:
 	PIDOutput *m_pidOutput;
 
 	Notifier* m_controlLoop;
+
+	bool m_inverted;
 
 	void Initialize(float p, float i, float d, float f, PIDSource *source, PIDOutput *output,
 			float period = 0.05);
