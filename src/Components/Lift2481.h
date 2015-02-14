@@ -18,7 +18,6 @@ class Lift2481 {
 public:
 	enum LiftState {
 		NORMAL,
-		MANUAL,
 		RESETTING,
 	};
 	enum BrakeState {

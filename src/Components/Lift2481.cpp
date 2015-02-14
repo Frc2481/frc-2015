@@ -96,10 +96,6 @@ void Lift2481::SetDesiredPostion(float pos) {
 	mPIDController->SetSetpoint(pos);
 	//mPIDController->SetPID(mPIDController->GetP() ,mPIDController->GetI() *.01,mPIDController->GetD());
 
-	if (mState == MANUAL) {
-		mState = NORMAL;
-	}
-
 	if(mState == NORMAL){
 		mPIDController->Reset();
 		mBrakeState = RELEASING; //PIDController is automatically enabled later.
@@ -147,7 +143,6 @@ void Lift2481::Set(float speed) {
 	if (mPIDController->IsEnabled()) {
 		mPIDController->Disable();
 		mBrake->Set(true);
-		mState = MANUAL;
 	} else {
 		mPIDOutput->Set(speed);
 	}
