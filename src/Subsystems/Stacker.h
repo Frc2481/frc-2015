@@ -47,7 +47,6 @@ public:
 	void SetToteCount(int toteCount);
 	void IncrementToteCount();
 	void DecrementToteCount();
-	void SetFeedbackEnable(StackerLiftID id, bool state);
 	void Set(float output);
 	float GetPosition();
 	void StackerManual(float yValue);

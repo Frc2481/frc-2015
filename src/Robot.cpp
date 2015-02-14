@@ -14,7 +14,6 @@
 #include "Commands/ArmGoToPositionCommand.h"
 #include "Commands/IncrementToteCountCommand.h"
 #include "Commands/DecrementToteCountCommand.h"
-#include "Commands/StackerSetFeedbackCommand.h"
 #include "Commands/StackerZeroEncodersCommand.h"
 #include "Commands/StackerGoToTopCommand.h"
 #include "Commands/CalibrateEncoderOffsetsCommand.h"
@@ -71,11 +70,6 @@ private:
 		SmartDashboard::PutData("Calibrate Wrist Encoder Offsets", new CalibrateWristEncoderOffsetsCommand());
 
 		SmartDashboard::PutData("Reset Wrist Stalled", new ArmWristResetStall());
-
-		SmartDashboard::PutData("Disable Right Lift", new StackerSetFeedbackCommand(Stacker::RIGHT, false));
-		SmartDashboard::PutData("Enable Right Lift", new StackerSetFeedbackCommand(Stacker::RIGHT, true));
-		SmartDashboard::PutData("Disable Left Lift", new StackerSetFeedbackCommand(Stacker::LEFT,false));
-		SmartDashboard::PutData("Enable Left Lift", new StackerSetFeedbackCommand(Stacker::LEFT,true));
 
 		SmartDashboard::PutData("Stacker Goto Top", new StackerGoToTopCommand());
 		SmartDashboard::PutData("Stacker Goto Bottom", new StackerGoToBottomCommand());

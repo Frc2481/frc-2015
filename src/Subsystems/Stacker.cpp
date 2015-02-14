@@ -143,13 +143,6 @@ void Stacker::ResetToteCount() {
 	mToteCount = 0;
 }
 
-void Stacker::SetFeedbackEnable(StackerLiftID id, bool state) {
-	if(id == RIGHT){
-		mRightLift->SetFeedbackState(state);
-	}
-
-}
-
 void Stacker::Set(float output) {
 	mRightLift->Set(output);
 }

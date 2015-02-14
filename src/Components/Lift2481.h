@@ -20,7 +20,6 @@ public:
 		NORMAL,
 		MANUAL,
 		RESETTING,
-		FEEDBACK_DISABLE,
 	};
 	enum BrakeState {
 		STATIC,
@@ -56,7 +55,6 @@ public:
 	void Disable(bool motor = true, bool brake = true);
 	void Enable(bool motor = true);
 	bool IsResetting();
-	void SetFeedbackState(bool state);
 	LiftState GetLiftState();
 	PIDController2481* GetController();
 	void SetP(float p);

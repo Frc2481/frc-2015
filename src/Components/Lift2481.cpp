@@ -85,9 +85,6 @@ float Lift2481::GetCurrentPostion() {
 	if (mState == RESETTING){
 		return -1.0f;
 	}
-	else if(mState == FEEDBACK_DISABLE){
-		return mPIDController->GetSetpoint();
-	}
 	return mEncoder->Get();
 }
 
@@ -111,15 +108,11 @@ void Lift2481::SetDesiredPostion(float pos) {
 }
 
 bool Lift2481::OnTarget() {
-	if (mState == FEEDBACK_DISABLE){
-		return true;
-	}
 	return mPIDController->OnTarget();
 }
 
 void Lift2481::Reset() {
 	mEncoder->Reset();
-	//	if (mState != FEEDBACK_DISABLE){
 //		mState = RESETTING;
 //		mPIDController->Disable();
 //		mPIDOutput->Set(-.5);
@@ -136,16 +129,6 @@ Lift2481::LiftState Lift2481::GetLiftState() {
 
 PIDController2481* Lift2481::GetController(){
 	return mPIDController;
-}
-
-void Lift2481::SetFeedbackState(bool state) {
-	if (state){
-		mState = NORMAL;
-	}
-	else{
-		mState = FEEDBACK_DISABLE;
-		mPIDController->Disable();
-	}
 }
 
 void Lift2481::SetP(float p) {
