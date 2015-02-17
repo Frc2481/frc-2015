@@ -45,8 +45,8 @@
 	#define INTAKE_CONTAIN_LIMIT 4
 
 //Arm Define
-	#define ARM_PIVOT_POSITION_TOP 90
-	#define ARM_PIVOT_POSITION_BOT 0
+	#define ARM_PIVOT_POSITION_TOP 1
+	#define ARM_PIVOT_POSITION_BOT 98
 
 	#define SHOULDER_P .006
 	#define WRIST_P .002
@@ -62,15 +62,19 @@
 	#define STACKER_POSITION_DOWN 1600
 	#define STACKER_TICKS_PER_INCH 578
 	//#define STACKER_LEFT_BOTTOM_LIMIT 2
-	#define STACKER_RIGHT_BOTTOM_LIMIT 1
+	#define STACKER_RIGHT_BOTTOM_LIMIT 0
 	//#define STACKER_LEFT_TOP_LIMIT 3
-	#define STACKER_RIGHT_TOP_LIMIT 0
+	#define STACKER_RIGHT_TOP_LIMIT 1
 	#define STACKER_UP_SPEED PersistedSettings::GetInstance().Get("STACKER_UP_SPEED")
 	#define STACKER_DOWN_SPEED PersistedSettings::GetInstance().Get("STACKER_DOWN_SPEED") * -1
 	#define STACKER_BRAKE 0
+	#define STACKER_ENCODER_A 2
+	#define STACKER_ENCODER_B 3
+
+	#define STEP_HEIGHT 6.7
 
 	#define STACKER_P .0002
-	#define STACKER_I .0001
+	#define STACKER_I .0002
 	#define STACKER_D .00001
 
 //Slide Define

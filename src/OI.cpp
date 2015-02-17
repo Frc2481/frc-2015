@@ -26,13 +26,17 @@
 #include "Commands/ArmLowerCommand.h"
 #include "Commands/ArmGripperOpenCommand.h"
 #include "Commands/ArmGripperCloseCommand.h"
-#include "Commands/ArmGotoPositionCommand.h"
+#include "Commands/ArmShoulderToSetPoint.h"
 #include "Commands/ArmExtendCommand.h"
 #include "Commands/ArmRetractCommand.h"
 #include "Commands/WristTiltUpCommand.h"
 #include "Commands/WristTiltDownCommand.h"
 #include "Commands/ExtendSlideCommand.h"
 #include "Commands/RetractSlideCommand.h"
+#include "Commands/ArmWristToSetPoint.h"
+#include "Commands/ArmShoulderToSetPoint.h"
+#include "Commands/KILL_EVERYTHING_COMMAND.h"
+#include "Commands/UnloadCoOpOnStepCommandGroup.h"
 
 
 #include "Commands/SetICommand.h"
@@ -47,6 +51,8 @@ OI::OI()
 	auxStick = new Joystick(AUX_STICK_PORT);
 	debugStick = new Joystick(DEBUG_STICK_PORT);
 
+	//Driver Stick
+
 	//toggle field centric
 	toggleFieldCentric = TOGGLE_FIELD_CENTRIC_BUTTON;
 	toggleFieldCentric->WhileHeld(new ToggleFieldCentricCommand());
@@ -59,36 +65,23 @@ OI::OI()
 	setBoosting = SET_BOOSTING_BUTTON;
 	setBoosting->WhileHeld(new OISetBoosting());
 
-	//Slide Extend/Retract
-//	slideExtend = SLIDE_EXTEND_BUTTON;
-//	slideExtend->WhenPressed(new ExtendSlideCommand());
-//
-//	slideRetract = SLIDE_RETRACT_BUTTON;
-//	slideRetract->WhenPressed(new RetractSlideCommand());
-
 	//Unload Stacker
 	unloadStacker = UNLOAD_STACKER_BUTTON;
 	unloadStacker->WhileHeld(new UnloadToteStackCommandGroup());
 
-	//acquire tote
+	//acquire tote		Joystick Button 1
 	acquireTote = ACQUIRE_TOTE_BUTTON;
 	acquireTote->WhenPressed(new AcquireToteCommand());
+
+	//Kill All Button
+	killAll = KILL_EVERYTHING_BUTTON;
+	killAll->WhenPressed(new KILL_EVERYTHING_COMMAND());
+
+	//Aux Stick
 
     //intakeOn
 	intakeOn = INTAKE_ON_BUTTON;
 	intakeOn->WhileHeld(new IntakeManualCommand());
-
-	//intakeReverse
-	intakeReverse = INTAKE_REVERSE_BUTTON;
-	intakeReverse->WhileHeld(new IntakeTurnOnReverse());
-
-	//Arm Raise
-	armRaise = ARM_RAISE_BUTTON;
-	armRaise->WhileHeld(new ArmRaiseCommand());
-
-	//Arm Lower
-	armLower = ARM_LOWER_BUTTON;
-	armLower->WhileHeld(new ArmLowerCommand());
 
 	//Arm Extend
 	armExtend = ARM_EXTEND_BUTTON;
@@ -108,27 +101,43 @@ OI::OI()
 
 	//Arm Go To Set Position
 	armTop = ARM_TO_TOP_BUTTON;
-	//armTop->WhenPressed(new ArmGoToPositionCommand(ARM_PIVOT_POSITION_TOP));
+	armTop->WhenPressed(new ArmShoulderToSetPoint(ARM_PIVOT_POSITION_TOP));
 
 	armBottom = ARM_TO_BOTTOM_BUTTON;
-	//armBottom->WhenPressed(new ArmGoToPositionCommand(ARM_PIVOT_POSITION_BOT));
+	armBottom->WhenPressed(new ArmShoulderToSetPoint(ARM_PIVOT_POSITION_BOT));
 
-	//Wrist Tilting
-	wristTiltUp = WRIST_TILT_UP_BUTTON;
-	//wristTiltUp->WhileHeld(new WristTiltUpCommand());
+	armToStep = ARM_TO_STEP_BUTTON;
+	armToStep->WhenPressed(new ArmShoulderToSetPoint(80));
 
-	wristTiltDown = WRIST_TILT_DOWN_BUTTON;
-	//wristTiltDown->WhileHeld(new WristTiltDownCommand());
+	armTo2Tote = ARM_TWO_TOTE_STACK_BUTTON;
+	armTo2Tote->WhenPressed(new ArmShoulderToSetPoint(63));
 
-    //Set Stacker
+	armTo3Tote = ARM_THREE_TOTE_STACK_BUTTON;
+	armTo3Tote->WhenPressed(new ArmShoulderToSetPoint(50));
+
+	armTo4Tote = ARM_FOUR_TOTE_STACK_BUTTON;
+	armTo4Tote->WhenPressed(new ArmShoulderToSetPoint(32));
+
+	armTo5Tote = ARM_FIVE_TOTE_STACK_BUTTON;
+	armTo5Tote->WhenPressed(new ArmShoulderToSetPoint(14));
+
+	//Co Op Totes
+	coOpOnStep = CO_OP_ON_STEP;
+	coOpOnStep->WhenPressed(new UnloadCoOpOnStepCommandGroup());
+
+	//Wrist To Setpoint
+	wristTo90 = WRIST_TO_90_BUTTON;
+	wristTo90->WhenPressed(new ArmWristToSetPoint(90));
+
+	wristTo180 = WRIST_TO_180_BUTTON;
+	wristTo180->WhenPressed(new ArmWristToSetPoint(180));
+
+	wristTo270 = WRIST_TO_270_BUTTON;
+	wristTo270->WhenPressed(new ArmWristToSetPoint(270));
+
+    //Stacker Manual
 	stackerOn = STACKER_ON_BUTTON;
 	stackerOn->WhileHeld(new StackerManualCommand());
-
-	stackerPickup = STACKER_PICKUP_TOTE_BUTTON;
-	stackerPickup->WhenPressed(new PickUpToteCommand());
-
-	scoringPlatformHeight = STACKER_TO_PLATFORM_BUTTON;
-	scoringPlatformHeight->WhenPressed(new StackerGoToScoringPlatformCommand());
 
 	//Drivetrain Set P
 	incP = DRIVETRAIN_INC_P_BUTTON;
@@ -143,6 +152,8 @@ OI::OI()
 
 	decI = DRIVETRAIN_DEC_I_BUTTON;
 	decI->WhenPressed(new SetICommand(false));
+
+	boosting = false;
 
 }
 

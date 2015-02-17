@@ -14,11 +14,14 @@ public:
 		mloaded = loaded;
 	}
 	void Initialize(){
+		if (stacker->GetToteCount() > 5){
+			arm->OpenGripper();
+		}
 		CommandBase::stacker->SetPosition(0.34f, mloaded);
 	}
 	void Execute() {}
 	bool IsFinished(){
-		return CommandBase::stacker->GetPosition() < 250;
+		return CommandBase::stacker->GetPosition() < 500;
 	}
 	void End(){
 		CommandBase::stacker->Disable(true, false);

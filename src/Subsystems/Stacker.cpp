@@ -9,7 +9,7 @@ Stacker::Stacker() :
 	float i = PersistedSettings::GetInstance().Get("STACKER_I");
 	printf ("%f %f \n", p, i);
 
-	mRightLift = new Lift2481(9, 2, 3, p, i, 0, STACKER_RIGHT_TOP_LIMIT, STACKER_RIGHT_BOTTOM_LIMIT, STACKER_BRAKE);
+	mRightLift = new Lift2481(RIGHT_STACKER, STACKER_ENCODER_A, STACKER_ENCODER_B, p, i, 0, STACKER_RIGHT_TOP_LIMIT, STACKER_RIGHT_BOTTOM_LIMIT, STACKER_BRAKE);
 	mLiftLastExtreme = Down;
 }
 
@@ -36,7 +36,7 @@ void Stacker::SetPosition(float pos, bool loaded) {
 	float d = PersistedSettings::GetInstance().Get("STACKER_D");
 
 	mRightLift->SetI(loaded ? 0.0 : i);
-	mRightLift->SetP(loaded ? 0.0001 : p);
+	mRightLift->SetP(loaded ? 0.0003 : p);
 	mRightLift->SetD(loaded ? 0.0 : d);
 
 	mRightLift->SetDesiredPostion(pos);

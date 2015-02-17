@@ -11,10 +11,10 @@ class PickUpToteCommand: public CommandGroup
 {
 public:
 	PickUpToteCommand(){
+		AddSequential(new IncrementToteCountCommand());
 		AddSequential(new StackerGoToBottomCommand());
 		//AddSequential(new WaitCommand(.2));
 		AddSequential(new StackerGoToNextPositionCommand());
-		AddSequential(new IncrementToteCountCommand());
 	}
 };
 

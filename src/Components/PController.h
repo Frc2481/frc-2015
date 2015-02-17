@@ -8,16 +8,21 @@
 #ifndef PCONTROLLER_H_
 #define PCONTROLLER_H_
 #include "WPILib.h"
+#include "RollingAccumulator.h"
 
 class PController {
 private:
 	PIDSource* input;
 	PIDOutput* output;
+	RollingAccumulator <float, 50> mHistory;
+	bool mStallDetection;
+	bool mStalled;
 	float p;
 	float i;
 	float d;
 	float totalError;
 	float prevError;
+	float prevFeedback;
 	float tolerance;
 	float inputRangeUpper;
 	float inputRangeLower;
@@ -30,6 +35,7 @@ private:
 	float setPoint;
 	bool mContinuous;
 	bool mBrake;
+	bool mInverted;
 	MUTEX_ID pSemaphore;
 	Notifier* pUpdate;
 public:
@@ -45,7 +51,7 @@ public:
 	void SetSetpoint(float setPoint);
 	void SetInputRange(float lower, float uper);
 	void SetOutputRange(float lower, float upwer);
-	bool SetContinuous(bool continuous);
+	void SetContinuous(bool continuous);
 	void Enable();
 	void Disable();
 	bool IsEnabled();
@@ -54,7 +60,11 @@ public:
 	void Update();
 	float GetSetPoint();
 	void SetBrakeMode(bool brake);
-
+	void Invert();
+	void SetStallDetect(bool shouldStallDetect);
+	bool GetStallDetect();
+	void ResetStalled();
+	bool GetStalled();
 };
 
 #endif /* PCONTROLLER_H_ */

@@ -18,13 +18,14 @@ Arm::Arm() : Subsystem("Arm"),
 		mPivotShoulderTalon  (new CANTalon(ARM_SHOULDER_PIVOT)),
 		mPivotWristTalon     (new CANTalon(ARM_WRIST_PIVOT)),
 		mPIDShoulder         (new PController(mShoulderEncoder,mPivotShoulderTalon,
-								.5,0)),
+								.7,0)),
 		mPIDWrist            (new PController(mWristEncoder,mPivotWristTalon,
 								PersistedSettings::GetInstance().Get("WRIST_P"),0)),
 		mWristOffset(0.0f)
 		{
 
 	mPivotWristTalon->ConfigNeutralMode(CANTalon::kNeutralMode_Brake);
+	mPivotShoulderTalon->ConfigNeutralMode(CANTalon::kNeutralMode_Brake);
 
 	mShoulderEncoder->SetOffset(PersistedSettings::GetInstance().Get("SHOULDER_ENCODER_OFFSET"));
 	mWristEncoder->SetOffset(PersistedSettings::GetInstance().Get("WRIST_ENCODER_OFFSET"));
@@ -36,10 +37,11 @@ Arm::Arm() : Subsystem("Arm"),
 	mPIDWrist->SetTolerance(5.0);
 
 	mPIDWrist->SetContinuous(false);
-	mPIDShoulder->SetContinuous(false);
+	mPIDShoulder->SetContinuous(true);
 
-	mPIDWrist->SetOutputRange(-.3, .4);
+	mPIDWrist->SetOutputRange(-1, 1);
 	mPIDWrist->Disable();
+	mPIDWrist->Invert();
 
 	mPIDShoulder->Disable();
 
@@ -80,12 +82,12 @@ void Arm::PeriodicUpdate() {
 		mPIDWrist->Disable();
 	}
 
-	if (mGripper->Get()){
-		mPIDWrist->SetP(.5);
-	}
-	else {
+//	if (!mGripper->Get()){
+//		mPIDWrist->SetP(.5);
+//	}
+//	else {
 		mPIDWrist->SetP(.02);
-	}
+//	}
 
 	if (mWristLocked){
 		SetWristPosition(GetParallel());
@@ -155,11 +157,11 @@ void Arm::SetPivotArmRelative(float position) {
 }
 
 void Arm::CloseGripper() {
-	mGripper->Set(true);
+	mGripper->Set(false);
 }
 
 void Arm::OpenGripper() {
-	mGripper->Set(false);
+	mGripper->Set(true);
 }
 
 void Arm::ExtendArm() {
@@ -234,7 +236,7 @@ void Arm::SetWristPosition(double pos) {
 
 void Arm::SetWristManual(double speed) {
 	mPIDWrist->Disable();
-	mPivotWristTalon->Set(speed * .5);
+	mPivotWristTalon->Set(-speed * .5);
 }
 
 bool Arm::GetStalled() {
@@ -258,7 +260,9 @@ void Arm::SetWristLinked(bool linked) {
 }
 
 double Arm::GetParallel() {
-	return -mShoulderEncoder->GetAngle() + 270;
+	double encAngle = mShoulderEncoder->GetAngle();
+	encAngle = encAngle > 150.0 ? 0.5 : encAngle;
+	return -encAngle + 270;
 }
 
 void Arm::SetShoulderManual(double speed) {

@@ -90,10 +90,10 @@ private:
 		SmartDashboard::PutData("Shoulder 1", new ArmShoulderManual(1));
 		SmartDashboard::PutData("Shoulder -1", new ArmShoulderManual(-1));
 
-		SmartDashboard::PutData("Shoulder 5", new ArmShoulderToSetPoint(2));
+		SmartDashboard::PutData("Shoulder 5", new ArmShoulderToSetPoint(0));
 		SmartDashboard::PutData("Shoulder 99", new ArmShoulderToSetPoint(99));
 		SmartDashboard::PutData("Shoulder 45", new ArmShoulderToSetPoint(45));
-		SmartDashboard::PutData("shoulder 80", new ArmShoulderToSetPoint(80));
+		SmartDashboard::PutData("shoulder 80", new ArmShoulderToSetPoint(85));
 
 		SmartDashboard::PutData("Slide Extend", new ExtendSlideCommand());
 		SmartDashboard::PutData("Slide Retract", new RetractSlideCommand());
@@ -131,6 +131,7 @@ private:
 
 	void TeleopInit()
 	{
+		CommandBase::arm->SetWristLinked(false);
 		// This makes sure that the autonomous stops running when
 		// teleop starts running. If you want the autonomous to 
 		// continue until interrupted by another command, remove

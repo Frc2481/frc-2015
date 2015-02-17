@@ -14,7 +14,7 @@ public:
 		
 	}
 	virtual void Initialize(){
-		//driveTrain->SetFieldCentric(true);
+		driveTrain->SetFieldCentric(true);
 	}
 	virtual void Execute(){
 		
@@ -23,7 +23,7 @@ public:
 		return false;
 	}
 	virtual void End(){
-		//driveTrain->SetFieldCentric(false);
+		driveTrain->SetFieldCentric(false);
 	}
 	virtual void Interrupted(){
 		End();

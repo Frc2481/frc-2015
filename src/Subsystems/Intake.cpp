@@ -9,6 +9,9 @@ Intake::Intake() : Subsystem("Intake"),
 	mRightMotor(new CANTalon(INTAKE_RIGHT)),
 	mLeftMotor(new CANTalon(INTAKE_LEFT)),
 	mIntakeLimit(new DigitalInput(INTAKE_CONTAIN_LIMIT)){
+
+	mRightMotor->ConfigNeutralMode(CANTalon::kNeutralMode_Coast);
+	mLeftMotor->ConfigNeutralMode(CANTalon::kNeutralMode_Coast);
 }
 
 void Intake::InitDefaultCommand(){}

@@ -21,8 +21,8 @@ public:
 		return arm->IsArmOnTarget();
 	}
 	void End(){
-//		arm->SetWristLinked(false);
-//		arm->StopPivotArm();
+		arm->SetWristLinked(false);
+		arm->StopPivotArm();
 	}
 	void Interrupted(){
 		End();

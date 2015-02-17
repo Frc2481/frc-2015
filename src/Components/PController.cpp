@@ -17,6 +17,7 @@ PController::PController(PIDSource* userInput, PIDOutput* userOutput, float pVal
 			d(dValue),
 			totalError(0),
 			prevError(0),
+			prevFeedback(std::nanf("")),
 			tolerance(0),
 			inputRangeUpper(0),
 			inputRangeLower(5),
@@ -29,6 +30,9 @@ PController::PController(PIDSource* userInput, PIDOutput* userOutput, float pVal
 			setPoint(0),
 			mContinuous(false),
 			mBrake(false),
+			mInverted(false),
+			mStallDetection(false),
+			mStalled(false),
 			pSemaphore(initializeMutexNormal()),
 			pUpdate(new Notifier(PController::UpdateController, this)){
 	pUpdate->StartPeriodic(.004);
@@ -162,9 +166,27 @@ void PController::Update() {
 			else if (pidOutput < outputRangeLower){
 				pidOutput = outputRangeLower;
 			}
+			if (mInverted) {
+				pidOutput *= -1;
+			}
 			output->PIDWrite(-pidOutput);
 
+			if (mStallDetection){
+				if (prevFeedback == prevFeedback){
+					float delta = feedback - prevFeedback;
+					mHistory.add(delta/pidOutput);
+				}
+				if (mHistory.avg() < 0.5){
+					mStalled = true;
+				}
+			}
+
+			if (mStalled){
+				enabled = false;
+			}
+
 			prevError = correctedError;
+			prevFeedback = feedback;
 		}
 
 		this->onTarget = onTarget;
@@ -194,6 +216,8 @@ void PController::Enable(){
 		enabled = true;
 	}
 	END_REGION;
+
+	ResetStalled();
 }
 
 void PController::Disable(){
@@ -216,10 +240,50 @@ float PController::GetSetPoint(){
 	return setPoint;
 }
 
-bool PController::SetContinuous(bool continuous) {
+void PController::SetContinuous(bool continuous) {
 	mContinuous = continuous;
 }
 
 void PController::SetBrakeMode(bool brake) {
 	mBrake = brake;
+}
+
+void PController::Invert() {
+	mInverted = true;
+}
+
+void PController::SetStallDetect(bool shouldStallDetect) {
+	CRITICAL_REGION(pSemaphore){
+		mStallDetection = shouldStallDetect;
+	}
+	END_REGION;
+}
+
+bool PController::GetStallDetect() {
+	bool b;
+	CRITICAL_REGION(pSemaphore){
+		b = mStallDetection;
+	}
+	END_REGION;
+
+	return b;
+}
+
+void PController::ResetStalled() {
+	CRITICAL_REGION (pSemaphore){
+		mHistory.reset();
+		mStalled = false;
+		prevFeedback = std::nanf("");
+	}
+	END_REGION;
+}
+
+bool PController::GetStalled() {
+	bool b;
+	CRITICAL_REGION(pSemaphore){
+		b = mStalled;
+	}
+	END_REGION;
+
+	return b;
 }

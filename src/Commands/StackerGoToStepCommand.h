@@ -11,7 +11,7 @@ public:
 		Requires(stacker);
 	}
 	void Initialize(){
-		CommandBase::stacker->SetPosition(6.7f);
+		CommandBase::stacker->SetPosition(STEP_HEIGHT);
 	}
 	void Execute() {}
 	bool IsFinished(){

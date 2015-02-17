@@ -30,8 +30,6 @@ void DualCANTalon::PIDWrite(float output) {
 void DualCANTalon::Set(float speed) {
 	mAMotor->Set(mAInverted ? speed * -1 : speed);
 	mBMotor->Set(mBInverted ? speed * -1 : speed);
-
-	SmartDashboard::PutNumber("Stacker Speed", speed);
 }
 
 float DualCANTalon::GetOutputCurrent() {

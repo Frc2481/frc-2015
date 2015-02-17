@@ -55,7 +55,7 @@ void Lift2481::PeriodicUpdate() {
 			mMotorOffCount++;
 		}
 
-		if (mMotorOffCount >= 3) {
+		if (mMotorOffCount >= 1) {
 			mPIDController->Disable();
 			mBrakeState = STATIC;
 		}

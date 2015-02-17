@@ -24,9 +24,10 @@ private:
 	Button* setOrigin;
 	Button* unloadStacker;
 	Button* toggleFieldCentric;
-//	Button* slideExtend;
-//	Button* slideRetract;
+	Button* stackerStep;
 	bool boosting;
+
+	Button* killAll;
 
 	//debug stick
 	Button* incP;
@@ -41,16 +42,25 @@ private:
 	Button* stackerOn;
 	Button* stackerPickup;
 	Button* scoringPlatformHeight;
-	POVJoystickButton* armExtend;
-	POVJoystickButton* armRetract;
-	POVJoystickButton* gripperOpen;
-	POVJoystickButton* gripperClose;
-	Button* armRaise;
-	Button* armLower;
-	AnalogJoystickButton* armTop;
-	AnalogJoystickButton* armBottom;
-	AnalogJoystickButton* wristTiltUp;
-	AnalogJoystickButton* wristTiltDown;
+//	Button* slideExtend;
+//	Button* slideRetract;
+	Button* coOpOnStep;
+	Button* armExtend;
+	Button* armRetract;
+	Button* gripperOpen;
+	Button* gripperClose;
+//	Button* armRaise;
+//	Button* armLower;
+	Button* armTop;
+	Button* armBottom;
+	Button* armToStep;
+	Button* wristTo90;
+	Button* wristTo180;
+	Button* wristTo270;
+	Button* armTo2Tote;
+	Button* armTo3Tote;
+	Button* armTo4Tote;
+	Button* armTo5Tote;
 
 
 public:

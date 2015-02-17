@@ -13,9 +13,9 @@ public:
 	void Initialize(){
 		double wrist = arm->GetRawWristAngle();
 
-		arm->SetWristEncoderOffset(wrist - 180);
+		arm->SetWristEncoderOffset(wrist - 270);
 
-		PersistedSettings::GetInstance().Set("WRIST_ENCODER_OFFSET", wrist - 180);
+		PersistedSettings::GetInstance().Set("WRIST_ENCODER_OFFSET", wrist - 270);
 	}
 	void Execute(){}
 	bool IsFinished(){

@@ -15,18 +15,18 @@ public:
 		mSkipOnTarget = false;
 	}
 	void Initialize(){
-		if(stacker->GetToteCount() < 5){
+		if(stacker->GetToteCount() < 6){
 			mPos = 15.25f;
 		}
 		else {
 			mPos = 3.0f;
 		}
 
-		if (stacker->GetToteCount() >= 4){
+		if (stacker->GetToteCount() >= 5){
 			arm->OpenGripper();
 		}
 
-		if (CommandBase::stacker->GetPosition() < ((mPos - 1) * 578)){
+		if (CommandBase::stacker->GetPosition() < ((mPos - 2) * 578)){
 			CommandBase::stacker->SetPosition(mPos);
 			mSkipOnTarget = false;
 		} else {
