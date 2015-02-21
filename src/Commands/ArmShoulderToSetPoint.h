@@ -16,7 +16,11 @@ public:
 		arm->SetWristLinked(true);
 		arm->SetPivotArmAbs(mSetPoint);
 	}
-	void Execute(){}
+	void Execute(){
+		if(false){   //TODO: check if motor is stalled
+
+		}
+	}
 	bool IsFinished(){
 		return arm->IsArmOnTarget();
 	}

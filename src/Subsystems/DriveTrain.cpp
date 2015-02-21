@@ -22,7 +22,8 @@ DriveTrain::DriveTrain() : Subsystem("DriveTrain"),
 				serialPort(new SerialPort(57600,SerialPort::kMXP)),
 				imu(new IMU(serialPort,update_rate_hz)),
 				isFieldCentric(false),
-				isForward(true) {
+				isForward(true),
+				mPIDGyro(new PIDController(0.033, 0.02, 0, NULL, NULL)){
 
 	printf("Pre DriveTrain Constructor \n");
 	prevAngle = 90.0;
@@ -30,6 +31,7 @@ DriveTrain::DriveTrain() : Subsystem("DriveTrain"),
 	FRWheel->SetOffset(PersistedSettings::GetInstance().Get("FR_ENCODER_OFFSET"));
 	BRWheel->SetOffset(PersistedSettings::GetInstance().Get("BR_ENCODER_OFFSET"));
 	BLWheel->SetOffset(PersistedSettings::GetInstance().Get("BL_ENCODER_OFFSET"));
+	//driveLogger = new DataLogger("/home/lvuser/DriveLogger.txt");
 	gyroCorrection = false;
 
 	originX = 0.0f;
@@ -292,7 +294,18 @@ void DriveTrain::SetForward(bool fwd) {
 
 void DriveTrain::SetGyroCorrection(bool b) {
 	gyroCorrection = b;
+	ResetGyroAccumError();
 }
+
+void DriveTrain::ResetGyroAccumError()
+{
+	gyroAccumError = 0.0;
+}
+
+void DriveTrain::ZeroYaw() {
+	imu->ZeroYaw();
+}
+
 bool DriveTrain::IsGyroCorrection() const {
 	return gyroCorrection;
 }
@@ -309,19 +322,29 @@ void DriveTrain::Crab(double xPos, double yPos, double twist) {
 
 		//sanity check on Gyro, if Gyro angle is too far off ignore
 		if(fabs(gyroAngle) > 50){
-			gyroCorrection = false;
+			//gyroCorrection = false;
 		}
 
 		//stop Gryo from correcting while sitting still
 		if (gyroCorrection) {
-			if (xPos != 0 || yPos != 0) {
-
+			//if (xPos != 0 || yPos != 0) {
 				//TODO: Decide if we want this.
-				gyroAngle = std::max(std::min(gyroAngle, 10.0f), -10.0f);
-				twist = gyroAngle / 30.0;
-				printf("GYRO CORRECTION\n");
-			}
+
+				gyroAngle = std::max(std::min(-gyroAngle, 30.0f), -30.0f);
+				gyroAccumError += gyroAngle;
+				float P = mPIDGyro->GetP();
+				float I = mPIDGyro->GetI();
+				twist = gyroAngle * P + gyroAccumError * I;
+				printf("GYRO CORRECTION %f \n", gyroAngle);
+				SmartDashboard::PutBoolean("GYRO Correction 2", true);
+			//} else {
+			//	SmartDashboard::PutBoolean("GYRO Correction 2", false);
+			//}
 		}
+
+		SmartDashboard::PutNumber("GYRO Twist Correct", gyroCorrection ? gyroAngle / 30.0f : 0);
+
+		SmartDashboard::PutBoolean("GYRO Correction", gyroCorrection);
 
 
 		twist = -twist;
@@ -412,6 +435,14 @@ void DriveTrain::Crab(double xPos, double yPos, double twist) {
 		SmartDashboard::PutNumber("commandedAngleFL", wheelAngleFL);
 		SmartDashboard::PutNumber("commandedAngleBR", wheelAngleBR);
 		SmartDashboard::PutNumber("commandedAngleBL", wheelAngleBL);
+
+		/*std::stringstream logstr;
+		logstr << wheelAngleFL << "," << FLWheel->GetAngle() << ",";
+		logstr << wheelAngleFR << "," << FRWheel->GetAngle() << ",";
+		logstr << wheelAngleBL << "," << BLWheel->GetAngle() << ",";
+		logstr << wheelAngleBR << "," << BRWheel->GetAngle();
+
+		driveLogger->LogString(logstr.str());*/
 
 		//if (fieldCentric) {
 		/*

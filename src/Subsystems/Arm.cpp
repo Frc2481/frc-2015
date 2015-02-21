@@ -18,7 +18,7 @@ Arm::Arm() : Subsystem("Arm"),
 		mPivotShoulderTalon  (new CANTalon(ARM_SHOULDER_PIVOT)),
 		mPivotWristTalon     (new CANTalon(ARM_WRIST_PIVOT)),
 		mPIDShoulder         (new PController(mShoulderEncoder,mPivotShoulderTalon,
-								.7,0)),
+								.7,.01)),
 		mPIDWrist            (new PController(mWristEncoder,mPivotWristTalon,
 								PersistedSettings::GetInstance().Get("WRIST_P"),0)),
 		mWristOffset(0.0f)
@@ -33,7 +33,7 @@ Arm::Arm() : Subsystem("Arm"),
 	mPIDShoulder->SetInputRange(0.0, 360.0);
 	mPIDWrist->SetInputRange(0.0, 360.0);
 
-	mPIDShoulder->SetTolerance(3.0);
+	mPIDShoulder->SetTolerance(1.5);
 	mPIDWrist->SetTolerance(5.0);
 
 	mPIDWrist->SetContinuous(false);
@@ -59,7 +59,7 @@ void Arm::PeriodicUpdate() {
 
 //	float wristAngle = -mShoulderEncoder->GetAngle() + mWristOffset;
 //	while (wristAngle < 0){
-//		wristAngle += 360;
+
 //	}
 
 //	if (mPIDShoulder->OnTarget()){
@@ -69,9 +69,9 @@ void Arm::PeriodicUpdate() {
 //		mPIDShoulder->SetP(.5);
 //	}
 
-//	if (mShoulderEncoder->GetAngle() < 70){
-//		mArmExtention->Set(false);
-//	}
+	if (mShoulderEncoder->GetAngle() < 50){
+		mArmExtention->Set(false);
+	}
 
 	if (mPivotWristTalon->GetOutputCurrent() > 14.5){
 		mWristStalled = true;
@@ -165,7 +165,7 @@ void Arm::OpenGripper() {
 }
 
 void Arm::ExtendArm() {
-//	if (mShoulderEncoder->GetAngle() <= 15){
+//	if (mShoulderEncoder->GetAngle() > 60){
 		mArmExtention->Set(true);
 //	}
 }
@@ -262,7 +262,7 @@ void Arm::SetWristLinked(bool linked) {
 double Arm::GetParallel() {
 	double encAngle = mShoulderEncoder->GetAngle();
 	encAngle = encAngle > 150.0 ? 0.5 : encAngle;
-	return -encAngle + 270;
+	return -encAngle + 275;
 }
 
 void Arm::SetShoulderManual(double speed) {

@@ -42,7 +42,6 @@ PController::~PController() {
 	takeMutex(pSemaphore);
 	deleteMutex(pSemaphore);
 	delete pUpdate;
-	// TODO Auto-generated destructor stub
 	
 }
 void PController::SetP(float pValue){
@@ -141,7 +140,7 @@ void PController::Update() {
 			}
 
 			SmartDashboard::PutNumber("CE", correctedError);
-			/*
+
 			if(i > 0.0)
 			{
 				double potIGain = (totalError + correctedError) * i;
@@ -157,8 +156,8 @@ void PController::Update() {
 					totalError = outputRangeUpper/i;
 				}
 			}
-		*/
-			pidOutput = -correctedError * p + d*(correctedError - prevError);// + i*totalError;
+
+			pidOutput = -correctedError * p + d*(correctedError - prevError) + i*totalError;
 
 			if (pidOutput > outputRangeUpper){
 				pidOutput = outputRangeUpper;

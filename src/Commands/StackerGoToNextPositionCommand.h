@@ -39,7 +39,9 @@ public:
 	}
 	void End(){
 		CommandBase::stacker->Disable();
-		arm->CloseGripper();
+		if (stacker->GetToteCount() >= 5){
+			arm->CloseGripper();
+		}
 //		CommandBase::stacker->UpdateToteCount();
 	}
 	void Interrupted(){

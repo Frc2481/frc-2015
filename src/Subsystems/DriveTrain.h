@@ -12,11 +12,13 @@
 #include "WPILib.h"
 #include "Commands/Subsystem.h"
 #include "../IMU/IMU.h"
+#include "../Components/DataLogger.h"
 
 class DriveTrain: public Subsystem {
 
 #define MAX_CHANGE 10
 private:
+	PIDController *mPIDGyro;
 	SwerveModule *FLWheel;
 	SwerveModule *FRWheel;
 	SwerveModule *BRWheel;
@@ -24,6 +26,7 @@ private:
 	uint8_t update_rate_hz = 50;
 	SerialPort* serialPort;
 	IMU* imu;
+	DataLogger* driveLogger;
 	const double pi = 3.14159;
 	double baseWidth;
 	double baseLength;
@@ -37,6 +40,7 @@ private:
 	float heading;
 	float roll;
 	float pitch;
+	double gyroAccumError = 0;
 
 	float originX;
 	float originY;
@@ -74,6 +78,8 @@ public:
 	void SetOptimized(bool optimized);
 	void SetForward(bool fwd);
 	void SetGyroCorrection(bool b);
+	void ResetGyroAccumError();
+	void ZeroYaw();
 	bool IsGyroCorrection() const;
 	IMU* GetIMU();
 };

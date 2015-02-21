@@ -12,24 +12,14 @@ SwerveModule::SwerveModule(uint32_t driveChannel, uint32_t steerChannel, uint32_
 				prevAngle(0),
 				optimized(true)
 {
-//	mDrive->SetSafetyEnabled(true);
-//	mSteer->SetSafetyEnabled(true);
-//	mSteerController->SetOutputRange(-1,1);
 
 	mSteerController->SetInputRange(0, 360);
 	mSteerController->SetTolerance(3);
-//	mSteerController->SetInputRange(0.015, 4.987);
-//	mSteerController->SetInputRange(0, 360);
-//	mSteerController->SetAbsoluteTolerance(2);
 	mSteerController->SetContinuous(true);
-	//mSteerController->Disable();
-//	mSteerController->
-	
 	mSteer->ConfigNeutralMode(CANTalon::kNeutralMode_Coast);
 }
 
-SwerveModule::~SwerveModule()
-{
+SwerveModule::~SwerveModule(){
 	delete mDrive;
 	delete mSteer;
 	delete mEncoder;
@@ -54,18 +44,11 @@ float SwerveModule::DegToVolts(float deg) {
 void SwerveModule::Set(float speed, float angle){
 	while(angle > 360.0f)
 		angle -= 360.0f;
-	while(angle < -360.0f)
+	while(angle < 0.0f)
 		angle += 360.0f;
 
 	float currentAngle = GetAngle();
-//	printf("%f\n", speed);
-	/*
-	if (fabs(angle - currentAngle) > 90 && fabs(angle - currentAngle) < 270){
-		angle = ((int)angle + 180) % 360;
-		speed = -speed;
-		//printf("reverse");
-	}
-	*/
+
 //	if (optimized){
 		if (fabs(angle - currentAngle) > 90 && fabs(angle - currentAngle) < 270) {
 			angle = ((int)angle + 180) % 360;
@@ -73,7 +56,7 @@ void SwerveModule::Set(float speed, float angle){
 		}
 
 		//If we are moving slowly, don't change the angle to keep things stable (rotating wheels when speed is small can induce lateral movement)
-		if (fabs(speed) < .1){
+		if (fabs(speed) < .05){
 			angle = prevAngle;
 		}
 		else {
@@ -83,21 +66,17 @@ void SwerveModule::Set(float speed, float angle){
 //	else {
 //		speed *= 0.2;
 //	}
-	//printf("angle = %f \n", GetAngle());
-	//SmartDashboard::PutNumber("Angle", GetAngle());
+
 	mDrive->Set(speed);
 	mSteerController->SetSetpoint(angle);
 }
 
-float SwerveModule::GetOffset() const
-{
+float SwerveModule::GetOffset() const{
     return mEncoder->GetOffset();
 }
 
-void SwerveModule::SetOffset(float offset)
-{
+void SwerveModule::SetOffset(float offset){
     mEncoder->SetOffset(offset);
-//    mSteerController->SetSetpoint(0);
 }
 
 PController* SwerveModule::GetController() {
@@ -108,9 +87,9 @@ void SwerveModule::SetOptimized(bool isOptimized){
 }
 
 float SwerveModule::GetVoltage() {
-	mEncoder->getVoltage();
+	return mEncoder->getVoltage();
 }
 
 float SwerveModule::GetRawVoltage() {
-	mEncoder->GetRawVoltage();
+	return mEncoder->GetRawVoltage();
 }

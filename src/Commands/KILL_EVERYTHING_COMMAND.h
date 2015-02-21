@@ -16,7 +16,7 @@ public:
 
 	}
 	void Execute(){}
-	bool IsFinished(){}
+	bool IsFinished(){ return true; }
 	void End(){}
 	void Interrupted(){}
 };

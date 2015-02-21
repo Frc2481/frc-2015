@@ -15,6 +15,7 @@ private:
 public:
 	AutoDriveCommand(double x, double y, double twist, double timeout = 0)
 			: mX(x), mY(y), mTwist(twist){
+		Requires(driveTrain);
 		if (timeout > 0){
 			SetTimeout(timeout);
 			mTimeoutSet = true;

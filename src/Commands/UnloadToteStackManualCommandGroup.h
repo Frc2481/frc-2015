@@ -6,6 +6,7 @@
 #include "StackerResetToteCount.h"
 #include "ArmGripperOpenCommand.h"
 #include "ArmGoToPositionAndDropCommand.h"
+#include "UnloadStackerManual.h"
 
 class UnloadToteStackCommandGroup: public CommandGroup
 {

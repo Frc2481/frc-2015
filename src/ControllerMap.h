@@ -5,10 +5,10 @@
 
 //Driver Stick
 #define UNLOAD_STACKER_BUTTON       new JoystickButton(driverStick, XboxController::xbBButton)
-#define ACQUIRE_TOTE_BUTTON         new JoystickButton(driverStick, XboxController::xbAButton)
+#define ACQUIRE_TOTE_BUTTON         new AnalogJoystickButton(driverStick, XboxController::xbRightTrigger, .5)
 #define SET_BOOSTING_BUTTON         new JoystickButton(driverStick, XboxController::xbRightBumper)
 #define SET_ORIGIN_BUTTON           new AnalogJoystickButton(driverStick, XboxController::xbLeftTrigger, .5)
-#define TOGGLE_FIELD_CENTRIC_BUTTON new AnalogJoystickButton(driverStick, XboxController::xbRightTrigger, .5)
+#define TOGGLE_FIELD_CENTRIC_BUTTON new JoystickButton(driverStick, XboxController::xbAButton)
 
 //Note: NEVER PRESS THIS BUTTON!!!!
 #define KILL_EVERYTHING_BUTTON		new JoystickButton(driverStick, XboxController::xbBackButton)

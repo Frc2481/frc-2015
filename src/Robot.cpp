@@ -32,6 +32,7 @@
 #include "Commands/CalibrateWristEncoderOffsetsCommand.h"
 #include "Commands/ArmWristResetStall.h"
 #include "Commands/RemoveRCFromStepCommand.h"
+#include "Commands/ThreeToteStackAutoCommandGroup.h"
 
 #include "RobotParameters.h"
 
@@ -94,6 +95,8 @@ private:
 		SmartDashboard::PutData("Shoulder 99", new ArmShoulderToSetPoint(99));
 		SmartDashboard::PutData("Shoulder 45", new ArmShoulderToSetPoint(45));
 		SmartDashboard::PutData("shoulder 80", new ArmShoulderToSetPoint(85));
+		SmartDashboard::PutData("shoulder 90", new ArmShoulderToSetPoint(90));
+		SmartDashboard::PutData("shoulder 95", new ArmShoulderToSetPoint(95));
 
 		SmartDashboard::PutData("Slide Extend", new ExtendSlideCommand());
 		SmartDashboard::PutData("Slide Retract", new RetractSlideCommand());
@@ -110,27 +113,34 @@ private:
 //
 //		PersistedSettings::GetInstance().Set("WRIST_P", .05);
 //		PersistedSettings::GetInstance().Set("SHOULDER_P", .05);
+
+		SmartDashboard::PutData("Three Tote Stack Auto", new ThreeToteStackAutoCommandGroup());
 	}
 	
 	void DisabledPeriodic()
 	{
 		Scheduler::GetInstance()->Run();
+		//CommandBase::driveTrain->Crab(0,-5,0);
 	}
 
 	void AutonomousInit()
 	{
 		if (autonomousCommand != NULL)
 			autonomousCommand->Start();
+		CommandBase::driveTrain->SetGyroCorrection(true);
 	}
 
 	void AutonomousPeriodic()
 	{
-		Scheduler::GetInstance()->Run();
+		//Scheduler::GetInstance()->Run();
 //		CommandBase::stacker->PeriodicUpdate();
+
+		CommandBase::driveTrain->Crab(0,-.5,0);
 	}
 
 	void TeleopInit()
 	{
+		CommandBase::driveTrain->SetGyroCorrection(false);
 		CommandBase::arm->SetWristLinked(false);
 		// This makes sure that the autonomous stops running when
 		// teleop starts running. If you want the autonomous to 
@@ -149,7 +159,9 @@ private:
 
 		SmartDashboard::PutNumber("POV Values", CommandBase::oi->GetAuxStick()->GetPOV());
 
-
+		SmartDashboard::PutNumber("IMU roll", CommandBase::driveTrain->GetRoll());
+				SmartDashboard::PutNumber("IMU pitch", CommandBase::driveTrain->GetPitch());
+				SmartDashboard::PutNumber("IMU heading", CommandBase::driveTrain->GetHeading());
 	}
 
 	void TestPeriodic()

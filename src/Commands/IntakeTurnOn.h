@@ -15,7 +15,7 @@ public:
 	}
 	void Execute(){}
 	bool IsFinished(){
-		intake->IsContained();
+		return intake->IsContained();
 	}
 	void End(){
 		intake->TurnOff();

@@ -13,13 +13,12 @@ class UnloadCoOpOnStepCommandGroup: public CommandGroup
 {
 public:
 	UnloadCoOpOnStepCommandGroup(){
-		AddSequential(new StackerGoToPositionCommand(STEP_HEIGHT));
+		//AddSequential(new StackerGoToPositionCommand(10));
 		AddSequential(new ExtendSlideCommand());
-		AddSequential(new WaitCommand(1));
+		AddSequential(new WaitCommand(1.2));
 		AddSequential(new StackerGoToPositionCommand(5.0));
 		AddSequential(new RetractSlideCommand());
-		AddSequential(new WaitCommand(1));
-		AddSequential(new StackerGoToTopCommand());
+		AddSequential(new WaitCommand(1.5));
 		AddSequential(new StackerResetToteCount());
 	}
 };

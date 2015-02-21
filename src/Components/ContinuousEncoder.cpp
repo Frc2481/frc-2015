@@ -28,12 +28,9 @@ double ContinuousEncoder::GetAngle() {
 
 double ContinuousEncoder::GetRawAngle() {
 	return ((getVoltage()- 0.015) / (4.987 - .015)) * 360;
-//	return (mEncoder->GetAverageVoltage());// /5 )* 360;
-//	return mEncoder->GetAverageVoltage();
 }
 
-float ContinuousEncoder::GetOffset() const
-{
+float ContinuousEncoder::GetOffset() const{
     return mOffset;
 }
 

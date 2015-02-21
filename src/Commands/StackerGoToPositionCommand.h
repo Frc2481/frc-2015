@@ -8,16 +8,27 @@ class StackerGoToPositionCommand: public CommandBase
 {
 private:
 	float mPosition;
+	bool mDown;
 public:
 	StackerGoToPositionCommand(float pos)
 	:mPosition(pos){
 	}
 	void Initialize(){
 		stacker->SetPosition(mPosition);
+		if (stacker->GetPosition() > mPosition) {
+			mDown = true;
+		} else {
+			mDown = false;
+		}
+		stacker->Enable();
 	}
 	void Execute(){}
 	bool IsFinished(){
-		return stacker->OnTarget();
+		if (mDown && stacker->GetPosition() < (mPosition * 578))
+			return true;
+		if (!mDown && stacker->GetPosition() > (mPosition * 578))
+			return true;
+		return false;
 	}
 	void End(){
 		stacker->Disable();

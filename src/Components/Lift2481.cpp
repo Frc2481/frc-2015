@@ -94,7 +94,6 @@ float Lift2481::GetDesiredPostion() {
 
 void Lift2481::SetDesiredPostion(float pos) {
 	mPIDController->SetSetpoint(pos);
-	//mPIDController->SetPID(mPIDController->GetP() ,mPIDController->GetI() *.01,mPIDController->GetD());
 
 	if(mState == NORMAL){
 		mPIDController->Reset();

@@ -16,7 +16,6 @@ LIDARSensor::LIDARSensor(I2C::Port port) {
 }
 
 LIDARSensor::~LIDARSensor() {
-	// TODO Auto-generated destructor stub
 	delete i2c;
 	delete distance;
 	delete readerThread;
