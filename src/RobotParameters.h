@@ -39,8 +39,8 @@
 	#define BACK_RIGHT_ENCODER 3
 
 //Intake Define
-	#define INTAKE_FORWARD_SPEED PersistedSettings::GetInstance().Get("INTAKE_FORWARD_SPEED") * -1
-	#define INTAKE_REVERSE_SPEED PersistedSettings::GetInstance().Get("INTAKE_REVERSE_SPEED")
+	#define INTAKE_FORWARD_SPEED 1 * -1
+	#define INTAKE_REVERSE_SPEED 1
 	#define INTAKE_TRIM .5
 	#define INTAKE_CONTAIN_LIMIT 4
 

@@ -125,17 +125,22 @@ private:
 
 	void AutonomousInit()
 	{
+		autonomousCommand = new ThreeToteStackAutoCommandGroup();
 		if (autonomousCommand != NULL)
 			autonomousCommand->Start();
-		CommandBase::driveTrain->SetGyroCorrection(true);
+
 	}
 
 	void AutonomousPeriodic()
 	{
-		//Scheduler::GetInstance()->Run();
+		Scheduler::GetInstance()->Run();
 //		CommandBase::stacker->PeriodicUpdate();
 
-		CommandBase::driveTrain->Crab(0,-.5,0);
+		CommandBase::driveTrain->PeriodicUpdate();
+		CommandBase::stacker->PeriodicUpdate();
+		CommandBase::intake->PeriodicUpdate();
+		CommandBase::arm->PeriodicUpdate();
+		SmartDashboard::PutNumber("IMU heading", CommandBase::driveTrain->GetHeading());
 	}
 
 	void TeleopInit()

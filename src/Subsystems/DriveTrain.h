@@ -48,6 +48,7 @@ private:
 	bool isFieldCentric;
 	bool isForward;
 	bool gyroCorrection;
+	double mXPos, mYPos, mTwist;
 public:
 	DriveTrain();
 	virtual ~DriveTrain();
@@ -82,6 +83,7 @@ public:
 	void ZeroYaw();
 	bool IsGyroCorrection() const;
 	IMU* GetIMU();
+	void PeriodicUpdate();
 };
 
 #endif /* DRIVETRAIN_H_ */

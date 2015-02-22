@@ -14,7 +14,7 @@ SwerveModule::SwerveModule(uint32_t driveChannel, uint32_t steerChannel, uint32_
 {
 
 	mSteerController->SetInputRange(0, 360);
-	mSteerController->SetTolerance(3);
+	mSteerController->SetTolerance(1);
 	mSteerController->SetContinuous(true);
 	mSteer->ConfigNeutralMode(CANTalon::kNeutralMode_Coast);
 }

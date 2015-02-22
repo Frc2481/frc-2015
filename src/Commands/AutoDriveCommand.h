@@ -25,9 +25,11 @@ public:
 		}
 	}
 	void Initialize(){
+//		CommandBase::driveTrain->Crab(mX,mY,mTwist);
+	}
+	void Execute(){
 		CommandBase::driveTrain->Crab(mX,mY,mTwist);
 	}
-	void Execute(){}
 	bool IsFinished(){
 		return IsTimedOut() || !mTimeoutSet;
 	}

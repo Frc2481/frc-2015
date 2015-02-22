@@ -14,6 +14,8 @@
 #include "UnloadToteStackManualCommandGroup.h"
 #include "TripleAcquireToteCommandGroup.h"
 #include "DriveTrainEnableGyroCorrectionCommand.h"
+#include "DriveTrainZeroYaw.h"
+#include "IntakeTurnOnReverse.h"
 
 
 
@@ -23,43 +25,75 @@ public:
 	ThreeToteStackAutoCommandGroup(){
 		//AddParallel(new TripleAcquireToteCommandGroup());
 		//AddParallel(new ArmShoulderToSetPoint(2));
+		AddSequential(new DriveTrainZeroYaw());
 		AddSequential(new DriveTrainEnableGyroCorrectionCommand());
-		AddSequential(new AutoDriveCommand(0,-.3,0,1.5));
+
+		//AddSequential(new AutoDriveCommand(0,-.1,0,.25));
+//		AddSequential(new AutoDriveCommand(0,-.4,0,10));
+//		return;
+
+		AddParallel(new AcquireToteCommand());
+		AddSequential(new AutoDriveCommand(0,-.4,.3));
+		AddSequential(new AutoDriveCommand(0,-.2,0));
+		AddSequential(new WaitForToteCommand());
+		AddSequential(new WaitCommand(.25));
+
+		/* FIRST CAN */
+		//Strafe Right
+		AddSequential(new AutoDriveCommand(.11,0,0,.25));
+		AddSequential(new AutoDriveCommand(.5,0,0,.6));
+
+		//Drive Forward
+		AddParallel(new IntakeTurnOnReverse());
+		AddSequential(new AutoDriveCommand(0,-.11,0,.25));
+		AddSequential(new AutoDriveCommand(0,-.5,0,.6));
+
+		//Strafe Left
+		AddSequential(new AutoDriveCommand(-.5,0,0,.25));
+		AddSequential(new AutoDriveCommand(-.5,0,0,.45));
+		/* END FIRST CAN */
+
+		AddParallel(new AcquireToteCommand());
+		AddSequential(new AutoDriveCommand(0,-.6,0,.9));
+
+		AddSequential(new AutoDriveCommand(0,-.2,0));
+		AddSequential(new WaitForToteCommand());
+		AddSequential(new WaitCommand(.25));
 		//AddParallel(new AutoDriveCommand(0,-.5,0));
 
 		//Reverse
-		AddSequential(new AutoDriveCommand(0,.11,0,.25));
-		AddSequential(new WaitCommand(1));
-		AddSequential(new AutoDriveCommand(0,.5,0,.25));
-		AddSequential(new WaitCommand(.25));
+//		AddSequential(new AutoDriveCommand(0,.11,0,.25));
+//		AddSequential(new WaitCommand(.1));
+//		AddSequential(new AutoDriveCommand(0,.5,0,.4));
+//		AddSequential(new WaitCommand(.25));
 
+		/* Second CAN */
 		//Strafe Right
 		AddSequential(new AutoDriveCommand(.11,0,0,.25));
-		AddSequential(new WaitCommand(1));
-		AddSequential(new AutoDriveCommand(.5,0,0,.75));
-		AddSequential(new WaitCommand(.25));
+		AddSequential(new AutoDriveCommand(.5,0,0,.6));
+
+		//Drive Forward
+		AddParallel(new IntakeTurnOnReverse());
+		AddSequential(new AutoDriveCommand(0,-.11,0,.25));
+		AddSequential(new AutoDriveCommand(0,-.5,0,.6));
+
+		//Strafe Left
+		AddSequential(new AutoDriveCommand(-.5,0,0,.25));
+		AddSequential(new AutoDriveCommand(-.5,0,0,.45));
+		/* END Second CAN */
 
 		//Drive Forward
 		AddSequential(new AutoDriveCommand(0,-.11,0,.25));
-		AddSequential(new WaitCommand(1));
-		AddSequential(new AutoDriveCommand(0,-.5,0,1));
-		AddSequential(new WaitCommand(.25));
-
-		//Strafe Left
-		AddSequential(new AutoDriveCommand(-.11,0,0,.25));
-		AddSequential(new WaitCommand(1));
-		AddSequential(new AutoDriveCommand(-.5,0,0,.95));
-		AddSequential(new WaitCommand(5));
-
-		//Drive Forward
-		AddSequential(new AutoDriveCommand(0,-.11,.25));
-		AddSequential(new WaitCommand(.1));
 		AddParallel(new AutoDriveCommand(0,-.5,0));
-		AddSequential(new WaitCommand(.25));
 
-		AddSequential(new AutoDriveCommand(.5,0,0,3));
+		AddParallel(new AcquireToteCommand());
+		AddSequential(new WaitForToteCommand());
+		AddParallel(new StackerGoToBottomCommand(true));
+		AddSequential(new AutoDriveCommand(.8,0,0,1.8));
+		AddSequential(new AutoDriveCommand(.2,0,0,.1));
 
-		//AddSequential(new UnloadToteStackCommandGroup());
+		AddSequential(new UnloadToteStackCommandGroup(true));
+
 	}
 };
 

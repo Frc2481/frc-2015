@@ -23,7 +23,8 @@ DriveTrain::DriveTrain() : Subsystem("DriveTrain"),
 				imu(new IMU(serialPort,update_rate_hz)),
 				isFieldCentric(false),
 				isForward(true),
-				mPIDGyro(new PIDController(0.033, 0.02, 0, NULL, NULL)){
+				mXPos(0), mYPos(0), mTwist(0),
+				mPIDGyro(new PIDController(0.1, 0.002, 0, NULL, NULL)){
 
 	printf("Pre DriveTrain Constructor \n");
 	prevAngle = 90.0;
@@ -44,6 +45,8 @@ DriveTrain::DriveTrain() : Subsystem("DriveTrain"),
 		imu->ZeroYaw();
 	}
 	printf("post DriveTrain Constructor \n");
+
+	SmartDashboard::PutData("GYRO PID",mPIDGyro);
 }
 
 void DriveTrain::InitDefaultCommand() {
@@ -315,6 +318,10 @@ IMU* DriveTrain::GetIMU(){
 }
 
 void DriveTrain::Crab(double xPos, double yPos, double twist) {
+	mXPos = xPos;
+	mYPos = yPos;
+	mTwist = twist;
+
 	double FWD;
 	double STR;
 
@@ -327,22 +334,32 @@ void DriveTrain::Crab(double xPos, double yPos, double twist) {
 
 		//stop Gryo from correcting while sitting still
 		if (gyroCorrection) {
-			//if (xPos != 0 || yPos != 0) {
-				//TODO: Decide if we want this.
 
+				//TODO: Decide if we want this.
+			if (xPos != 0 || yPos != 0) {
 				gyroAngle = std::max(std::min(-gyroAngle, 30.0f), -30.0f);
-				gyroAccumError += gyroAngle;
+				gyroAccumError += (gyroAngle * 2.0);
+				gyroAccumError = std::max(std::min(gyroAccumError, 5.0), -5.0);
 				float P = mPIDGyro->GetP();
-				float I = mPIDGyro->GetI();
+				float I = mPIDGyro->GetI() * .1;
 				twist = gyroAngle * P + gyroAccumError * I;
 				printf("GYRO CORRECTION %f \n", gyroAngle);
 				SmartDashboard::PutBoolean("GYRO Correction 2", true);
-			//} else {
+				SmartDashboard::PutNumber("Gyro I Accum", gyroAccumError);
+
+				twist *= sqrt((xPos * xPos) + (yPos * yPos));
+				twist *= 2;
+				twist = std::max(std::min(twist, .1), -.1);
+				SmartDashboard::PutNumber("GYRO Twist Correct", twist);
+			}
+
+
+//			} else {
 			//	SmartDashboard::PutBoolean("GYRO Correction 2", false);
 			//}
 		}
 
-		SmartDashboard::PutNumber("GYRO Twist Correct", gyroCorrection ? gyroAngle / 30.0f : 0);
+
 
 		SmartDashboard::PutBoolean("GYRO Correction", gyroCorrection);
 
@@ -489,4 +506,8 @@ float DriveTrain::GetRoll() {
 float DriveTrain::GetPitch() {
 	pitch = imu->GetPitch();
 	return pitch;
+}
+
+void DriveTrain::PeriodicUpdate() {
+	Crab(mXPos, mYPos, mTwist);
 }
