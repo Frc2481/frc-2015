@@ -54,7 +54,7 @@ public:
 		/* END FIRST CAN */
 
 		AddParallel(new AcquireToteCommand());
-		AddSequential(new AutoDriveCommand(0,-.6,0,.9));
+		AddSequential(new AutoDriveCommand(0,-.6,0,.8));
 
 		AddSequential(new AutoDriveCommand(0,-.2,0));
 		AddSequential(new WaitForToteCommand());
