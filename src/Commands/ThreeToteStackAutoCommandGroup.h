@@ -6,7 +6,7 @@
 #include "WPILib.h"
 #include "AutoDriveCommand.h"
 #include "UnloadToteStackCommand.h"
-#include "AcquireToteCommand.h"
+#include "AcquireToteAutoCommandGroup.h"
 #include "AutoMoveRCOutOfWayCommand.h"
 #include "WaitForToteCommand.h"
 #include "ArmGoToPositionCommand.h"
@@ -32,7 +32,7 @@ public:
 //		AddSequential(new AutoDriveCommand(0,-.4,0,10));
 //		return;
 
-		AddParallel(new AcquireToteCommand());
+		AddParallel(new AcquireToteAutoCommandGroup());
 		AddSequential(new AutoDriveCommand(0,-.4,.3));
 		AddSequential(new AutoDriveCommand(0,-.2,0));
 		AddSequential(new WaitForToteCommand());
@@ -53,7 +53,7 @@ public:
 		AddSequential(new AutoDriveCommand(-.5,0,0,.5));
 		/* END FIRST CAN */
 
-		AddParallel(new AcquireToteCommand());
+		AddParallel(new AcquireToteAutoCommandGroup());
 		AddSequential(new AutoDriveCommand(0,-.6,0,.7));
 
 		AddSequential(new AutoDriveCommand(0,-.2,0));
@@ -86,7 +86,7 @@ public:
 		AddSequential(new AutoDriveCommand(0,-.11,0,.25));
 		AddParallel(new AutoDriveCommand(0,-.5,0));
 
-		AddParallel(new AcquireToteCommand());
+		AddParallel(new AcquireToteAutoCommandGroup());
 		AddSequential(new WaitForToteCommand());
 		AddParallel(new StackerGoToBottomCommand(true));
 		AddSequential(new AutoDriveCommand(.8,0,0,1.8));

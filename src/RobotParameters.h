@@ -72,6 +72,7 @@
 	#define STACKER_ENCODER_B 3
 
 	#define STEP_HEIGHT 6.7
+	#define THREE_TOTE_AUTO_STACK_TIMEOUT 5.0
 
 	#define STACKER_P .0002
 	#define STACKER_I .0002
