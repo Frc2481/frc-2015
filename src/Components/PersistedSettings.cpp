@@ -79,7 +79,10 @@ PersistedSettings& PersistedSettings::GetInstance(){
 	static PersistedSettings instance;
 	return instance;
 }
-double PersistedSettings::Get(std::string name){
+double PersistedSettings::Get(std::string name, double value){
+	if (!data[name]) {
+		return value;
+	}
 	return data[name];
 }
 

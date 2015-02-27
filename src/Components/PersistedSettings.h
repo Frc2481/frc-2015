@@ -28,7 +28,7 @@ public:
 	void LoadFromFile(std::string filename);
 	std::map<std::string, double>  data;
 	static PersistedSettings &GetInstance();
-	double Get(std::string name);
+	double Get(std::string name, double value = 0);
 	void Set(std::string name, double value);
 };
 
