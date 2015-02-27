@@ -132,6 +132,10 @@ void Arm::PeriodicUpdate() {
 	}
 
 	if (mPivotWristTalon->GetOutputCurrent() > 14.5){
+		if (!mWristStalled){
+			PersistedSettings::GetInstance().Set("WRIST_STALLED_COUNT",
+				PersistedSettings::GetInstance().Get("WRIST_STALLED_COUNT", 0) + 1);
+		}
 		mWristStalled = true;
 	}
 
