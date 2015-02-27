@@ -36,9 +36,9 @@
 #define ARM_TO_BOTTOM_BUTTON		new JoystickButton(auxStick, XboxController::xbRightBumper)
 //#define WRIST_TILT_UP_BUTTON		new AnalogJoystickButton(auxStick, XboxController::xbRightYAxis, 0.5f)
 //#define WRIST_TILT_DOWN_BUTTON	new AnalogJoystickButton(auxStick, XboxController::xbRightYAxis, -0.5f)
-#define WRIST_TO_90_BUTTON			new AnalogJoystickButton(auxStick, XboxController::xbRightYAxis, 0.5f)
+#define WRIST_TO_90_BUTTON			new AnalogJoystickButton(auxStick, XboxController::xbRightYAxis, -0.5f)
 #define WRIST_TO_180_BUTTON			new AnalogJoystickButton(auxStick, XboxController::xbRightXAxis, -0.5f)
-#define WRIST_TO_270_BUTTON			new AnalogJoystickButton(auxStick, XboxController::xbRightYAxis, -0.5f)
+#define WRIST_TO_270_BUTTON			new AnalogJoystickButton(auxStick, XboxController::xbRightYAxis, 0.5f)
 
 //Debug Stick
 #define DRIVETRAIN_INC_I_BUTTON     new JoystickButton(debugStick, XboxController::xbYButton)
