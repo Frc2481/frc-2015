@@ -7,7 +7,9 @@
 class IntakeTurnOnReverse: public CommandBase
 {
 public:
-	IntakeTurnOnReverse(){}
+	IntakeTurnOnReverse(){
+		Requires(intake);
+	}
 	void Initialize(){
 		CommandBase::intake->TurnOnReverse();
 	}

@@ -8,7 +8,6 @@
 #include "Commands/IntakeTurnOnReverse.h"
 #include "Commands/StackerGoToBottomCommand.h"
 #include "Commands/StackerGoToScoringPlatformCommand.h"
-#include "Commands/StackerGoToStepCommand.h"
 #include "Commands/StackerGoToTopCommand.h"
 #include "Commands/StackerResetCommand.h"
 //#include "Commands/DriveCommand.h"
@@ -37,6 +36,7 @@
 #include "Commands/ArmShoulderToSetPoint.h"
 #include "Commands/KILL_EVERYTHING_COMMAND.h"
 #include "Commands/UnloadCoOpOnStepCommandGroup.h"
+#include "Commands/PickUpCoOpStackCommandGroup.h"
 
 
 #include "Commands/SetICommand.h"
@@ -72,6 +72,10 @@ OI::OI()
 	//acquire tote		Joystick Button 1
 	acquireTote = ACQUIRE_TOTE_BUTTON;
 	acquireTote->WhenPressed(new AcquireToteCommand());
+
+	//Reverse Intake
+	reverseIntake = REVERSE_INTAKE_BUTTON;
+	reverseIntake->WhileHeld(new IntakeTurnOnReverse());
 
 	//Kill All Button
 	killAll = KILL_EVERYTHING_BUTTON;
@@ -122,8 +126,11 @@ OI::OI()
 	armTo5Tote->WhenPressed(new ArmShoulderToSetPoint(14));
 
 	//Co Op Totes
-	coOpOnStep = CO_OP_ON_STEP;
+	coOpOnStep = CO_OP_ON_STEP_BUTTON;
 	coOpOnStep->WhenPressed(new UnloadCoOpOnStepCommandGroup());
+
+	pickCoOpUp = PICK_UP_CO_OP_BUTTON;
+	pickCoOpUp->WhenPressed(new PickUpCoOpStackCommandGroup());
 
 	//Wrist To Setpoint
 	wristTo90 = WRIST_TO_90_BUTTON;

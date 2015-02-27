@@ -20,6 +20,7 @@ private:
 
 	//Driver Stick
 	Button* acquireTote;
+	Button* reverseIntake;
 	Button* setBoosting;
 	Button* setOrigin;
 	Button* unloadStacker;
@@ -45,6 +46,7 @@ private:
 //	Button* slideExtend;
 //	Button* slideRetract;
 	Button* coOpOnStep;
+	Button* pickCoOpUp;
 	Button* armExtend;
 	Button* armRetract;
 	Button* gripperOpen;
