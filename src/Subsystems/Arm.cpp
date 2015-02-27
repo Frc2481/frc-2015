@@ -8,6 +8,7 @@
 #include "Arm.h"
 #include <algorithm>
 #include "RobotParameters.h"
+#include "CommandBase.h"
 #include "Components/PersistedSettings.h"
 
 Arm::Arm() : Subsystem("Arm"),
@@ -21,7 +22,9 @@ Arm::Arm() : Subsystem("Arm"),
 								.7,.01)),
 		mPIDWrist            (new PController(mWristEncoder,mPivotWristTalon,
 								PersistedSettings::GetInstance().Get("WRIST_P"),0)),
-		mWristOffset(0.0f)
+		mWristOffset(0.0f),
+		mNormalLoopCounter(0),
+		mWristState(NORMAL)
 		{
 
 	mPivotWristTalon->ConfigNeutralMode(CANTalon::kNeutralMode_Brake);
@@ -68,6 +71,61 @@ void Arm::PeriodicUpdate() {
 //	else {
 //		mPIDShoulder->SetP(.5);
 //	}
+
+	/*
+	 * The goal of this code is to detect the gripper going above max height and forcing
+	 * it back down. Additionally, if we are too high, open the gripper so that the can is
+	 * pushed up and not the wrist.
+	 */
+#ifdef WRIST_DRIFT_DETECTION
+	if (mShoulderEncoder->GetAngle() < 10 && !mPIDWrist->IsEnabled()){
+
+		if (mWristEncoder->GetAngle() < 262){
+			mWristState = CRITICAL;
+		}
+		else if (mWristEncoder->GetAngle() < 267){
+			mWristState = WARNING;
+		}
+	}
+
+	if (mWristState == CRITICAL){
+		if (CommandBase::stacker->GetToteCount() < 4){
+			CloseGripper();
+		}
+		else {
+			OpenGripper();
+		}
+		mPIDWrist->SetSetpoint(270);
+		mPIDWrist->Enable();
+	}
+	else if (mWristState == WARNING){
+		mPIDWrist->SetSetpoint(270);
+		mPIDWrist->Enable();
+	}
+
+	if (mWristState == CRITICAL){
+		mWristState = POST_CRITICAL;
+		mNormalLoopCounter = 0;
+	}
+	else if (mWristState == WARNING){
+		mWristState = POST_WARNING;
+		mNormalLoopCounter = 0;
+	}
+
+	if (mWristState == POST_CRITICAL || mWristState == POST_WARNING){
+		mNormalLoopCounter++;
+	}
+
+	if (mNormalLoopCounter > 10){
+		if (mWristState == POST_CRITICAL){
+			CloseGripper();
+		}
+		mPIDWrist->Disable();
+		mWristState = NORMAL;
+	}
+	//End Gripper Height Detection
+#endif
+
 
 	if (mShoulderEncoder->GetAngle() < 50){
 		mArmExtention->Set(false);

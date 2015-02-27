@@ -19,6 +19,16 @@ private:
 	int mWristOffset;
 	bool mWristStalled;
 	bool mWristLocked;
+	int mNormalLoopCounter;
+
+	enum WristState {
+		NORMAL,
+		WARNING,
+		CRITICAL,
+		POST_WARNING,
+		POST_CRITICAL
+		} mWristState;
+
 
 public:
 	Arm();
