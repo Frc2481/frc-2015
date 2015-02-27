@@ -15,7 +15,7 @@ public:
 	}
 	void Initialize(){
 		stacker->SetPosition(mPosition);
-		if (stacker->GetPosition() > mPosition) {
+		if (stacker->GetPosition() > mPosition * 578) {
 			mDown = true;
 		} else {
 			mDown = false;
