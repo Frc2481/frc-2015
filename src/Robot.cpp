@@ -33,6 +33,9 @@
 #include "Commands/ArmWristResetStall.h"
 #include "Commands/RemoveRCFromStepCommand.h"
 #include "Commands/ThreeToteStackAutoCommandGroup.h"
+#include "Commands/FishingPoleAutoCommandGroup.h"
+#include "Commands/CastFishingPolesCommand.h"
+#include "Commands/ReelFishingPolesCommand.h"
 
 #include "RobotParameters.h"
 
@@ -102,6 +105,11 @@ private:
 		SmartDashboard::PutData("Slide Retract", new RetractSlideCommand());
 
 		SmartDashboard::PutData("Get RC From Step", new RemoveRCFromStepCommand());
+
+		SmartDashboard::PutData("Fishing Pole Auto", new FishingPoleAutoCommandGroup());
+
+		SmartDashboard::PutData("Cast Fishing Pole", new CastFishingPolesCommand());
+		SmartDashboard::PutData("Reel Fishing Pole", new ReelFishingPolesCommand());
 
 		PersistedSettings::GetInstance().Set("STACKER_P", STACKER_P);
 		PersistedSettings::GetInstance().Set("STACKER_I", STACKER_I);

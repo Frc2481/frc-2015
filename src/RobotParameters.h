@@ -80,6 +80,8 @@
 
 //Slide Define
 #define EXTENDER_SOLENOID 3
+//FishingPole Define
+	#define FISHING_POLE_SOLENOID 4
 
 //Tote Count
 	#define TOTE_COUNT_1_CURRENT_THRESHOLD 40

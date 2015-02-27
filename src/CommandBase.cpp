@@ -8,6 +8,7 @@ Intake* CommandBase::intake = NULL;
 Stacker* CommandBase::stacker = NULL;
 Arm* CommandBase::arm = NULL;
 Slide* CommandBase::slide = NULL;
+FishingPoles* CommandBase::fishingPoles = NULL;
 
 OI* CommandBase::oi = NULL;
 
@@ -32,6 +33,7 @@ void CommandBase::init()
 	stacker = new Stacker();
 	arm = new Arm();
 	slide = new Slide();
+	fishingPoles = new FishingPoles();
 
 	oi = new OI();
 

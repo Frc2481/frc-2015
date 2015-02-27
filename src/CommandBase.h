@@ -8,6 +8,7 @@
 #include "Subsystems/Intake.h"
 #include "Subsystems/Arm.h"
 #include "Subsystems/Slide.h"
+#include "Subsystems/FishingPoles.h"
 #include "OI.h"
 #include "WPILib.h"
 
@@ -29,6 +30,7 @@ public:
 	static Stacker *stacker;
 	static Arm* arm;
 	static Slide* slide;
+	static FishingPoles* fishingPoles;
 
 	static OI *oi;
 };
