@@ -262,7 +262,13 @@ void Arm::SetWristLinked(bool linked) {
 double Arm::GetParallel() {
 	double encAngle = mShoulderEncoder->GetAngle();
 	encAngle = encAngle > 150.0 ? 0.5 : encAngle;
-	return -encAngle + 275;
+
+	if (encAngle < 10){
+		return 270;
+	}
+	else {
+		return -encAngle + 275;
+	}
 }
 
 void Arm::SetShoulderManual(double speed) {
