@@ -24,7 +24,7 @@ public:
 		CommandBase::intake->IntakeManual(xValue);
 	}
 	bool IsFinished(){
-		return false;
+		return intake->IsContained();
 	}
 	void End(){
 		CommandBase::intake->TurnOff();
