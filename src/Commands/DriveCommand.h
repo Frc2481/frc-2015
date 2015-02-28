@@ -25,7 +25,7 @@ public:
 //			arm->SetWristManual(wrist);
 //		}
 
-		if (stacker->IsEnabled() && !stacker->OnTarget()) {
+		if (stacker->IsEnabled() && !stacker->OnTarget() && stacker->GetToteCount() > 0) {
 			x /= 2;
 			y /= 2;
 			z /= 2;
