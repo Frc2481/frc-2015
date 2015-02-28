@@ -58,6 +58,9 @@
 	#define GRIPPER_SOLENOID 2
 
 	#define WRIST_DRIFT_DETECTION 1
+
+	#define WRIST_STALL_TIMEOUT 1
+
 //Stacker Define
 	#define STACKER_POSITION_UP 10981
 	#define STACKER_POSITION_DOWN 1600
@@ -72,17 +75,19 @@
 	#define STACKER_ENCODER_A 2
 	#define STACKER_ENCODER_B 3
 
-	#define THREE_TOTE_AUTO_STACK_TIMEOUT 5.0
-	#define STEP_HEIGHT 5.0
+	#define STEP_HEIGHT 3.5
 
 	#define ABOVE_STEP_HEIGHT 10.0
+
+	#define THREE_TOTE_AUTO_STACK_TIMEOUT 3.0
 
 	#define STACKER_P .0002
 	#define STACKER_I .0002
 	#define STACKER_D .00001
 
 //Slide Define
-#define EXTENDER_SOLENOID 3
+	#define EXTENDER_SOLENOID 3
+
 //FishingPole Define
 	#define FISHING_POLE_SOLENOID 4
 

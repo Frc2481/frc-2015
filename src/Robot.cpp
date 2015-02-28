@@ -36,6 +36,9 @@
 #include "Commands/FishingPoleAutoCommandGroup.h"
 #include "Commands/CastFishingPolesCommand.h"
 #include "Commands/ReelFishingPolesCommand.h"
+#include "Commands/ThreeToteStackAutoNoStrafeCommandGroup.h"
+#include "Commands/ArmWristStalledMonitor.h"
+#include "Commands/StackerStalledMonitor.h"
 
 #include "RobotParameters.h"
 
@@ -43,11 +46,28 @@ using namespace std;
 class Robot: public IterativeRobot
 {
 private:
+	SendableChooser *autoOptions;
 	Command *autonomousCommand;
+	Command *armWristStalledMonitor;
+	Command *stackerStalledMonitor;
 	LiveWindow *lw;
 
 	void RobotInit()
 	{
+		//Auto Choosing
+		autoOptions = new SendableChooser();
+
+		autoOptions->AddObject("Three Tote Auto", new ThreeToteStackAutoCommandGroup());
+		autoOptions->AddObject("Fishing Pole Auto", new FishingPoleAutoCommandGroup());
+		autoOptions->AddObject("Three Tote Auto (No Can)", new ThreeToteStackAutoNoStrafeCommandGroup());
+		//End Auto Choosing
+
+		armWristStalledMonitor = new ArmWristStalledMonitor();
+		armWristStalledMonitor->Start();
+
+		stackerStalledMonitor = new StackerStalledMonitor();
+		stackerStalledMonitor->Start();
+
 		CommandBase::init();
 		//autonomousCommand = new ThreeToteStackAutoCommand();
 		lw = LiveWindow::GetInstance();

@@ -155,6 +155,10 @@ void Stacker::Enable(bool motor) {
 	mRightLift->Enable(motor);
 }
 
+bool Stacker::IsEnabled() {
+	return mRightLift->GetController()->IsEnabled();
+}
+
 void Stacker::StackerManual(float yValue) {
 	if (yValue < -0.2){
 		mRightLift->Set(STACKER_DOWN_SPEED);

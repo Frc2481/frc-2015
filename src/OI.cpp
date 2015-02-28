@@ -62,8 +62,8 @@ OI::OI()
 	setOrigin->WhileHeld(new SetOriginCommand(0, (ROBOT_LENGTH / 2) + 10));
 
 	//OI Set Boosting
-	setBoosting = SET_BOOSTING_BUTTON;
-	setBoosting->WhileHeld(new OISetBoosting());
+//	setBoosting = SET_BOOSTING_BUTTON;
+//	setBoosting->WhileHeld(new OISetBoosting());
 
 	//Unload Stacker
 	unloadStacker = UNLOAD_STACKER_BUTTON;
@@ -78,8 +78,8 @@ OI::OI()
 	reverseIntake->WhileHeld(new IntakeTurnOnReverse());
 
 	//Kill All Button
-	killAll = KILL_EVERYTHING_BUTTON;
-	killAll->WhenPressed(new KILL_EVERYTHING_COMMAND());
+//	killAll = KILL_EVERYTHING_BUTTON;
+//	killAll->WhenPressed(new KILL_EVERYTHING_COMMAND());
 
 	//Aux Stick
 

@@ -41,6 +41,7 @@ public:
 	void Disable(bool motor = true, bool brake = true);
 	void Enable(bool motor = true);
 	bool IsResetting();
+	bool IsEnabled();
 	int GetToteCount() const;
 	void ResetToteCount();
 	void UpdateToteCount();
