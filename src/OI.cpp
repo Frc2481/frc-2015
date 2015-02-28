@@ -19,7 +19,7 @@
 #include "Commands/OISetBoosting.h"
 #include "Commands/SetOriginCommand.h"
 #include "Commands/UnloadStackerManual.h"
-#include "Commands/UnloadToteStackManualCommandGroup.h"
+#include "Commands/UnloadToteStackCommandGroup.h"
 #include "Commands/ToggleFieldCentricCommand.h"
 #include "Commands/ArmRaiseCommand.h"
 #include "Commands/ArmLowerCommand.h"

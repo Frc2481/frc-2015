@@ -16,7 +16,7 @@ public:
 		//AddSequential(new ArmGripperOpenCommand());
 		AddSequential(new StackerGoToBottomCommand(true));
 		//AddParallel(new ArmGoToPositionAndDropCommand(40));
-		AddSequential(new StackerResetToteCount());
+		//AddSequential(new StackerResetToteCount());
 
 		if (autoMode) {
 			AddSequential(new UnloadStackerAuto());

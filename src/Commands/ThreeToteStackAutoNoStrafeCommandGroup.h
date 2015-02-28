@@ -11,7 +11,7 @@
 #include "WaitForToteCommand.h"
 #include "ArmGoToPositionCommand.h"
 #include "ArmGripperCloseCommand.h"
-#include "UnloadToteStackManualCommandGroup.h"
+#include "UnloadToteStackCommandGroup.h"
 #include "TripleAcquireToteCommandGroup.h"
 #include "DriveTrainEnableGyroCorrectionCommand.h"
 #include "DriveTrainZeroYaw.h"
