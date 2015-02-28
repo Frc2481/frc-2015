@@ -25,6 +25,12 @@ public:
 //			arm->SetWristManual(wrist);
 //		}
 
+		if (stacker->IsEnabled() && !stacker->OnTarget()) {
+			x /= 2;
+			y /= 2;
+			z /= 2;
+		}
+
 		driveTrain->Crab(x,y,z);
 
 	}
