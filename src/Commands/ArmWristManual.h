@@ -17,7 +17,7 @@ public:
 	}
 	void Execute() {}
 	bool IsFinished() {
-		return false;
+		return arm->GetStalled();
 	}
 	void End() {
 		arm->StopPivotWrist();
