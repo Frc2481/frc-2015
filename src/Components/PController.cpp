@@ -110,9 +110,6 @@ void PController::Update() {
 			float feedback = input->PIDGet();
 			float error = setPoint - feedback;
 			float correctedError = error;
-			if (error < 0){
-				error +=360;
-			}
 
 			if (mContinuous){
 				if (error < -inputRange / 2){
@@ -138,8 +135,6 @@ void PController::Update() {
 				}
 				onTarget = true;
 			}
-
-			SmartDashboard::PutNumber("CE", correctedError);
 
 			if(i > 0.0)
 			{
