@@ -6,21 +6,21 @@
 
 class StackerGoToBottomCommand: public CommandBase
 {
-private:
+protected:
 	bool mloaded;
 public:
 	StackerGoToBottomCommand(bool loaded = false) : CommandBase() {
 		Requires(stacker);
 		mloaded = loaded;
 	}
-	void Initialize(){
-		if (stacker->GetToteCount() > 5){
+	virtual void Initialize(){
+		if (stacker->GetToteCount() >= 5){
 			arm->OpenGripper();
 		}
 		CommandBase::stacker->SetPosition(0.34f, mloaded);
 	}
 	void Execute() {}
-	bool IsFinished(){
+	virtual bool IsFinished(){
 		return CommandBase::stacker->GetPosition() < 500;
 	}
 	void End(){
@@ -28,6 +28,27 @@ public:
 	}
 	void Interrupted(){
 		End();
+	}
+};
+
+class StackerGoToBottomUnloadCommand : public StackerGoToBottomCommand {
+public:
+	StackerGoToBottomUnloadCommand(bool loaded = false) : StackerGoToBottomCommand(loaded) {
+	}
+
+	void Initialize(){
+			if (stacker->GetToteCount() >= 5){
+				arm->OpenGripper();
+				SetTimeout(.1);
+			}
+			if (stacker->GetToteCount() == 5) {
+				SetTimeout(1.5);
+			}
+			CommandBase::stacker->SetPosition(0.34f, mloaded);
+	}
+
+	bool IsFinished() {
+		return StackerGoToBottomCommand::IsFinished() && IsTimedOut();
 	}
 };
 
