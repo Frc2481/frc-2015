@@ -31,6 +31,7 @@ PController::PController(PIDSource* userInput, PIDOutput* userOutput, float pVal
 			mContinuous(false),
 			mBrake(false),
 			mInverted(false),
+			mStallCounter(0),
 			mStallDetection(false),
 			mStalled(false),
 			pSemaphore(initializeMutexNormal()),
@@ -166,12 +167,25 @@ void PController::Update() {
 			output->PIDWrite(-pidOutput);
 
 			if (mStallDetection){
-				if (prevFeedback == prevFeedback){
-					float delta = feedback - prevFeedback;
-					mHistory.add(delta/pidOutput);
-				}
-				if (mHistory.avg() < 0.5){
-					mStalled = true;
+				if (fabs(pidOutput) > 0) {
+					if (feedback > 300) {	//Hack for shoulder.
+						feedback = 0;
+					}
+					float delta = fabs(feedback - prevFeedback);
+					SmartDashboard::PutNumber("Shoulder Stall Detection 1", delta);
+					SmartDashboard::PutNumber("Shoulder Stall Detection 2", mStallCounter);
+					if (delta < 1) {
+						mStallCounter = std::min(++mStallCounter, 30);
+					} else {
+						mStallCounter = 0;
+						prevFeedback = feedback;
+					}
+					if (mStallCounter >= 30) {
+						mStalled = true;
+					}
+				} else {
+					mStallCounter = 0;
+					prevFeedback = feedback;
 				}
 			}
 
@@ -180,9 +194,9 @@ void PController::Update() {
 			}
 
 			prevError = correctedError;
-			prevFeedback = feedback;
-		}
 
+		}
+		this->enabled = enabled;
 		this->onTarget = onTarget;
 	}
 	END_REGION;

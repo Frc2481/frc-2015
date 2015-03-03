@@ -36,6 +36,7 @@ private:
 	bool mContinuous;
 	bool mBrake;
 	bool mInverted;
+	int mStallCounter;
 	MUTEX_ID pSemaphore;
 	Notifier* pUpdate;
 public:
