@@ -51,6 +51,8 @@ Arm::Arm() : Subsystem("Arm"),
 	mWristStalled = false;
 	mWristLocked = false;
 
+	mPIDShoulder->SetStallDetect(true);
+
 //	mPIDShoulder->SetBrakeMode(true);
 }
 
@@ -210,6 +212,7 @@ void Arm::PeriodicUpdate() {
 }
 
 void Arm::SetPivotArmAbs(float position) {
+	mPIDShoulder->ResetStalled();
 	mPIDShoulder->SetSetpoint(position);
 	mPIDShoulder->Enable();
 }
@@ -245,7 +248,7 @@ bool Arm::IsGripper(){
 }
 
 bool Arm::IsArmOnTarget() {
-	return mPIDShoulder->OnTarget();
+	return mPIDShoulder->OnTarget() || mPIDShoulder->GetStalled();
 }
 
 void Arm::StopPivotArm() {
