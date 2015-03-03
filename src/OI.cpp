@@ -120,7 +120,7 @@ OI::OI()
 	armTo3Tote->WhenPressed(new ArmShoulderToSetPoint(50));
 
 	armTo4Tote = ARM_FOUR_TOTE_STACK_BUTTON;
-	armTo4Tote->WhenPressed(new ArmShoulderToSetPoint(32));
+	armTo4Tote->WhenPressed(new ArmShoulderToSetPoint(22));
 
 	armTo5Tote = ARM_FIVE_TOTE_STACK_BUTTON;
 	armTo5Tote->WhenPressed(new ArmShoulderToSetPoint(14));
