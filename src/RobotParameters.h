@@ -46,7 +46,7 @@
 
 //Arm Define
 	#define ARM_PIVOT_POSITION_TOP 1
-	#define ARM_PIVOT_POSITION_BOT 98
+	#define ARM_PIVOT_POSITION_BOT 95
 
 	#define SHOULDER_P .006
 	#define WRIST_P .002
@@ -57,7 +57,7 @@
 	#define EXTENTION_SOLENOID 1
 	#define GRIPPER_SOLENOID 2
 
-	#define WRIST_DRIFT_DETECTION 1
+//	#define WRIST_DRIFT_DETECTION 1
 
 	#define WRIST_STALL_TIMEOUT 1
 

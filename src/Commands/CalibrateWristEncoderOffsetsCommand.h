@@ -16,6 +16,7 @@ public:
 		arm->SetWristEncoderOffset(wrist - 270);
 
 		PersistedSettings::GetInstance().Set("WRIST_ENCODER_OFFSET", wrist - 270);
+		PersistedSettings::GetInstance().Set("WRIST_ENCODER_OFFSET_SET", 1);
 	}
 	void Execute(){}
 	bool IsFinished(){

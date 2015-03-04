@@ -19,14 +19,19 @@ Arm::Arm() : Subsystem("Arm"),
 		mPivotShoulderTalon  (new CANTalon(ARM_SHOULDER_PIVOT)),
 		mPivotWristTalon     (new CANTalon(ARM_WRIST_PIVOT)),
 		mPIDShoulder         (new PController(mShoulderEncoder,mPivotShoulderTalon,
-								.7,.01)),
+								.8,0)),
 		mPIDWrist            (new PController(mWristEncoder,mPivotWristTalon,
 								PersistedSettings::GetInstance().Get("WRIST_P"),0)),
 		mWristOffset(0.0f),
 		mNormalLoopCounter(0),
-		mWristState(NORMAL)
+		mPrevWristSetPoint(0),
+		mWristStallCounter(0),
+		mWristState(NORMAL),
+		mWristNoEncoderOffset(false),
+		mDummyPID(new PIDController(.05,.1,.01,NULL,NULL))
 		{
 
+	SmartDashboard::PutData("WristPID", mDummyPID);
 	mPivotWristTalon->ConfigNeutralMode(CANTalon::kNeutralMode_Brake);
 	mPivotShoulderTalon->ConfigNeutralMode(CANTalon::kNeutralMode_Brake);
 
@@ -37,7 +42,7 @@ Arm::Arm() : Subsystem("Arm"),
 	mPIDWrist->SetInputRange(0.0, 360.0);
 
 	mPIDShoulder->SetTolerance(1.5);
-	mPIDWrist->SetTolerance(5.0);
+	mPIDWrist->SetTolerance(2);
 
 	mPIDWrist->SetContinuous(false);
 	mPIDShoulder->SetContinuous(true);
@@ -54,6 +59,10 @@ Arm::Arm() : Subsystem("Arm"),
 	mPIDShoulder->SetStallDetect(true);
 
 //	mPIDShoulder->SetBrakeMode(true);
+
+	if (PersistedSettings::GetInstance().Get("WRIST_ENCODER_OFFSET_SET", 0) == 0) {
+		//mWristNoEncoderOffset = true;
+	}
 }
 
 void Arm::SetWristOffset(float wristOffset) {
@@ -80,9 +89,8 @@ void Arm::PeriodicUpdate() {
 	 * pushed up and not the wrist.
 	 */
 #ifdef WRIST_DRIFT_DETECTION
-	if (mShoulderEncoder->GetAngle() < 10 && !mPIDWrist->IsEnabled()){
-
-		if (mWristEncoder->GetAngle() < 262){
+	if (mShoulderEncoder->GetAngle() < 20) {
+		if (mWristEncoder->GetAngle() < 262 && CommandBase::stacker->GetToteCount() > 3){   //4 to 3
 			mWristState = CRITICAL;
 		}
 		else if (mWristEncoder->GetAngle() < 267){
@@ -125,6 +133,9 @@ void Arm::PeriodicUpdate() {
 		mPIDWrist->Disable();
 		mWristState = NORMAL;
 	}
+
+	SmartDashboard::PutNumber("WristSafetyState", mWristState);
+	SmartDashboard::PutNumber("WristSafetyCount", mNormalLoopCounter);
 	//End Gripper Height Detection
 #endif
 
@@ -133,15 +144,23 @@ void Arm::PeriodicUpdate() {
 		mArmExtention->Set(false);
 	}
 
-	if (mPivotWristTalon->GetOutputCurrent() > 14.5){
-		if (!mWristStalled){
+//	mWristCurrent.add(mPivotWristTalon->GetOutputCurrent());
+//	if (mWristCurrent.avg() > 7.5){
+	if (mPivotWristTalon->GetOutputCurrent() > 7.5) {
+		mWristStallCounter++;
+	} else {
+		mWristStallCounter = 0;
+	}
+
+	if (mWristStallCounter > 10) {
+		if (!mWristStalled && !mWristNoEncoderOffset){
 			PersistedSettings::GetInstance().Set("WRIST_STALLED_COUNT",
 				PersistedSettings::GetInstance().Get("WRIST_STALLED_COUNT", 0) + 1);
 		}
 		mWristStalled = true;
 	}
 
-	if (mWristStalled == true) {
+	if (mWristStalled || mWristNoEncoderOffset) {
 		mPivotWristTalon->Set(0.0);
 		mPIDWrist->Disable();
 	}
@@ -150,7 +169,7 @@ void Arm::PeriodicUpdate() {
 //		mPIDWrist->SetP(.5);
 //	}
 //	else {
-		mPIDWrist->SetP(.02);
+		mPIDWrist->SetP(mDummyPID->GetP());
 //	}
 
 	if (mWristLocked){
@@ -288,7 +307,7 @@ bool Arm::IsWristOnTarget() {
 }
 
 void Arm::SetWristPosition(double pos) {
-	if (!mWristStalled){
+	if ((!mWristStalled || mWristNoEncoderOffset) && mWristState == NORMAL){
 		double minWrist = 90;
 		if (mShoulderEncoder->GetAngle() < 45) {
 			minWrist = GetParallel();
@@ -301,7 +320,12 @@ void Arm::SetWristPosition(double pos) {
 
 void Arm::SetWristManual(double speed) {
 	mPIDWrist->Disable();
-	mPivotWristTalon->Set(-speed * .5);
+	if (mGripper->Get()) {
+		mPivotWristTalon->Set(-speed);
+	}
+	else {
+		mPivotWristTalon->Set(-speed * .5);
+	}
 }
 
 bool Arm::GetStalled() {

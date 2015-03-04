@@ -20,6 +20,12 @@ private:
 	bool mWristStalled;
 	bool mWristLocked;
 	int mNormalLoopCounter;
+	double mPrevWristSetPoint;
+	int mWristStallCounter;
+	bool mWristNoEncoderOffset;
+	RollingAccumulator<double, 10> mWristCurrent;
+
+	PIDController* mDummyPID;
 
 	enum WristState {
 		NORMAL,
