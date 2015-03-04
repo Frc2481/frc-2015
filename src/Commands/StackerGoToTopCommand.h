@@ -14,7 +14,7 @@ public:
 		mSkipOnTarget = false;
 	}
 	void Initialize(){
-		if (CommandBase::stacker->GetPosition() < (1.25 * 578)){
+		if (CommandBase::stacker->GetPosition() < (10.25 * 578)){
 			CommandBase::stacker->SetPosition(15.25f);
 			mSkipOnTarget = false;
 		} else {
