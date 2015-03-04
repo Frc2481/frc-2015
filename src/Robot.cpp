@@ -139,16 +139,16 @@ private:
 		SmartDashboard::PutData("Cast Fishing Pole", new CastFishingPolesCommand());
 		SmartDashboard::PutData("Reel Fishing Pole", new ReelFishingPolesCommand());
 
-		PersistedSettings::GetInstance().Set("STACKER_P", STACKER_P);
-		PersistedSettings::GetInstance().Set("STACKER_I", STACKER_I);
-		PersistedSettings::GetInstance().Set("STACKER_D", STACKER_D);
+//		PersistedSettings::GetInstance().Set("STACKER_P", STACKER_P);
+//		PersistedSettings::GetInstance().Set("STACKER_I", STACKER_I);
+//		PersistedSettings::GetInstance().Set("STACKER_D", STACKER_D);
 //		PersistedSettings::GetInstance().Set("I", STACKER_P);
 //
-//		PersistedSettings::GetInstance().Set("INTAKE_FORWARD_SPEED", .8);
-//		PersistedSettings::GetInstance().Set("INTAKE_REVERSE_SPEED", .8);
-//
-//		PersistedSettings::GetInstance().Set("WRIST_P", .05);
-//		PersistedSettings::GetInstance().Set("SHOULDER_P", .05);
+		PersistedSettings::GetInstance().Set("INTAKE_FORWARD_SPEED", 1);
+		PersistedSettings::GetInstance().Set("INTAKE_REVERSE_SPEED", 1);
+
+		//PersistedSettings::GetInstance().Set("WRIST_P", .05);
+		//PersistedSettings::GetInstance().Set("SHOULDER_P", .05);
 
 		SmartDashboard::PutData("Three Tote Stack Auto", new ThreeToteStackAutoCommandGroup());
 	}
