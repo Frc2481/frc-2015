@@ -40,29 +40,29 @@ public:
 
 		mTime = (mWristLength + (mArmLength * cos(theta))) / mSpeed;    //time that we need to take backing up
 
-		if (mToteCount < 5 && !arm->IsGripper()){        				//mechanically we can unload normally if we have 5 or more tote's
-			arm->SetPivotArmAbs(mPhi);					 				//sets setpoint for the shoulder
-			SetTimeout(mTime + TimeSinceInitialized());
-		}
+//		if (mToteCount < 5 && !arm->IsGripper()){        				//mechanically we can unload normally if we have 5 or more tote's
+//			arm->SetPivotArmAbs(mPhi);					 				//sets setpoint for the shoulder
+//			SetTimeout(mTime + TimeSinceInitialized());
+//		}
 	}
 	void Execute(){
-		if(mToteCount < 5 && !arm->IsGripper()){
-			intake->TurnOnReverse();
-			if(!IsTimedOut()){
-				driveTrain->Crab(0,.3,0);
-			}
-			else{
-				driveTrain->Crab(0,0,0);    //stopping the drivetrain
-				if(arm->IsArmOnTarget()){
-					arm->OpenGripper();
-				}
-			}
-		}
-		else{
+//		if(mToteCount < 5 && !arm->IsGripper()){
+//			intake->TurnOnReverse();
+//			if(!IsTimedOut()){
+//				driveTrain->Crab(0,.3,0);
+//			}
+//			else{
+//				driveTrain->Crab(0,0,0);    //stopping the drivetrain
+//				if(arm->IsArmOnTarget()){
+//					arm->OpenGripper();
+//				}
+//			}
+//		}
+//		else{
 			arm->OpenGripper();
 			intake->TurnOnReverse();
 			driveTrain->Crab(0,.3,0);   //!!this relies on boost being false
-		}
+//		}
 	}
 
 	bool IsFinished(){
