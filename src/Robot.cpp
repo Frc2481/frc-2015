@@ -51,13 +51,13 @@ private:
 	Command *armWristStalledMonitor;
 	Command *stackerStalledMonitor;
 	LiveWindow *lw;
-	USBCamera* mCamera;
+//	USBCamera* mCamera;
 
 	void RobotInit()
 	{
-		CameraServer::GetInstance()->SetQuality(50);
-		CameraServer::GetInstance()->SetSize(1);
-		CameraServer::GetInstance()->StartAutomaticCapture("cam0");
+//		CameraServer::GetInstance()->SetQuality(50);
+//		CameraServer::GetInstance()->SetSize(1);
+//		CameraServer::GetInstance()->StartAutomaticCapture("cam0");
 //		mCamera = new USBCamera("cam0", true);
 //		mCamera->SetBrightness(50);
 //		mCamera->SetExposureManual(50);
