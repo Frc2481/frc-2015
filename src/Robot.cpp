@@ -71,10 +71,10 @@ private:
 		//End Auto Choosing
 
 		armWristStalledMonitor = new ArmWristStalledMonitor();
-		armWristStalledMonitor->Start();
+		//armWristStalledMonitor->Start();
 
 		stackerStalledMonitor = new StackerStalledMonitor();
-		stackerStalledMonitor->Start();
+		//stackerStalledMonitor->Start();
 
 		CommandBase::init();
 		//autonomousCommand = new ThreeToteStackAutoCommand();
