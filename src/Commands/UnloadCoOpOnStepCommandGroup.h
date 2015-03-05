@@ -14,8 +14,8 @@ class UnloadCoOpOnStepCommandGroup: public CommandGroup
 public:
 	UnloadCoOpOnStepCommandGroup(){
 		//AddSequential(new StackerGoToPositionCommand(10));
-		AddSequential(new ExtendSlideCommand());
-		AddSequential(new WaitCommand(1.2));
+		AddParallel(new ExtendSlideCommand());
+		AddSequential(new WaitCommand(.75));
 		AddSequential(new StackerGoToPositionCommand(STEP_HEIGHT));
 		AddSequential(new RetractSlideCommand());
 		AddSequential(new WaitCommand(1.5));
