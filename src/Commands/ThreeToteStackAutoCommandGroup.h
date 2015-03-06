@@ -32,11 +32,7 @@ public:
 //		AddSequential(new AutoDriveCommand(0,-.4,0,10));
 //		return;
 
-		AddParallel(new AcquireToteAutoCommandGroup());
-		AddSequential(new AutoDriveCommand(0,-.4,.3));
-		AddSequential(new AutoDriveCommand(0,-.2,0));
-		AddSequential(new WaitForToteCommand());
-		AddSequential(new WaitCommand(.25));
+		AddSequential(new StackerGoToTopCommand());
 
 		/* FIRST CAN */
 		//Strafe Right
@@ -49,12 +45,12 @@ public:
 		AddSequential(new AutoDriveCommand(0,-.5,0,.6));
 
 		//Strafe Left
-		AddSequential(new AutoDriveCommand(-.5,0,0,.25));
-		AddSequential(new AutoDriveCommand(-.5,0,0,.5));
+		AddSequential(new AutoDriveCommand(-.11,0,0,.25));
+		AddSequential(new AutoDriveCommand(-.5,0,0,.65));
 		/* END FIRST CAN */
 
 		AddParallel(new AcquireToteAutoCommandGroup());
-		AddSequential(new AutoDriveCommand(0,-.6,0,.7));
+		AddSequential(new AutoDriveCommand(0,-.6,0,.9));
 
 		AddSequential(new AutoDriveCommand(0,-.2,0));
 		AddSequential(new WaitForToteCommand());
@@ -78,16 +74,16 @@ public:
 		AddSequential(new AutoDriveCommand(0,-.5,0,.6));
 
 		//Strafe Left
-		AddSequential(new AutoDriveCommand(-.5,0,0,.25));
-		AddSequential(new AutoDriveCommand(-.5,0,0,.45));
+		AddSequential(new AutoDriveCommand(-.11,0,0,.25));
+		AddSequential(new AutoDriveCommand(-.5,0,0,.7));
 		/* END Second CAN */
 
 		//Drive Forward
-		AddSequential(new AutoDriveCommand(0,-.11,0,.25));
-		AddParallel(new AutoDriveCommand(0,-.5,0));
-
 		AddParallel(new AcquireToteAutoCommandGroup());
+		AddSequential(new AutoDriveCommand(0,-.6,0,1.1));
+		AddSequential(new AutoDriveCommand(0,-.2,0));
 		AddSequential(new WaitForToteCommand());
+
 		AddParallel(new StackerGoToBottomCommand(true));
 		AddSequential(new AutoDriveCommand(.8,0,0,1.8));
 		AddSequential(new AutoDriveCommand(.2,0,0,.1));
