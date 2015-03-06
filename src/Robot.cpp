@@ -65,9 +65,12 @@ private:
 		//Auto Choosing
 		autoOptions = new SendableChooser();
 
+		autoOptions->AddDefault("Nothing", (void*)0);
 		autoOptions->AddObject("Three Tote Auto", new ThreeToteStackAutoCommandGroup());
-		autoOptions->AddObject("Fishing Pole Auto", new FishingPoleAutoCommandGroup());
-		autoOptions->AddObject("Three Tote Auto (No Can)", new ThreeToteStackAutoNoStrafeCommandGroup());
+		autoOptions->AddObject("Get RC from Step", new RemoveRCFromStepCommand());
+		//autoOptions->AddObject("Fishing Pole Auto", new FishingPoleAutoCommandGroup());
+		//autoOptions->AddObject("Three Tote Auto (No Can)", new ThreeToteStackAutoNoStrafeCommandGroup());
+		SmartDashboard::PutData("Auto Chooser", autoOptions);
 		//End Auto Choosing
 
 		armWristStalledMonitor = new ArmWristStalledMonitor();
@@ -161,7 +164,7 @@ private:
 
 	void AutonomousInit()
 	{
-		autonomousCommand = new ThreeToteStackAutoCommandGroup();
+		autonomousCommand = (Command*)autoOptions->GetSelected();
 		if (autonomousCommand != NULL)
 			autonomousCommand->Start();
 
