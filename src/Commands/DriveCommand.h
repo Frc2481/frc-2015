@@ -31,8 +31,9 @@ public:
 			z /= 2;
 		}
 
-		driveTrain->Crab(x,y,z);
-
+		if (!DriverStation::GetInstance()->IsAutonomous()) {
+			driveTrain->Crab(x,y,z);
+		}
 	}
 	bool IsFinished(){
 		return false;
