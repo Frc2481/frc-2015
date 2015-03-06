@@ -10,13 +10,14 @@
 #include "ArmExtendCommand.h"
 #include "ArmRetractCommand.h"
 #include "AutoDriveCommand.h"
+#include "ArmShoulderAndWristToStepCommand.h"
 
 class RemoveRCFromStepCommand: public CommandGroup
 {
 public:
 	RemoveRCFromStepCommand() {
 		AddParallel(new AutoDriveCommand(0,-.2, 0,1.2));
-		AddSequential(new ArmShoulderToSetPoint(82));
+		AddSequential(new ArmShoulderAndWristToStepCommand());
 		AddSequential(new ArmGripperOpenCommand());
 		AddSequential(new ArmExtendCommand());
 		AddSequential(new WaitCommand(1));

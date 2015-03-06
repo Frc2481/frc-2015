@@ -37,6 +37,7 @@
 #include "Commands/KILL_EVERYTHING_COMMAND.h"
 #include "Commands/UnloadCoOpOnStepCommandGroup.h"
 #include "Commands/PickUpCoOpStackCommandGroup.h"
+#include "Commands/ArmShoulderAndWristToStepCommand.h"
 
 
 #include "Commands/SetICommand.h"
@@ -111,7 +112,7 @@ OI::OI()
 	armBottom->WhenPressed(new ArmShoulderToSetPoint(ARM_PIVOT_POSITION_BOT));
 
 	armToStep = ARM_TO_STEP_BUTTON;
-	armToStep->WhenPressed(new ArmShoulderToSetPoint(80));
+	armToStep->WhenPressed(new ArmShoulderAndWristToStepCommand());
 
 	armTo2Tote = ARM_TWO_TOTE_STACK_BUTTON;
 	armTo2Tote->WhenPressed(new ArmShoulderToSetPoint(63));
