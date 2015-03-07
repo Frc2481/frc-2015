@@ -40,8 +40,8 @@ public:
 		AddSequential(new AutoDriveCommand(.5,0,0,.6));
 
 		//Drive Forward
-		AddParallel(new IntakeTurnOnReverse());
 		AddSequential(new AutoDriveCommand(0,-.11,0,.25));
+		AddParallel(new IntakeTurnOnLeftReverse());
 		AddSequential(new AutoDriveCommand(0,-.5,0,.6));
 
 		//Strafe Left
@@ -69,8 +69,8 @@ public:
 		AddSequential(new AutoDriveCommand(.5,0,0,.65));
 
 		//Drive Forward
-		AddParallel(new IntakeTurnOnReverse());
 		AddSequential(new AutoDriveCommand(0,-.11,0,.25));
+		AddParallel(new IntakeTurnOnLeftReverse());
 		AddSequential(new AutoDriveCommand(0,-.5,0,.6));
 
 		//Strafe Left
@@ -85,7 +85,7 @@ public:
 		AddSequential(new WaitForToteCommand());
 
 		AddParallel(new StackerGoToBottomCommand(true));
-		AddSequential(new AutoDriveCommand(.8,0,0,1.8));
+		AddSequential(new AutoDriveCommand(.8,0,0,1.65));
 		AddSequential(new AutoDriveCommand(.2,0,0,.1));
 
 		AddSequential(new UnloadToteStackCommandGroup(true));

@@ -25,4 +25,23 @@ public:
 	}
 };
 
+class IntakeTurnOnLeftReverse : public CommandBase {
+public:
+	IntakeTurnOnLeftReverse() {
+		Requires(intake);
+	}
+	void Initialize(){
+		CommandBase::intake->TurnOnLeftReverse();
+	}
+	void Execute(){}
+	bool IsFinished(){
+		return false;
+	}
+	void End(){
+		CommandBase::intake->TurnOff();
+	}
+	void Interrupted(){
+		End();
+	}
+};
 #endif

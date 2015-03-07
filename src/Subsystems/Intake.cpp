@@ -34,6 +34,11 @@ void Intake::TurnOnReverse() {
 	mState = Reverse;
 }
 
+void Intake::TurnOnLeftReverse() {
+	mLeftMotor->Set(-INTAKE_REVERSE_SPEED);
+	mState = Reverse;
+}
+
 void Intake::RotateCW() {
 	mRightMotor->Set(-INTAKE_FORWARD_SPEED);
 	mLeftMotor->Set(INTAKE_REVERSE_SPEED * INTAKE_TRIM);

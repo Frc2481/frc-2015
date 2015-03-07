@@ -34,6 +34,7 @@ public:
 	void TurnOn();
 	void TurnOff();
 	void TurnOnReverse();
+	void TurnOnLeftReverse();
 	void RotateCW();
 	void RotateCCW();
 	bool IsOn();
