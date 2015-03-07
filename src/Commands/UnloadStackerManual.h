@@ -61,7 +61,7 @@ public:
 //		else{
 			arm->OpenGripper();
 			intake->TurnOnReverse();
-			driveTrain->Crab(0,.3,0);   //!!this relies on boost being false
+			driveTrain->Crab(0,.2,0);   //!!this relies on boost being false
 //		}
 	}
 
