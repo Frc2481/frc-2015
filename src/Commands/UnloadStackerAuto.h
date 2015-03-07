@@ -13,7 +13,7 @@ public:
 	}
 	void Initialize(){
 		driveTrain->SetFieldCentric(false);
-		SetTimeout(1);
+		SetTimeout(1.5);
 	}
 	void Execute(){
 		intake->TurnOnReverse();
