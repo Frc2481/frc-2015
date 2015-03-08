@@ -23,6 +23,7 @@ private:
 	double mPrevWristSetPoint;
 	int mWristStallCounter;
 	bool mWristNoEncoderOffset;
+	bool mWristOverride;
 	RollingAccumulator<double, 10> mWristCurrent;
 
 	PIDController* mDummyPID;
@@ -62,7 +63,7 @@ public:
 	void SetStalled(bool stalled);
 	void SetShoulderEncoderOffset(float shoulderOffset);
 	void SetWristEncoderOffset(float wristOffset);
-	void SetWristPosition(double pos);
+	void SetWristPosition(double pos, bool override = false);
 	void SetWristManual(double speed);
 	void SetShoulderManual(double speed);
 };

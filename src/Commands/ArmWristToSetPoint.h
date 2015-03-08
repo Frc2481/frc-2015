@@ -6,13 +6,13 @@
 
 class ArmWristToSetPoint: public CommandBase
 {
-private:
+protected:
 	double mSetPoint;
 public:
 	ArmWristToSetPoint(double setpoint)
 		: mSetPoint(setpoint){
 	}
-	void Initialize() {
+	virtual void Initialize() {
 		arm->SetWristLinked(false);
 		arm->SetWristPosition(mSetPoint);
 	}
@@ -28,4 +28,13 @@ public:
 	}
 };
 
+class ArmWristToSetPointOverride : public ArmWristToSetPoint {
+public:
+	ArmWristToSetPointOverride(double setpoint) : ArmWristToSetPoint(setpoint) {
+	}
+	void Initialize() {
+		arm->SetWristLinked(false);
+		arm->SetWristPosition(mSetPoint, true);
+	}
+};
 #endif

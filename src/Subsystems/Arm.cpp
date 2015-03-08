@@ -28,6 +28,7 @@ Arm::Arm() : Subsystem("Arm"),
 		mWristStallCounter(0),
 		mWristState(NORMAL),
 		mWristNoEncoderOffset(false),
+		mWristOverride(false),
 		mDummyPID(new PIDController(.05,.1,.01,NULL,NULL))
 		{
 
@@ -172,7 +173,7 @@ void Arm::PeriodicUpdate() {
 		mPIDWrist->SetP(mDummyPID->GetP());
 //	}
 
-	if (mWristLocked){
+	if (mWristLocked && !mWristOverride){
 		SetWristPosition(GetParallel());
 	}
 	//mPIDWrist->SetSetpoint(wristAngle);
@@ -272,6 +273,9 @@ bool Arm::IsArmOnTarget() {
 
 void Arm::StopPivotArm() {
 	mPIDShoulder->Disable();
+	if (mShoulderEncoder->GetAngle() < 10) {
+		mWristOverride = false;
+	}
 }
 
 //float Arm::GetPivotPos() {
@@ -306,13 +310,23 @@ bool Arm::IsWristOnTarget() {
 	return mPIDWrist->OnTarget();
 }
 
-void Arm::SetWristPosition(double pos) {
+void Arm::SetWristPosition(double pos, bool override) {
 	if ((!mWristStalled || mWristNoEncoderOffset) && mWristState == NORMAL){
 		double minWrist = 90;
 		if (mShoulderEncoder->GetAngle() < 45) {
 			minWrist = GetParallel();
 		}
 		pos = std::min(std::max(pos , minWrist), 270.0);
+
+		if (override) {
+			mWristOverride = true;
+		}
+
+		//If the wrist is in override then force it to 270.
+		//This should result in no move.
+		if (mWristOverride) {
+			pos = 265;
+		}
 		mPIDWrist->SetSetpoint(pos);
 		mPIDWrist->Enable();
 	}

@@ -38,6 +38,7 @@
 #include "Commands/UnloadCoOpOnStepCommandGroup.h"
 #include "Commands/PickUpCoOpStackCommandGroup.h"
 #include "Commands/ArmShoulderAndWristToStepCommand.h"
+#include "Commands/ArmShoulderAndWristToTippedOverCanCommand.h"
 
 
 #include "Commands/SetICommand.h"
@@ -113,6 +114,9 @@ OI::OI()
 
 	armToStep = ARM_TO_STEP_BUTTON;
 	armToStep->WhenPressed(new ArmShoulderAndWristToStepCommand());
+
+	armToTippedOverCan = ARM_TO_TIPPER_OVER_CAN_BUTTON;
+	armToTippedOverCan->WhenPressed(new ArmShoulderAndWristToTippedOverCanCommand());
 
 	armTo2Tote = ARM_TWO_TOTE_STACK_BUTTON;
 	armTo2Tote->WhenPressed(new ArmShoulderToSetPoint(63));

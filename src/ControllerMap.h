@@ -34,6 +34,7 @@
 #define ARM_TO_TOP_BUTTON			new AnalogJoystickButton(auxStick, XboxController::xbLeftTrigger, .5)
 #define ARM_TO_STEP_BUTTON			new AnalogJoystickButton(auxStick, XboxController::xbRightTrigger, .5)
 #define ARM_TO_BOTTOM_BUTTON		new JoystickButton(auxStick, XboxController::xbRightBumper)
+#define ARM_TO_TIPPER_OVER_CAN_BUTTON		new JoystickButton(auxStick, XboxController::xbLeftBumper)
 //#define WRIST_TILT_UP_BUTTON		new AnalogJoystickButton(auxStick, XboxController::xbRightYAxis, 0.5f)
 //#define WRIST_TILT_DOWN_BUTTON	new AnalogJoystickButton(auxStick, XboxController::xbRightYAxis, -0.5f)
 #define WRIST_TO_90_BUTTON			new AnalogJoystickButton(auxStick, XboxController::xbRightYAxis, -0.5f)
