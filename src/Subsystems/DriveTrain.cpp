@@ -28,10 +28,10 @@ DriveTrain::DriveTrain() : Subsystem("DriveTrain"),
 
 	printf("Pre DriveTrain Constructor \n");
 	prevAngle = 90.0;
-	FLWheel->SetOffset(PersistedSettings::GetInstance().Get("FL_ENCODER_OFFSET"));
-	FRWheel->SetOffset(PersistedSettings::GetInstance().Get("FR_ENCODER_OFFSET"));
-	BRWheel->SetOffset(PersistedSettings::GetInstance().Get("BR_ENCODER_OFFSET"));
-	BLWheel->SetOffset(PersistedSettings::GetInstance().Get("BL_ENCODER_OFFSET"));
+	FLWheel->SetOffset(PersistedSettings::GetInstance().Get("FL_ENCODER_OFFSET", 181.561));
+	FRWheel->SetOffset(PersistedSettings::GetInstance().Get("FR_ENCODER_OFFSET", 325.812));
+	BRWheel->SetOffset(PersistedSettings::GetInstance().Get("BR_ENCODER_OFFSET", 348.182));
+	BLWheel->SetOffset(PersistedSettings::GetInstance().Get("BL_ENCODER_OFFSET", 13.0601));
 	//driveLogger = new DataLogger("/home/lvuser/DriveLogger.txt");
 	gyroCorrection = false;
 

@@ -35,8 +35,8 @@ Arm::Arm() : Subsystem("Arm"),
 	mPivotWristTalon->ConfigNeutralMode(CANTalon::kNeutralMode_Brake);
 	mPivotShoulderTalon->ConfigNeutralMode(CANTalon::kNeutralMode_Brake);
 
-	mShoulderEncoder->SetOffset(PersistedSettings::GetInstance().Get("SHOULDER_ENCODER_OFFSET"));
-	mWristEncoder->SetOffset(PersistedSettings::GetInstance().Get("WRIST_ENCODER_OFFSET"));
+	mShoulderEncoder->SetOffset(PersistedSettings::GetInstance().Get("SHOULDER_ENCODER_OFFSET", 302.61));
+	mWristEncoder->SetOffset(PersistedSettings::GetInstance().Get("WRIST_ENCODER_OFFSET", 11.3716));
 
 	mPIDShoulder->SetInputRange(0.0, 360.0);
 	mPIDWrist->SetInputRange(0.0, 360.0);
