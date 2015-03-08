@@ -85,7 +85,7 @@ public:
 		AddSequential(new WaitForToteCommand());
 
 		AddParallel(new StackerGoToBottomCommand(true));
-		AddSequential(new AutoDriveCommand(.8,0,0,1.65));
+		AddSequential(new AutoDriveCommand(.8,0,0,1.75));
 		AddSequential(new AutoDriveCommand(.2,0,0,.1));
 
 		AddSequential(new UnloadToteStackCommandGroup(true));
