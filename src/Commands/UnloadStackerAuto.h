@@ -13,6 +13,7 @@ public:
 	}
 	void Initialize(){
 		driveTrain->SetFieldCentric(false);
+		stacker->ResetToteCount();
 		SetTimeout(1.5);
 	}
 	void Execute(){
