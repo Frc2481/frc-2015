@@ -51,6 +51,7 @@ private:
 	Command *armWristStalledMonitor;
 	Command *stackerStalledMonitor;
 	LiveWindow *lw;
+	PowerDistributionPanel pdp;
 //	USBCamera* mCamera;
 
 	void RobotInit()
@@ -180,6 +181,16 @@ private:
 		CommandBase::intake->PeriodicUpdate();
 		CommandBase::arm->PeriodicUpdate();
 		SmartDashboard::PutNumber("IMU heading", CommandBase::driveTrain->GetHeading());
+
+		SmartDashboard::PutNumber("Stacker Left Current", pdp.GetCurrent(13));
+		SmartDashboard::PutNumber("Stacker Right Current", pdp.GetCurrent(3));
+		SmartDashboard::PutNumber("FR Current", pdp.GetCurrent(1));
+		SmartDashboard::PutNumber("FL Current", pdp.GetCurrent(15));
+		SmartDashboard::PutNumber("BR Current", pdp.GetCurrent(2));
+		SmartDashboard::PutNumber("BL Current", pdp.GetCurrent(14));
+		SmartDashboard::PutNumber("Intake Left Current", pdp.GetCurrent(9));
+		SmartDashboard::PutNumber("Intake Right Current", pdp.GetCurrent(6));
+		SmartDashboard::PutNumber("Total Current", pdp.GetTotalCurrent());
 	}
 
 	void TeleopInit()
