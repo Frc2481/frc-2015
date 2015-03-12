@@ -8,7 +8,7 @@ class ArmShoulderAndWristToStepCommand: public CommandGroup
 {
 public:
 	ArmShoulderAndWristToStepCommand() {
-		AddSequential(new ArmShoulderToSetPoint(78));
+		AddSequential(new ArmShoulderToSetPoint(76));
 		AddSequential(new ArmWristToSetPoint(190));
 	}
 };
