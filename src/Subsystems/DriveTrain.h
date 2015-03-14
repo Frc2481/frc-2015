@@ -84,6 +84,7 @@ public:
 	bool IsGyroCorrection() const;
 	IMU* GetIMU();
 	void PeriodicUpdate();
+	void SetBrake(bool brake);
 };
 
 #endif /* DRIVETRAIN_H_ */

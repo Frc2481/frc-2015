@@ -93,3 +93,7 @@ float SwerveModule::GetVoltage() {
 float SwerveModule::GetRawVoltage() {
 	return mEncoder->GetRawVoltage();
 }
+
+void SwerveModule::SetBrake(bool brake) {
+	mDrive->ConfigNeutralMode(brake ? CANTalon::kNeutralMode_Brake : CANTalon::kNeutralMode_Coast);
+}

@@ -511,3 +511,10 @@ float DriveTrain::GetPitch() {
 void DriveTrain::PeriodicUpdate() {
 	Crab(mXPos, mYPos, mTwist);
 }
+
+void DriveTrain::SetBrake(bool brake) {
+	FLWheel->SetBrake(brake);
+	FRWheel->SetBrake(brake);
+	BLWheel->SetBrake(brake);
+	BRWheel->SetBrake(brake);
+}

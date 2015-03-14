@@ -30,6 +30,7 @@ public:
 	void SetOptimized(bool isOptimized);
 	float GetVoltage();
 	float GetRawVoltage();
+	void SetBrake(bool brake);
 };
 
 #endif /*SWERVEMODULE_H_*/
