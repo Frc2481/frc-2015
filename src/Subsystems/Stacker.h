@@ -12,7 +12,7 @@ private:
 	// It's desirable that everything possible under private except
 	// for methods that implement subsystem capabilities
 	Lift2481* mRightLift;
-	int mToteCount;
+	int mToteCount, mDesiredToteCount;
 	float mMaxPower;
 	PowerDistributionPanel p;
 
@@ -51,6 +51,8 @@ public:
 	void Set(float output);
 	float GetPosition();
 	void StackerManual(float yValue);
+	int getDesiredToteCount() const;
+	void setDesiredToteCount(int desiredToteCount);
 };
 
 #endif

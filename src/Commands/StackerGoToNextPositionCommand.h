@@ -15,7 +15,7 @@ public:
 		mSkipOnTarget = false;
 	}
 	void Initialize(){
-		if(stacker->GetToteCount() < 6){
+		if(stacker->GetToteCount() < stacker->getDesiredToteCount()){
 			mPos = 15.25f;
 		}
 		else {

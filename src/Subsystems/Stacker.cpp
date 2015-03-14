@@ -3,7 +3,7 @@
 #include "../RobotMap.h"
 
 Stacker::Stacker() :
-		Subsystem("Stacker"), mToteCount(0), mLiftLastExtreme(Up), mMaxPower(0)
+		Subsystem("Stacker"), mToteCount(0), mDesiredToteCount(6), mLiftLastExtreme(Up), mMaxPower(0)
 {
 	float p = PersistedSettings::GetInstance().Get("STACKER_P", 0.0002);
 	float i = PersistedSettings::GetInstance().Get("STACKER_I", 0.0002);
@@ -82,6 +82,7 @@ void Stacker::PeriodicUpdate() {
 
 #ifdef DEBUGGING
 	SmartDashboard::PutNumber("ToteCount", mToteCount);
+	SmartDashboard::PutNumber("Desired Tote Count", mDesiredToteCount);
 	SmartDashboard::PutNumber("stackerRightPosition", mRightLift->GetDesiredPostion());
 	SmartDashboard::PutBoolean("stackerRightOnTarget", mRightLift->OnTarget());
 	SmartDashboard::PutBoolean("stackerRightResetting", mRightLift->IsResetting());
@@ -168,4 +169,12 @@ void Stacker::StackerManual(float yValue) {
 	}
 	else
 		mRightLift->Set(0.0f);
+}
+
+int Stacker::getDesiredToteCount() const {
+	return mDesiredToteCount;
+}
+
+void Stacker::setDesiredToteCount(int desiredToteCount) {
+	mDesiredToteCount = desiredToteCount;
 }
