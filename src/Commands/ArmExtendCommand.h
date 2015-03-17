@@ -12,10 +12,13 @@ public:
 	}
 	void Initialize(){
 		arm->ExtendArm();
+		if (fabs(arm->GetShoulderAngle() - ARM_STEP_HEIGHT) < 2) {
+			arm->SetPivotArmAbs(ARM_STEP_HEIGHT_EXTENDED);
+		}
 	}
 	void Execute(){}
 	bool IsFinished(){
-		return arm->IsExtended();
+		return arm->IsExtended() && arm->IsArmOnTarget();
 	}
 	void End(){}
 	void Interrupted(){}

@@ -8,8 +8,8 @@ class ArmShoulderAndWristToTippedOverCanCommand: public CommandGroup
 {
 public:
 	ArmShoulderAndWristToTippedOverCanCommand() {
-		AddSequential(new ArmShoulderToSetPoint(84));
-		AddSequential(new ArmWristToSetPointOverride(265));
+		AddSequential(new ArmWristToTippedOverCan(265));
+		AddSequential(new ArmShoulderToFloorTippedOverCan(SHOULDER_TIPPED_OVER_CAN));
 	}
 };
 
