@@ -13,9 +13,11 @@ class OI
 private:
 	static const int DRIVER_STICK_PORT = 1;
 	static const int AUX_STICK_PORT = 2;
-	static const int DEBUG_STICK_PORT = 3;
+	static const int AUX_RIGHT_STICK_PORT = 3;
+	static const int DEBUG_STICK_PORT = 4;
 	Joystick2481* driverStick;
 	Joystick* auxStick;
+	Joystick* auxRStick;
 	Joystick* debugStick;
 
 	//Driver Stick
@@ -24,6 +26,7 @@ private:
 	Button* setBoosting;
 	Button* setOrigin;
 	Button* unloadStacker;
+	Button* driveOnToScoringPlatform;
 	Button* toggleFieldCentric;
 	Button* stackerStep;
 	bool boosting;
@@ -50,7 +53,6 @@ private:
 	Button* armExtend;
 	Button* armRetract;
 	Button* gripperOpen;
-	Button* gripperClose;
 //	Button* armRaise;
 //	Button* armLower;
 	Button* armTop;
@@ -64,12 +66,28 @@ private:
 	Button* armTo3Tote;
 	Button* armTo4Tote;
 	Button* armTo5Tote;
+	Button* armDropOnTotes;
+
+	Button* sixStack;
+	Button* fiveStack;
+	Button* fourStack;
+	Button* threeStack;
+	Button* twoStack;
+	Button* oneStack;
+
+	Button* actualSixTotes;
+	Button* actualFiveTotes;
+	Button* actualFourTotes;
+	Button* actualThreeTotes;
+	Button* actualTwoTotes;
+	Button* actualOneTote;
 
 
 public:
 	OI();
 	Joystick2481* GetDriverStick();
 	Joystick* GetAuxStick();
+	Joystick* GetAuxRightStick();
 	Joystick* GetDebugStick();
 
 	void SetBoosting(bool boost);

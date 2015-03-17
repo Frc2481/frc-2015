@@ -39,6 +39,11 @@
 #include "Commands/PickUpCoOpStackCommandGroup.h"
 #include "Commands/ArmShoulderAndWristToStepCommand.h"
 #include "Commands/ArmShoulderAndWristToTippedOverCanCommand.h"
+#include "Commands/ArmGripperOpenMomentaryCommand.h"
+#include "Commands/ArmUnloadCanFour.h"
+#include "Commands/ArmDropCanOnTotes.h"
+#include "Commands/StackerSetToteCount.h"
+#include "Commands/DriveOnToScoringPlatformCommand.h"
 
 
 #include "Commands/SetICommand.h"
@@ -51,6 +56,7 @@ OI::OI()
 	// Process operator interface input here.
 	driverStick = new Joystick2481(DRIVER_STICK_PORT);
 	auxStick = new Joystick(AUX_STICK_PORT);
+	auxRStick = new Joystick(AUX_RIGHT_STICK_PORT);
 	debugStick = new Joystick(DEBUG_STICK_PORT);
 
 	//Driver Stick
@@ -71,6 +77,9 @@ OI::OI()
 	unloadStacker = UNLOAD_STACKER_BUTTON;
 	unloadStacker->WhileHeld(new UnloadToteStackCommandGroup());
 
+	driveOnToScoringPlatform = DRIVE_ON_TO_PLATFORM_BUTTON;
+	driveOnToScoringPlatform->WhileHeld(new DriveOnToScoringPlatformCommand());
+
 	//acquire tote		Joystick Button 1
 	acquireTote = ACQUIRE_TOTE_BUTTON;
 	acquireTote->WhenPressed(new AcquireToteCommand());
@@ -86,8 +95,8 @@ OI::OI()
 	//Aux Stick
 
     //intakeOn
-	intakeOn = INTAKE_ON_BUTTON;
-	intakeOn->WhileHeld(new IntakeManualCommand());
+//	intakeOn = INTAKE_ON_BUTTON;
+//	intakeOn->WhileHeld(new IntakeManualCommand());
 
 	//Arm Extend
 	armExtend = ARM_EXTEND_BUTTON;
@@ -99,11 +108,7 @@ OI::OI()
 
 	//Arm Gripper Open
 	gripperOpen = GRIPPER_OPEN_BUTTON;
-	gripperOpen->WhenPressed(new ArmGripperOpenCommand());
-
-	//Arm Gripper Close
-	gripperClose = GRIPPER_CLOSE_BUTTON;
-	gripperClose->WhenPressed(new ArmGripperCloseCommand());
+	gripperOpen->WhileHeld(new ArmGripperOpenMomentaryCommand());
 
 	//Arm Go To Set Position
 	armTop = ARM_TO_TOP_BUTTON;
@@ -119,16 +124,19 @@ OI::OI()
 	armToTippedOverCan->WhenPressed(new ArmShoulderAndWristToTippedOverCanCommand());
 
 	armTo2Tote = ARM_TWO_TOTE_STACK_BUTTON;
-	armTo2Tote->WhenPressed(new ArmShoulderToSetPoint(63));
+	//armTo2Tote->WhenPressed(new ArmShoulderToSetPoint(63));
 
 	armTo3Tote = ARM_THREE_TOTE_STACK_BUTTON;
-	armTo3Tote->WhenPressed(new ArmShoulderToSetPoint(50));
+	//armTo3Tote->WhenPressed(new ArmShoulderToSetPoint(50));
 
 	armTo4Tote = ARM_FOUR_TOTE_STACK_BUTTON;
-	armTo4Tote->WhenPressed(new ArmShoulderToSetPoint(22));
+	armTo4Tote->WhenPressed(new ArmUnloadCanFour());
 
-	armTo5Tote = ARM_FIVE_TOTE_STACK_BUTTON;
-	armTo5Tote->WhenPressed(new ArmShoulderToSetPoint(14));
+	armDropOnTotes = DROP_CAN_ON_TOTES_BUTTON;
+	armDropOnTotes->WhenPressed(new ArmDropCanOnTotes());
+
+//	armTo5Tote = ARM_FIVE_TOTE_STACK_BUTTON;
+//	armTo5Tote->WhenPressed(new ArmShoulderToSetPoint(14));
 
 	//Co Op Totes
 	coOpOnStep = CO_OP_ON_STEP_BUTTON;
@@ -139,17 +147,36 @@ OI::OI()
 
 	//Wrist To Setpoint
 	wristTo90 = WRIST_TO_90_BUTTON;
-	wristTo90->WhenPressed(new ArmWristToSetPoint(90));
+	//wristTo90->WhenPressed(new ArmWristToSetPoint(90));
 
 	wristTo180 = WRIST_TO_180_BUTTON;
-	wristTo180->WhenPressed(new ArmWristToSetPoint(180));
+	//wristTo180->WhenPressed(new ArmWristToSetPoint(180));
 
 	wristTo270 = WRIST_TO_270_BUTTON;
-	wristTo270->WhenPressed(new ArmWristToSetPoint(270));
+	//wristTo270->WhenPressed(new ArmWristToSetPoint(270));
 
     //Stacker Manual
 	stackerOn = STACKER_ON_BUTTON;
 	stackerOn->WhileHeld(new StackerManualCommand());
+
+	//Tote Stack
+	actualSixTotes = SIX_TOTES_BUTTON;
+	actualSixTotes->WhileHeld(new StackerSetToteCount(6));
+
+	actualFiveTotes = FIVE_TOTES_BUTTON;
+	actualFiveTotes->WhileHeld(new StackerSetToteCount(5));
+
+	actualFourTotes = FOUR_TOTES_BUTTON;
+	actualFourTotes->WhileHeld(new StackerSetToteCount(4));
+
+	actualThreeTotes = THREE_TOTES_BUTTON;
+	actualThreeTotes->WhileHeld(new StackerSetToteCount(3));
+
+	actualTwoTotes = TWO_TOTES_BUTTON;
+	actualTwoTotes->WhileHeld(new StackerSetToteCount(2));
+
+	actualOneTote = ONE_TOTE_BUTTON;
+	actualOneTote->WhileHeld(new StackerSetToteCount(1));
 
 	//Drivetrain Set P
 	incP = DRIVETRAIN_INC_P_BUTTON;
@@ -183,6 +210,10 @@ Joystick2481* OI::GetDriverStick(){
 
 Joystick* OI::GetAuxStick(){
 	return auxStick;
+}
+
+Joystick* OI::GetAuxRightStick(){
+	return auxRStick;
 }
 
 Joystick* OI::GetDebugStick(){
