@@ -41,10 +41,7 @@ public:
 				arm->OpenGripper();
 				SetTimeout(.1);
 			}
-			if (stacker->GetToteCount() == 5) {
-				SetTimeout(1.5);
-			}
-			if (stacker->GetToteCount() < 5) {
+			else {
 				SetTimeout(0);
 			}
 			CommandBase::stacker->SetPosition(0.34f, mloaded);
