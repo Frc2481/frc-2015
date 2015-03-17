@@ -18,7 +18,7 @@ public:
 		driveTrain->Crab(0, .4, 0);
 	}
 	void Execute() {
-		if (driveTrain->GetIMU()->GetRoll() < -1.75 && !_done) {
+		if (driveTrain->GetIMU()->GetRoll() < -1.5 && !_done) {
 			driveTrain->Crab(0,0,0);
 			SetTimeout(TimeSinceInitialized() + .5);
 			_done = true;
