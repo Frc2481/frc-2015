@@ -66,6 +66,8 @@ public:
 	void SetWristPosition(double pos, bool override = false);
 	void SetWristManual(double speed);
 	void SetShoulderManual(double speed);
+	float GetShoulderAngle();
+	float GetWristAngle();
 };
 
 

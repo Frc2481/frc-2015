@@ -6,14 +6,20 @@
 
 class ArmShoulderToSetPoint: public CommandBase
 {
-private:
+protected:
 	double mSetPoint;
+	bool mDone;
+	bool mLinked;
 public:
-	ArmShoulderToSetPoint(double setpoint)
-		: mSetPoint(setpoint){
+	ArmShoulderToSetPoint(double setpoint, bool linked = true)
+		: mSetPoint(setpoint),
+		  mLinked(linked){
 	}
-	void Initialize(){
-		arm->SetWristLinked(true);
+	virtual void Initialize(){
+		mDone = false;
+		if (mLinked){
+			arm->SetWristLinked(true);
+		}
 		arm->SetPivotArmAbs(mSetPoint);
 	}
 	void Execute(){
@@ -22,14 +28,49 @@ public:
 		}
 	}
 	bool IsFinished(){
-		return arm->IsArmOnTarget();
+		return arm->IsArmOnTarget() || mDone;
 	}
 	void End(){
-		arm->SetWristLinked(false);
-		arm->StopPivotArm();
+		if (mLinked){
+			arm->SetWristLinked(false);
+		}
+		//if (mSetPoint != ARM_STEP_HEIGHT) {
+			arm->StopPivotArm();
+		//}
 	}
 	void Interrupted(){
 		End();
+	}
+};
+
+class ArmShoulderToFloor : public ArmShoulderToSetPoint {
+public:
+	ArmShoulderToFloor(double setpoint)
+		: ArmShoulderToSetPoint(setpoint){
+	}
+	void Initialize(){
+		if (arm->GetWristAngle() > 200
+				&& arm->GetShoulderAngle() > SHOULDER_TIPPED_OVER_CAN){
+			mDone = true;
+		}
+		else {
+			ArmShoulderToSetPoint::Initialize();
+		}
+	}
+};
+
+class ArmShoulderToFloorTippedOverCan : public ArmShoulderToSetPoint {
+public:
+	ArmShoulderToFloorTippedOverCan(double setpoint)
+		: ArmShoulderToSetPoint(setpoint){
+	}
+	void Initialize(){
+		if (arm->GetShoulderAngle() > SHOULDER_TIPPED_OVER_CAN){
+			mDone = true;
+		}
+		else {
+			ArmShoulderToSetPoint::Initialize();
+		}
 	}
 };
 

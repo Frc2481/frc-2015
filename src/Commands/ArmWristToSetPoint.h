@@ -8,17 +8,19 @@ class ArmWristToSetPoint: public CommandBase
 {
 protected:
 	double mSetPoint;
+	bool mDone;
 public:
 	ArmWristToSetPoint(double setpoint)
 		: mSetPoint(setpoint){
 	}
 	virtual void Initialize() {
+		 mDone = false;
 		arm->SetWristLinked(false);
 		arm->SetWristPosition(mSetPoint);
 	}
 	void Execute() {}
 	bool IsFinished() {
-		return arm->IsWristOnTarget();
+		return arm->IsWristOnTarget() || mDone;
 	}
 	void End() {
 		arm->StopPivotWrist();
@@ -28,13 +30,21 @@ public:
 	}
 };
 
-class ArmWristToSetPointOverride : public ArmWristToSetPoint {
+class ArmWristToTippedOverCan : public ArmWristToSetPoint {
 public:
-	ArmWristToSetPointOverride(double setpoint) : ArmWristToSetPoint(setpoint) {
+	ArmWristToTippedOverCan(double setpoint) : ArmWristToSetPoint(setpoint) {
 	}
 	void Initialize() {
-		arm->SetWristLinked(false);
-		arm->SetWristPosition(mSetPoint, true);
+
+		if (arm->GetShoulderAngle() < SHOULDER_TIPPED_OVER_CAN){
+			arm->SetWristLinked(false);
+			arm->SetWristPosition(mSetPoint, true);
+
+			mDone = arm->GetWristAngle() > 260;
+		}
+		else {
+			mDone = true;
+		}
 	}
 };
 #endif

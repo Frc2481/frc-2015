@@ -42,7 +42,7 @@ Arm::Arm() : Subsystem("Arm"),
 	mPIDShoulder->SetInputRange(0.0, 360.0);
 	mPIDWrist->SetInputRange(0.0, 360.0);
 
-	mPIDShoulder->SetTolerance(1.5);
+	mPIDShoulder->SetTolerance(.75);
 	mPIDWrist->SetTolerance(2);
 
 	mPIDWrist->SetContinuous(false);
@@ -235,6 +235,7 @@ void Arm::SetPivotArmAbs(float position) {
 	mPIDShoulder->ResetStalled();
 	mPIDShoulder->SetSetpoint(position);
 	mPIDShoulder->Enable();
+	SmartDashboard::PutNumber("Arm SetPoint", position);
 }
 
 void Arm::SetPivotArmRelative(float position) {
@@ -311,6 +312,7 @@ bool Arm::IsWristOnTarget() {
 }
 
 void Arm::SetWristPosition(double pos, bool override) {
+	//FIXME mWristNoEncoderOffset check is not right.
 	if ((!mWristStalled || mWristNoEncoderOffset) && mWristState == NORMAL){
 		double minWrist = 90;
 		if (mShoulderEncoder->GetAngle() < 45) {
@@ -377,4 +379,12 @@ double Arm::GetParallel() {
 void Arm::SetShoulderManual(double speed) {
 	mPIDShoulder->Disable();
 	mPivotShoulderTalon->Set(speed);
+}
+
+float Arm::GetShoulderAngle() {
+	return mShoulderEncoder->GetAngle();
+}
+
+float Arm::GetWristAngle() {
+	return mWristEncoder->GetAngle();
 }
