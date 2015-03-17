@@ -13,7 +13,9 @@ public:
 	void Initialize(){
 		intake->TurnOn();
 	}
-	void Execute(){}
+	void Execute(){
+		intake->IntakeManual(oi->GetAuxRightStick()->GetRawAxis(0));
+	}
 	bool IsFinished(){
 		return intake->IsContained();
 	}
