@@ -59,9 +59,11 @@ public:
 //			}
 //		}
 //		else{
+		if (mToteCount >= 5) {
 			arm->OpenGripper();
-			intake->TurnOnReverse();
-			driveTrain->Crab(0,.4,0);   //!!this relies on boost being false
+		}
+		intake->TurnOnReverse();
+		driveTrain->Crab(0,.4,0);   //!!this relies on boost being false
 //		}
 	}
 
