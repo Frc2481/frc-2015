@@ -33,6 +33,8 @@
 #define TWO_TOTES_BUTTON			new JoystickButton(auxStick, 10)
 #define ONE_TOTE_BUTTON				new JoystickButton(auxStick, 11)
 
+#define ARM_TO_45					new JoystickButton(auxStick, 4)
+
 
 //#define SLIDE_EXTEND_BUTTON		new POVJoystickButton(auxStick, 0, XboxController::xbDPadRight)
 //#define SLIDE_RETRACT_BUTTON		new POVJoystickButton(auxStick, 0, XboxController::xbDPadLeft)
@@ -49,6 +51,8 @@
 #define ARM_TO_STEP_BUTTON			new JoystickButton(auxRStick, 3);
 #define ARM_TO_BOTTOM_BUTTON		new JoystickButton(auxRStick, 5);
 #define ARM_TO_TIPPER_OVER_CAN_BUTTON		new JoystickButton(auxRStick, 2);
+#define ARM_RAISE_BUTTON			new JoystickButton(auxRStick, 7)
+#define ARM_LOWER_BUTTON			new JoystickButton(auxRStick, 6)
 //#define WRIST_TILT_UP_BUTTON		new AnalogJoystickButton(auxStick, XboxController::xbRightYAxis, 0.5f)
 //#define WRIST_TILT_DOWN_BUTTON	new AnalogJoystickButton(auxStick, XboxController::xbRightYAxis, -0.5f)
 #define WRIST_TO_90_BUTTON			new AnalogJoystickButton(auxStick, XboxController::xbRightYAxis, -0.5f)

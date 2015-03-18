@@ -53,8 +53,8 @@ private:
 	Button* armExtend;
 	Button* armRetract;
 	Button* gripperOpen;
-//	Button* armRaise;
-//	Button* armLower;
+	Button* armRaise;
+	Button* armLower;
 	Button* armTop;
 	Button* armBottom;
 	Button* armToStep;
@@ -81,6 +81,8 @@ private:
 	Button* actualThreeTotes;
 	Button* actualTwoTotes;
 	Button* actualOneTote;
+
+	Button* armTo45;
 
 
 public:

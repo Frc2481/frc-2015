@@ -44,6 +44,7 @@
 #include "Commands/ArmDropCanOnTotes.h"
 #include "Commands/StackerSetToteCount.h"
 #include "Commands/DriveOnToScoringPlatformCommand.h"
+#include "Commands/ArmShoulderManualCommand.h"
 
 
 #include "Commands/SetICommand.h"
@@ -106,6 +107,14 @@ OI::OI()
 	armRetract = ARM_RETRACT_BUTTON;
 	armRetract->WhenPressed(new ArmRetractCommand());
 
+	//Arm Raise
+	armRaise = ARM_RAISE_BUTTON;
+	armRaise->WhileHeld(new ArmShoulderManualCommand(-1));
+
+	//Arm Lower
+	armLower = ARM_LOWER_BUTTON;
+	armLower->WhileHeld(new ArmShoulderManualCommand(1));
+
 	//Arm Gripper Open
 	gripperOpen = GRIPPER_OPEN_BUTTON;
 	gripperOpen->WhileHeld(new ArmGripperOpenMomentaryCommand());
@@ -134,6 +143,9 @@ OI::OI()
 
 	armDropOnTotes = DROP_CAN_ON_TOTES_BUTTON;
 	armDropOnTotes->WhenPressed(new ArmDropCanOnTotes());
+
+	armTo45 = ARM_TO_45;
+	armTo45->WhenPressed(new ArmShoulderToSetPoint(40));
 
 //	armTo5Tote = ARM_FIVE_TOTE_STACK_BUTTON;
 //	armTo5Tote->WhenPressed(new ArmShoulderToSetPoint(14));
