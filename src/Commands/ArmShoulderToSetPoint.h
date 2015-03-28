@@ -9,31 +9,22 @@ class ArmShoulderToSetPoint: public CommandBase
 protected:
 	double mSetPoint;
 	bool mDone;
-	bool mLinked;
 public:
-	ArmShoulderToSetPoint(double setpoint, bool linked = true)
-		: mSetPoint(setpoint),
-		  mLinked(linked){
+	ArmShoulderToSetPoint(double setpoint)
+		: CommandBase("ArmShoulderToSetPoint"),
+			mSetPoint(setpoint) {
 	}
 	virtual void Initialize(){
 		mDone = false;
-		if (mLinked){
-			arm->SetWristLinked(true);
-		}
+		arm->SetWristLinked(true);
 		arm->SetPivotArmAbs(mSetPoint);
 	}
-	void Execute(){
-		if(false){   //TODO: check if motor is stalled
-
-		}
-	}
+	void Execute(){}
 	bool IsFinished(){
 		return arm->IsArmOnTarget() || mDone;
 	}
 	void End(){
-		if (mLinked){
-			arm->SetWristLinked(false);
-		}
+		arm->SetWristLinked(false);
 		//if (mSetPoint != ARM_STEP_HEIGHT) {
 			arm->StopPivotArm();
 		//}
