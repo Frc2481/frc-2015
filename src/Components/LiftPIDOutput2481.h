@@ -24,6 +24,7 @@ public:
 	void Set(float output);
 	void InvertMotor(bool invert);
 	float GetMotorCurrent();
+	float Get();
 };
 
 #endif /* SRC_COMPONENTS_LIFTPIDOUTPUT2481_H_ */

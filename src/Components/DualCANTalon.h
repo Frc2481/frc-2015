@@ -23,6 +23,7 @@ public:
 	void Set(float speed);
 	float GetOutputCurrent();
 	float GetOutputVoltage();
+	float Get();
 };
 
 #endif /* SRC_COMPONENTS_DUALCANTALON_H_ */

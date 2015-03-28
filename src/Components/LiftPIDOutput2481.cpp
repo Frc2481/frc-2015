@@ -44,3 +44,7 @@ void LiftPIDOutput2481::InvertMotor(bool invert) {
 float LiftPIDOutput2481::GetMotorCurrent() {
 	return mMotor->GetOutputCurrent();
 }
+
+float LiftPIDOutput2481::Get() {
+	return mMotor->Get();
+}

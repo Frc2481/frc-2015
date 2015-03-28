@@ -49,3 +49,7 @@ float DualCANTalon::GetOutputVoltage() {
 
 	return averageVoltage;
 }
+
+float DualCANTalon::Get() {
+	return mAMotor->Get();
+}

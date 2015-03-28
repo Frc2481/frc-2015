@@ -45,6 +45,7 @@ void Lift2481::PeriodicUpdate() {
 	SmartDashboard::PutNumber("Brake State1", (int)mBrakeState);
 
 	SmartDashboard::PutNumber("PIDGet Stacker", mEncoder->PIDGet());
+	SmartDashboard::PutNumber("Stacker Speed", mPIDOutput->Get());
 
 	if (mState == NORMAL) {
 
