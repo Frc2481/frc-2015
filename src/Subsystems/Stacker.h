@@ -13,18 +13,6 @@ private:
 	// for methods that implement subsystem capabilities
 	Lift2481* mRightLift;
 	int mToteCount, mDesiredToteCount;
-	float mMaxPower;
-	PowerDistributionPanel p;
-
-	enum Direction{
-		Raising,
-		Lowering
-	} mCounterState;
-
-	enum Stopped{
-		Up,
-		Down
-	} mLiftLastExtreme;
 
 public:
 	enum StackerLiftID{
@@ -44,7 +32,6 @@ public:
 	bool IsEnabled();
 	int GetToteCount() const;
 	void ResetToteCount();
-	void UpdateToteCount();
 	void SetToteCount(int toteCount);
 	void IncrementToteCount();
 	void DecrementToteCount();

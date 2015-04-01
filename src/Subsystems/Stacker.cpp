@@ -3,14 +3,14 @@
 #include "../RobotMap.h"
 
 Stacker::Stacker() :
-		Subsystem("Stacker"), mToteCount(0), mDesiredToteCount(6), mLiftLastExtreme(Up), mMaxPower(0)
+		Subsystem("Stacker"),
+		mToteCount(0),
+		mDesiredToteCount(6)
 {
 	float p = PersistedSettings::GetInstance().Get("STACKER_P", 0.0002);
 	float i = PersistedSettings::GetInstance().Get("STACKER_I", 0.0002);
-	printf ("%f %f \n", p, i);
 
 	mRightLift = new Lift2481(RIGHT_STACKER, STACKER_ENCODER_A, STACKER_ENCODER_B, p, i, 0, STACKER_RIGHT_TOP_LIMIT, STACKER_RIGHT_BOTTOM_LIMIT, STACKER_BRAKE);
-	mLiftLastExtreme = Down;
 }
 
 void Stacker::InitDefaultCommand()
@@ -21,7 +21,6 @@ void Stacker::InitDefaultCommand()
 
 void Stacker::Reset() {
 	mRightLift->Reset();
-	mLiftLastExtreme = Down;
 }
 
 bool Stacker::OnTarget() {
@@ -50,35 +49,11 @@ void Stacker::PeriodicUpdate() {
 	SmartDashboard::PutNumber("Stacker Current AVG Power", mRightLift->GetAverageCurrent() * mRightLift->GetAverageVoltage());
 
 	mRightLift->PeriodicUpdate();
-	float rpos = mRightLift->GetCurrentPostion();
-	float rdpos = mRightLift->GetDesiredPostion();
-
-	if (rpos < rdpos){
-		mCounterState = Raising;
-	}
-	else if (rpos > rdpos){
-		mCounterState = Lowering;
-	}
-
-	if (mCounterState == Raising &&
-			mLiftLastExtreme == Down &&
-			(rpos > (STACKER_POSITION_UP - (STACKER_TICKS_PER_INCH + 100)))){
-
-		mLiftLastExtreme = Up;
-	}
-	else if (mCounterState == Lowering &&
-			mLiftLastExtreme == Up &&
-			(rpos < (STACKER_POSITION_DOWN + (STACKER_TICKS_PER_INCH + 100)))){
-
-		mLiftLastExtreme = Down;
-	}
 
 	float error = fabs(mRightLift->GetCurrentPostion() - mRightLift->GetDesiredPostion());
 	if (error > 2000) {
 		mRightLift->GetController()->ResetError();
 	}
-
-	mMaxPower = std::max(mRightLift->GetAverageCurrent() * mRightLift->GetAverageVoltage(),mMaxPower);
 
 #ifdef DEBUGGING
 	SmartDashboard::PutNumber("ToteCount", mToteCount);
@@ -104,32 +79,6 @@ void Stacker::SetToteCount(int toteCount) {
 
 bool Stacker::IsResetting(){
 	return mRightLift->IsResetting();
-}
-
-void Stacker::UpdateToteCount(){
-
-	if (mMaxPower > TOTE_COUNT_6_CURRENT_THRESHOLD){
-		mToteCount = 6;
-	}
-	else if (mMaxPower > TOTE_COUNT_5_CURRENT_THRESHOLD){
-		mToteCount = 5;
-	}
-	else if (mMaxPower > TOTE_COUNT_4_CURRENT_THRESHOLD){
-		mToteCount = 4;
-	}
-	else if (mMaxPower > TOTE_COUNT_3_CURRENT_THRESHOLD){
-		mToteCount = 3;
-	}
-	else if (mMaxPower > TOTE_COUNT_2_CURRENT_THRESHOLD){
-		mToteCount = 2;
-	}
-	else if (mMaxPower > TOTE_COUNT_1_CURRENT_THRESHOLD){
-		mToteCount = 1;
-	}
-	else {
-		mToteCount = 0;
-	}
-	mMaxPower = 0;
 }
 
 void Stacker::IncrementToteCount() {
