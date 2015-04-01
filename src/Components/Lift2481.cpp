@@ -104,8 +104,12 @@ void Lift2481::SetDesiredPostion(float pos) {
 
 	if(mState == NORMAL){
 		mPIDController->Reset();
-		mBrakeState = RELEASING; //PIDController is automatically enabled later.
 
+		if (mBrake->Get()) {
+			mPIDController->Enable();
+		} else {
+			mBrakeState = RELEASING; //PIDController is automatically enabled later.
+		}
 	}
 }
 
