@@ -14,7 +14,6 @@
 class RotateToAngle: public CommandBase
 {
 private:
-	PIDController* PIDController2481;
 	class PIDRotate : public PIDOutput{
 
 		private:
@@ -33,20 +32,43 @@ private:
 				value = output;
 			}
 		};
-	PIDRotate* rotate;
+	float mAngle;
+	PIDRotate* mRotate;
+	PIDController* mTurnController;
+	bool mOnTarget;
 public:
-	RotateToAngle(){}
-	void Initialize(){
-		rotate = new PIDRotate();
-		PIDController2481 = new PIDController(0.01f,0.005f,0.0f, driveTrain->GetIMU(), rotate);
+	RotateToAngle(float angle)
+		: 	mAngle(angle),
+			mRotate(new PIDRotate()),
+			mTurnController(new PIDController(0.009f,0.0001,0.0f, driveTrain->GetIMU(), mRotate)),
+			mOnTarget(false){
+		Requires(driveTrain);
+		mTurnController->SetOutputRange(-.5,.5);
+		mTurnController->SetInputRange(-180, 180);
+		mTurnController->SetContinuous(true);
+		mTurnController->SetAbsoluteTolerance(2);
 	}
-	void Execute(){driveTrain->Crab(0.0,0.0,rotate->getValue());}
+	void Initialize(){
+		mOnTarget = false;
+		driveTrain->SetBrake(true);
+		mTurnController->SetSetpoint(mAngle);
+		mTurnController->Enable();
+		SetTimeout(3);
+	}
+	void Execute(){
+		driveTrain->Crab(0.0,0.0,mRotate->getValue());
+
+		if (mTurnController->OnTarget() && !mOnTarget) {
+			mOnTarget = true;
+			mTurnController->Disable();
+			SetTimeout(TimeSinceInitialized() + .2);
+		}
+	}
 	bool IsFinished(){
-		return PIDController2481->OnTarget();
+		return IsTimedOut();
 	}
 	void End(){
-		delete rotate;
-		delete PIDController2481;
+		driveTrain->SetBrake(false);
 	}
 	void Interrupted(){
 		End();

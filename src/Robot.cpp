@@ -39,6 +39,7 @@
 #include "Commands/ThreeToteStackAutoNoStrafeCommandGroup.h"
 #include "Commands/ArmWristStalledMonitor.h"
 #include "Commands/StackerStalledMonitor.h"
+#include "Commands/RotateToAngle.h"
 
 #include "RobotParameters.h"
 
@@ -155,6 +156,7 @@ private:
 		//PersistedSettings::GetInstance().Set("SHOULDER_P", .05);
 
 		SmartDashboard::PutData("Three Tote Stack Auto", new ThreeToteStackAutoCommandGroup());
+		SmartDashboard::PutData("RotateBotTo90", new RotateToAngle(90));
 	}
 	
 	void DisabledPeriodic()
