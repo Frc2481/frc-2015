@@ -96,6 +96,12 @@ float Lift2481::GetDesiredPostion() {
 void Lift2481::SetDesiredPostion(float pos) {
 	mPIDController->SetSetpoint(pos);
 
+	if (GetCurrentPostion() < pos) {
+		mPIDController->SetOutputRange(0, 1);
+	} else {
+		mPIDController->SetOutputRange(-1, 1);
+	}
+
 	if(mState == NORMAL){
 		mPIDController->Reset();
 		mBrakeState = RELEASING; //PIDController is automatically enabled later.
