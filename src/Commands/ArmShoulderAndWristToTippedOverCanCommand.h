@@ -7,9 +7,9 @@
 class ArmShoulderAndWristToTippedOverCanCommand: public CommandGroup
 {
 public:
-	ArmShoulderAndWristToTippedOverCanCommand() {
+	ArmShoulderAndWristToTippedOverCanCommand(float angle) {
 		AddSequential(new ArmWristToTippedOverCan(265));
-		AddSequential(new ArmShoulderToFloorTippedOverCan(SHOULDER_TIPPED_OVER_CAN));
+		AddSequential(new ArmShoulderToFloorTippedOverCan(angle));
 	}
 };
 

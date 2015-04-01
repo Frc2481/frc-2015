@@ -59,6 +59,7 @@ private:
 	Button* armBottom;
 	Button* armToStep;
 	Button* armToTippedOverCan;
+	Button* armToPreTippedOverCan;
 	Button* wristTo90;
 	Button* wristTo180;
 	Button* wristTo270;
