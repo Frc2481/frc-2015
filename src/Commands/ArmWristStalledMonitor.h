@@ -23,7 +23,9 @@ public:
 			mWristResetting = false;
 		}
 	}
-	bool IsFinished(){}
+	bool IsFinished(){
+		return false;
+	}
 	void End(){}
 	void Interrupted(){}
 };

@@ -18,7 +18,6 @@ class DriveTrain: public Subsystem {
 
 #define MAX_CHANGE 10
 private:
-	PIDController *mPIDGyro;
 	SwerveModule *FLWheel;
 	SwerveModule *FRWheel;
 	SwerveModule *BRWheel;
@@ -49,6 +48,7 @@ private:
 	bool isForward;
 	bool gyroCorrection;
 	double mXPos, mYPos, mTwist;
+	PIDController *mPIDGyro;
 public:
 	DriveTrain();
 	virtual ~DriveTrain();

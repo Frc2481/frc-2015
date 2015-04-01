@@ -15,8 +15,6 @@ private:
 	PIDSource* input;
 	PIDOutput* output;
 	RollingAccumulator <float, 50> mHistory;
-	bool mStallDetection;
-	bool mStalled;
 	float p;
 	float i;
 	float d;
@@ -37,6 +35,8 @@ private:
 	bool mBrake;
 	bool mInverted;
 	int mStallCounter;
+	bool mStallDetection;
+	bool mStalled;
 	MUTEX_ID pSemaphore;
 	Notifier* pUpdate;
 public:

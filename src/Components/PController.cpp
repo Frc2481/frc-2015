@@ -172,10 +172,9 @@ void PController::Update() {
 						feedback = 0;
 					}
 					float delta = fabs(feedback - prevFeedback);
-					SmartDashboard::PutNumber("Shoulder Stall Detection 1", delta);
-					SmartDashboard::PutNumber("Shoulder Stall Detection 2", mStallCounter);
 					if (delta < 1) {
-						mStallCounter = std::min(++mStallCounter, 30);
+						mStallCounter++;
+						mStallCounter = std::min(mStallCounter, 30);
 					} else {
 						mStallCounter = 0;
 						prevFeedback = feedback;

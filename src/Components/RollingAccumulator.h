@@ -18,6 +18,7 @@ private:
 
 public:
 	RollingAccumulator() {
+		_index = 0;
 		reset();
 	}
 	virtual ~RollingAccumulator() {}
@@ -36,7 +37,8 @@ public:
 		_values[_index] = v;
 		_sum += v;
 		_sumSqr += (v * v);
-		_index = ++_index % I;
+		_index++;
+		_index = _index % I;
 	}
 	
 	A avg() {

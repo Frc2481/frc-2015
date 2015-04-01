@@ -26,10 +26,10 @@ Arm::Arm() : Subsystem("Arm"),
 		mNormalLoopCounter(0),
 		mPrevWristSetPoint(0),
 		mWristStallCounter(0),
-		mWristState(NORMAL),
 		mWristNoEncoderOffset(false),
 		mWristOverride(false),
-		mDummyPID(new PIDController(.05,.1,.01,NULL,NULL))
+		mDummyPID(new PIDController(.05,.1,.01,NULL,NULL)),
+		mWristState(NORMAL)
 		{
 
 	SmartDashboard::PutData("WristPID", mDummyPID);
@@ -203,11 +203,6 @@ void Arm::PeriodicUpdate() {
 //	}
 
 #ifdef DEBUGGING
-
-	float shoulderP = PersistedSettings::GetInstance().Get("SHOULDER_P");
-	float shoulderI = PersistedSettings::GetInstance().Get("SHOULDER_I");
-	float wristP = PersistedSettings::GetInstance().Get("WRIST_P");
-	float wristI = PersistedSettings::GetInstance().Get("WRIST_I");
 
 //	SmartDashboard::PutData("Wrist PID", mPIDWrist);
 //	SmartDashboard::PutData("Shoulder PID", mPIDShoulder);
