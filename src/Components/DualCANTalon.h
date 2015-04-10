@@ -17,13 +17,16 @@ private:
 	bool mAInverted;
 	bool mBInverted;
 public:
-	DualCANTalon(int motorA, int motorB, bool AInvert, bool BInvert);
+	DualCANTalon(int motorA, int motorB, bool AInvert, bool BInvert, bool ramp = false, bool motorBrake = true);
 	virtual ~DualCANTalon();
 	void PIDWrite(float output);
 	void Set(float speed);
+	void SetRamp(float value);
 	float GetOutputCurrent();
 	float GetOutputVoltage();
 	float Get();
+	CANTalon* GetTalonA();
+	CANTalon* GetTalonB();
 };
 
 #endif /* SRC_COMPONENTS_DUALCANTALON_H_ */

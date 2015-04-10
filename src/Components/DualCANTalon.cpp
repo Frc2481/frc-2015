@@ -8,14 +8,21 @@
 #include <Components/DualCANTalon.h>
 
 
-DualCANTalon::DualCANTalon(int motorA, int motorB, bool AInvert, bool BInvert) {
+DualCANTalon::DualCANTalon(int motorA, int motorB, bool AInvert, bool BInvert, bool ramp, bool motorBrake) {
 	mAMotor = new CANTalon(motorA);
 	mBMotor = new CANTalon(motorB);
 	mAInverted = AInvert;
 	mBInverted = BInvert;
 
-	mAMotor->ConfigNeutralMode(CANTalon::kNeutralMode_Brake);
-	mBMotor->ConfigNeutralMode(CANTalon::kNeutralMode_Brake);
+	if(motorBrake){
+		mAMotor->ConfigNeutralMode(CANTalon::kNeutralMode_Brake);
+		mBMotor->ConfigNeutralMode(CANTalon::kNeutralMode_Brake);
+	}
+
+	if(ramp){
+		mAMotor->SetVoltageRampRate(12);
+		mBMotor->SetVoltageRampRate(12);
+	}
 }
 
 DualCANTalon::~DualCANTalon() {
@@ -52,4 +59,17 @@ float DualCANTalon::GetOutputVoltage() {
 
 float DualCANTalon::Get() {
 	return mAMotor->Get();
+}
+
+CANTalon* DualCANTalon::GetTalonA() {
+	return mAMotor;
+}
+
+void DualCANTalon::SetRamp(float value) {
+	mAMotor->SetVoltageRampRate(value);
+	mBMotor->SetVoltageRampRate(value);
+}
+
+CANTalon* DualCANTalon::GetTalonB() {
+	return mBMotor;
 }
