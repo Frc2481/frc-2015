@@ -13,6 +13,7 @@
 #include "DualCANTalon.h"
 #include "RollingAccumulator.h"
 #include "LiftPIDOutput2481.h"
+#include "DigitalInputTrigger.h"
 
 class Lift2481 {
 public:
@@ -31,6 +32,7 @@ private:
 	PIDController2481* mPIDController;
 	DigitalInput* mBottomLimit;
 	DigitalInput* mTopLimit;
+	DigitalInputTrigger* mImputTrigger;
 	Solenoid* mBrake;
 	LiftState mState;
 	BrakeState mBrakeState;

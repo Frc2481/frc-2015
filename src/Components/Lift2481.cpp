@@ -7,6 +7,7 @@
 
 #include "Lift2481.h"
 #include "RobotParameters.h"
+#include "Commands/StackerAutoZero.h"
 
 Lift2481::Lift2481(int motor, uint32_t encoderA, uint32_t encoderB, float P,
 		float I, float D, uint32_t bottomLimit, uint32_t topLimit, int brake) {
@@ -17,6 +18,9 @@ Lift2481::Lift2481(int motor, uint32_t encoderA, uint32_t encoderB, float P,
 	mPIDOutput = new LiftPIDOutput2481(motor, mBottomLimit, mTopLimit);
 	mPIDController = new PIDController2481(P, I, D, mEncoder, mPIDOutput, .01);
 	mBrake = new Solenoid(brake);
+
+	mImputTrigger = new DigitalInputTrigger(mBottomLimit);
+	mImputTrigger->WhileActive(new StackerAutoZero());
 
 	mMotorOffCount = mMotorOnCount = 0;
 
