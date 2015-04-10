@@ -5,20 +5,24 @@
 FishingPoles::FishingPoles() :
 		Subsystem("FishingPoles")
 {
-	mFishingPole = new Solenoid(FISHING_POLE_SOLENOID);
+	mFishingPoleL = new Solenoid(FISHING_POLE_SOLENOID_L);
+	mFishingPoleR = new Solenoid(FISHING_POLE_SOLENOID_R);
 }
 
 void FishingPoles::InitDefaultCommand(){
 }
 
 void FishingPoles::Cast() {
-	mFishingPole->Set(true);
+	mFishingPoleL->Set(true);
+	mFishingPoleR->Set(true);
 }
 
 void FishingPoles::Reel() {
-	mFishingPole->Set(false);
+	mFishingPoleL->Set(false);
+	mFishingPoleR->Set(false);
+
 }
 
 bool FishingPoles::GoneFishing() {
-	return mFishingPole->Get();
+	return mFishingPoleL->Get();
 }

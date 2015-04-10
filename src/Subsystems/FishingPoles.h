@@ -7,7 +7,8 @@
 class FishingPoles: public Subsystem
 {
 private:
-	Solenoid* mFishingPole;
+	Solenoid* mFishingPoleL;
+	Solenoid* mFishingPoleR;
 
 public:
 	FishingPoles();
