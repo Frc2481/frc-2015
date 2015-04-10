@@ -337,6 +337,7 @@ void DriveTrain::Crab(double xPos, double yPos, double twist) {
 
 				//TODO: Decide if we want this.
 			if (xPos != 0 || yPos != 0) {
+				gyroAngle -= gyroCorrectionOffset;
 				gyroAngle = std::max(std::min(-gyroAngle, 30.0f), -30.0f);
 				gyroAccumError += (gyroAngle * 2.0);
 				gyroAccumError = std::max(std::min(gyroAccumError, 5.0), -5.0);
@@ -517,4 +518,12 @@ void DriveTrain::SetBrake(bool brake) {
 	FRWheel->SetBrake(brake);
 	BLWheel->SetBrake(brake);
 	BRWheel->SetBrake(brake);
+}
+
+double DriveTrain::GetGyroCorrectionOffset() {
+	return gyroCorrectionOffset;
+}
+
+void DriveTrain::SetGyroCorrectionOffset(double offset) {
+	gyroCorrectionOffset = offset;
 }

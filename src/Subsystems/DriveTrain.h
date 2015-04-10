@@ -40,7 +40,7 @@ private:
 	float roll;
 	float pitch;
 	double gyroAccumError = 0;
-
+	double gyroCorrectionOffset = 0;
 	float originX;
 	float originY;
 
@@ -72,6 +72,7 @@ public:
 	float GetHeading();
 	float GetRoll();
 	float GetPitch();
+	double GetGyroCorrectionOffset();
 	void Stop();
 	void SetFieldCentric(bool fieldCentric);
 	float GetWheelAngle(int wheel);
@@ -79,6 +80,7 @@ public:
 	void SetOptimized(bool optimized);
 	void SetForward(bool fwd);
 	void SetGyroCorrection(bool b);
+	void SetGyroCorrectionOffset(double offset);
 	void ResetGyroAccumError();
 	void ZeroYaw();
 	bool IsGyroCorrection() const;
