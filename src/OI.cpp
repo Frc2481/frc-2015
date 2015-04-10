@@ -89,10 +89,6 @@ OI::OI()
 	reverseIntake = REVERSE_INTAKE_BUTTON;
 	reverseIntake->WhileHeld(new IntakeTurnOnReverse());
 
-	//Kill All Button
-//	killAll = KILL_EVERYTHING_BUTTON;
-//	killAll->WhenPressed(new KILL_EVERYTHING_COMMAND());
-
 	//Aux Stick
 
     //intakeOn

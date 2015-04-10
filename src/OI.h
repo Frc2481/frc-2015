@@ -31,8 +31,6 @@ private:
 	Button* stackerStep;
 	bool boosting;
 
-	Button* killAll;
-
 	//debug stick
 	Button* incP;
 	Button* decP;
