@@ -24,10 +24,10 @@ public:
 		return CommandBase::stacker->GetPosition() < 500;
 	}
 	void End(){
-		CommandBase::stacker->Disable(true, false);
+		stacker->Disable(true, false);
 	}
 	void Interrupted(){
-		End();
+		stacker->Disable();
 	}
 };
 
