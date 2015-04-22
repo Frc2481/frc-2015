@@ -131,6 +131,7 @@ void Arm::PeriodicUpdate() {
 	 * it back down. Additionally, if we are too high, open the gripper so that the can is
 	 * pushed up and not the wrist.
 	 */
+//#define WRIST_DRIFT_DETECTION 1
 #ifdef WRIST_DRIFT_DETECTION
 	if (mShoulderEncoder->GetAngle() < 20) {
 		if (mWristEncoder->GetAngle() < 262 && CommandBase::stacker->GetToteCount() > 3){   //4 to 3
@@ -179,16 +180,24 @@ void Arm::PeriodicUpdate() {
 
 	SmartDashboard::PutNumber("WristSafetyState", mWristState);
 	SmartDashboard::PutNumber("WristSafetyCount", mNormalLoopCounter);
-	//End Gripper Height Detection
 #endif
 
-
+	/*
+	 *Code to insure that the arm does not extend over our max height
+	 */
+#define ARM_EXTENTION_SAFETY 1
+#ifdef ARM_EXTENTION_SAFETY
 	if (GetShoulderAngle() < 50){
 		mArmExtention->Set(false);
 	}
+#endif
+
 
 //	mWristCurrent.add(mPivotWristTalon->GetOutputCurrent());
 //	if (mWristCurrent.avg() > 7.5){
+
+#define WRIST_STALL_DETECTION 1
+#ifdef WRIST_STALL_DETECTION
 	if (mPivotWristTalon->GetOutputCurrent() > 7.5) {
 		mWristStallCounter++;
 	} else {
@@ -207,6 +216,7 @@ void Arm::PeriodicUpdate() {
 		mPivotWristTalon->Set(0.0);
 		mPIDWrist->Disable();
 	}
+#endif
 
 	if (mWristLocked && !mWristOverride){
 		SetWristPosition(GetParallel());
