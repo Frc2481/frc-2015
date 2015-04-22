@@ -48,7 +48,6 @@ private:
 	bool isForward;
 	bool gyroCorrection;
 	double mXPos, mYPos, mTwist;
-	PIDController *mPIDGyro;
 public:
 	DriveTrain();
 	virtual ~DriveTrain();
