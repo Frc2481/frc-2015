@@ -49,8 +49,8 @@ private:
 //	Button* slideRetract;
 	Button* coOpOnStep;
 	Button* pickCoOpUp;
-	Button* armExtend;
-	Button* armRetract;
+	Button* stackerExtend;
+	Button* stackerRetract;
 	Button* gripperOpen;
 	Button* armRaise;
 	Button* armLower;

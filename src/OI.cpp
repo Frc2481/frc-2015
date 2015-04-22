@@ -100,13 +100,13 @@ OI::OI()
 //	intakeOn = INTAKE_ON_BUTTON;
 //	intakeOn->WhileHeld(new IntakeManualCommand());
 
-	//Arm Extend
-	armExtend = ARM_EXTEND_BUTTON;
-	armExtend->WhenPressed(new ArmExtendCommand());
+	//Stacker Extend
+	stackerExtend = STACKER_EXTEND_BUTTON;
+	stackerExtend->WhenPressed(new ExtendSlideCommand());
 
 	//Arm Retract
-	armRetract = ARM_RETRACT_BUTTON;
-	armRetract->WhenPressed(new ArmRetractCommand());
+	stackerRetract = STACKER_RETRACT_BUTTON;
+	stackerRetract->WhenPressed(new RetractSlideCommand());
 
 	//Arm Raise
 	armRaise = ARM_RAISE_BUTTON;
