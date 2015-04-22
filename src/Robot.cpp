@@ -74,6 +74,7 @@ private:
 		autoOptions->AddDefault("Nothing", (void*)0);
 		autoOptions->AddObject("Three Tote Auto", new ThreeToteStackAutoCommandGroup());
 		autoOptions->AddObject("Get RC from Step", new RemoveRCFromStepCommand());
+		autoOptions->AddObject("No Strafe three tote (TEST)", new ThreeToteStackNoStrafeAutoCommandGroup());
 		fishPoleAuto = new FishingPoleAutoCommandGroup();
 		autoOptions->AddObject("Fishing Pole", fishPoleAuto);
 		//autoOptions->AddObject("Fishing Pole Auto", new FishingPoleAutoCommandGroup());

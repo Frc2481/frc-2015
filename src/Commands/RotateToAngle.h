@@ -38,37 +38,39 @@ private:
 	bool mOnTarget;
 public:
 	RotateToAngle(float angle)
-		: 	mAngle(angle),
+		: 	mAngle(angle)/*,
 			mRotate(new PIDRotate()),
 			mTurnController(new PIDController(0.009f,0.0001,0.0f, driveTrain->GetIMU(), mRotate)),
-			mOnTarget(false){
+			mOnTarget(false)*/{
 		Requires(driveTrain);
-		mTurnController->SetOutputRange(-.5,.5);
-		mTurnController->SetInputRange(-180, 180);
-		mTurnController->SetContinuous(true);
-		mTurnController->SetAbsoluteTolerance(2);
+		//mTurnController->SetOutputRange(-.5,.5);
+		//mTurnController->SetInputRange(-180, 180);
+		//mTurnController->SetContinuous(true);
+		//mTurnController->SetAbsoluteTolerance(2);
 	}
 	void Initialize(){
-		mOnTarget = false;
-		driveTrain->SetBrake(true);
-		mTurnController->SetSetpoint(mAngle);
-		mTurnController->Enable();
-		SetTimeout(3);
+		//mOnTarget = false;
+		//driveTrain->SetBrake(true);
+		//mTurnController->SetSetpoint(mAngle);
+		//mTurnController->Enable();
+		//SetTimeout(3);
 	}
 	void Execute(){
-		driveTrain->Crab(0.0,0.0,mRotate->getValue());
+		driveTrain->Crab(0.0,0.0, 0.0008 * (mAngle - driveTrain->GetIMU()->GetYaw())); //mRotate->getValue());
 
-		if (mTurnController->OnTarget() && !mOnTarget) {
-			mOnTarget = true;
-			mTurnController->Disable();
-			SetTimeout(TimeSinceInitialized() + .2);
-		}
+		//if (mTurnController->OnTarget() && !mOnTarget) {
+		//	mOnTarget = true;
+		//	mTurnController->Disable();
+		//	SetTimeout(TimeSinceInitialized() + .2);
+		//}
 	}
 	bool IsFinished(){
-		return IsTimedOut();
+		//return IsTimedOut();
+		return fabs((mAngle - driveTrain->GetIMU()->GetYaw())) < 4.0;
 	}
 	void End(){
-		driveTrain->SetBrake(false);
+		//driveTrain->SetBrake(false);
+		driveTrain->Stop();
 	}
 	void Interrupted(){
 		End();
