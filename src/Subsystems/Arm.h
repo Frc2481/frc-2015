@@ -26,6 +26,7 @@ private:
 	int mWristStallCounter;
 	bool mWristNoEncoderOffset;
 	bool mWristOverride;
+	float mShoulderMaxSpeedOutput;
 	float mPrevShoulderValue;
 	bool mGripperShudderEnabled;
 	int mShoulderWraparoundDetectionCount;

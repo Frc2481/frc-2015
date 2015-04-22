@@ -11,6 +11,8 @@
 #include "CommandBase.h"
 #include "Components/PersistedSettings.h"
 
+#define SHOULDER_RAMP_RATE 0.15
+
 Arm::Arm() : Subsystem("Arm"),
 		mShoulderEncoder     (new ContinuousEncoder(SHOULDER_ENCODER)),
 		mWristEncoder        (new ContinuousEncoder(WRIST_ENCODER)),
@@ -20,7 +22,7 @@ Arm::Arm() : Subsystem("Arm"),
 		mPivotShoulderTalon  (new DualCANTalon(ARM_SHOULDER_PIVOT_A, ARM_SHOULDER_PIVOT_B, false, true)),
 		mPivotWristTalon     (new CANTalon(ARM_WRIST_PIVOT)),
 		mPIDShoulder         (new PController(mShoulderEncoder,mPivotShoulderTalon,
-								.8,0)),
+								.1,0)),
 		mPIDWrist            (new PController(mWristEncoder,mPivotWristTalon,
 								PersistedSettings::GetInstance().Get("WRIST_P"),0)),
 		mWristOffset(0.0f),
@@ -30,6 +32,7 @@ Arm::Arm() : Subsystem("Arm"),
 		mWristNoEncoderOffset(false),
 		mWristOverride(false),
 		mDummyPID(new PIDController(.05,.1,.01,NULL,NULL)),
+		mShoulderMaxSpeedOutput(SHOULDER_RAMP_RATE),
 		mPrevShoulderValue(mShoulderEncoder->GetAngle()),
 		mGripperShudderEnabled(false),
 		mShoulderWraparoundDetectionCount(0),
@@ -49,10 +52,12 @@ Arm::Arm() : Subsystem("Arm"),
 	mPIDWrist->SetInputRange(0.0, 360.0);
 
 	mPIDShoulder->SetTolerance(.75);
-	mPIDWrist->SetTolerance(2);
+	mPIDWrist->SetTolerance(1);
 
 	mPIDWrist->SetContinuous(false);
 	mPIDShoulder->SetContinuous(true);
+
+	mPIDShoulder->SetOutputRange(-1, 1);
 
 	mPIDWrist->SetOutputRange(-1, 1);
 	mPIDWrist->Disable();
@@ -84,6 +89,14 @@ void Arm::PeriodicUpdate() {
 	double shoulderAngle = GetShoulderAngle();
 //	float wristAngle = -mShoulderEncoder->GetAngle() + mWristOffset;
 //	while (wristAngle < 0){
+	if (mPIDShoulder->GetSetPoint() > shoulderAngle){
+		mShoulderMaxSpeedOutput = std::min(mShoulderMaxSpeedOutput + SHOULDER_RAMP_RATE, 1.0);
+		mPIDShoulder->SetOutputRange(-mShoulderMaxSpeedOutput, 1.0);
+	}
+	else {
+		mShoulderMaxSpeedOutput = std::max(mShoulderMaxSpeedOutput - SHOULDER_RAMP_RATE, shoulderAngle < 35 ? -.6 : -1.0);
+		mPIDShoulder->SetOutputRange(-1.0, -mShoulderMaxSpeedOutput);
+	}
 
 //	}
 
@@ -261,6 +274,7 @@ void Arm::PeriodicUpdate() {
 void Arm::SetPivotArmAbs(float position) {
 	mPIDShoulder->ResetStalled();
 	mPIDShoulder->SetSetpoint(position);
+	mShoulderMaxSpeedOutput = SHOULDER_RAMP_RATE * (position > GetShoulderAngle() ? 1.0 : -1.0);
 	mPIDShoulder->Enable();
 	SmartDashboard::PutNumber("Arm SetPoint", position);
 }
@@ -407,7 +421,7 @@ double Arm::GetParallel() {
 
 void Arm::SetShoulderManual(double speed) {
 	mPIDShoulder->Disable();
-	mPivotShoulderTalon->Set(speed);
+	mPivotShoulderTalon->Set(speed * .4);
 }
 
 float Arm::GetShoulderAngle() {
