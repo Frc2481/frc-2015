@@ -26,8 +26,9 @@ private:
 	int mWristStallCounter;
 	bool mWristNoEncoderOffset;
 	bool mWristOverride;
+	float mPrevShoulderValue;
 	bool mGripperShudderEnabled;
-	int mShouldWraparoundDetectionCount;
+	int mShoulderWraparoundDetectionCount;
 	RollingAccumulator<double, 10> mWristCurrent;
 	Notifier* mGripperShudder;
 

@@ -30,7 +30,9 @@ Arm::Arm() : Subsystem("Arm"),
 		mWristNoEncoderOffset(false),
 		mWristOverride(false),
 		mDummyPID(new PIDController(.05,.1,.01,NULL,NULL)),
+		mPrevShoulderValue(mShoulderEncoder->GetAngle()),
 		mGripperShudderEnabled(false),
+		mShoulderWraparoundDetectionCount(0),
 		mWristState(NORMAL)
 		{
 
@@ -79,6 +81,7 @@ void Arm::SetWristOffset(float wristOffset) {
 
 void Arm::PeriodicUpdate() {
 
+	double shoulderAngle = GetShoulderAngle();
 //	float wristAngle = -mShoulderEncoder->GetAngle() + mWristOffset;
 //	while (wristAngle < 0){
 
@@ -90,6 +93,27 @@ void Arm::PeriodicUpdate() {
 //	else {
 //		mPIDShoulder->SetP(.5);
 //	}
+
+	/*
+	 * The Goal of this Code is to insure that the shoulder does not wraparound at the bottom
+	 * of the arm. it checks if the encoder value is decreasing and the motors are positive.
+	 */
+#define SHOULDER_WRAPAROUND_DETECTION 1
+#ifdef SHOULDER_WRAPAROUND_DETECTION
+	if (mPivotShoulderTalon->Get() > 0 &&
+			mPrevShoulderValue > shoulderAngle &&
+			shoulderAngle > 45){
+		mShoulderWraparoundDetectionCount++;
+	} else {
+		mShoulderWraparoundDetectionCount = 0;
+	}
+
+	if (mShoulderWraparoundDetectionCount > 3) {
+		mPIDShoulder->Disable();
+	}
+
+	mPrevShoulderValue = shoulderAngle;
+#endif
 
 	/*
 	 * The goal of this code is to detect the gripper going above max height and forcing
@@ -148,7 +172,7 @@ void Arm::PeriodicUpdate() {
 #endif
 
 
-	if (mShoulderEncoder->GetAngle() < 50){
+	if (GetShoulderAngle() < 50){
 		mArmExtention->Set(false);
 	}
 
@@ -242,7 +266,7 @@ void Arm::SetPivotArmAbs(float position) {
 }
 
 void Arm::SetPivotArmRelative(float position) {
-	SetPivotArmAbs(position + mShoulderEncoder->GetAngle());
+	SetPivotArmAbs(position + GetShoulderAngle());
 }
 
 void Arm::CloseGripper() {
@@ -274,12 +298,12 @@ bool Arm::IsGripper(){
 }
 
 bool Arm::IsArmOnTarget() {
-	return mPIDShoulder->OnTarget() || mPIDShoulder->GetStalled();
+	return mPIDShoulder->OnTarget() || !mPIDShoulder->IsEnabled() || mPIDShoulder->GetStalled();
 }
 
 void Arm::StopPivotArm() {
 	mPIDShoulder->Disable();
-	if (mShoulderEncoder->GetAngle() < 10) {
+	if (GetShoulderAngle() < 10) {
 		mWristOverride = false;
 	}
 }
@@ -320,7 +344,7 @@ void Arm::SetWristPosition(double pos, bool override) {
 	//FIXME mWristNoEncoderOffset check is not right.
 	if ((!mWristStalled || mWristNoEncoderOffset) && mWristState == NORMAL){
 		double minWrist = 90;
-		if (mShoulderEncoder->GetAngle() < 45) {
+		if (GetShoulderAngle() < 45) {
 			minWrist = GetParallel();
 		}
 		pos = std::min(std::max(pos , minWrist), 270.0);
@@ -370,7 +394,7 @@ void Arm::SetWristLinked(bool linked) {
 }
 
 double Arm::GetParallel() {
-	double encAngle = mShoulderEncoder->GetAngle();
+	double encAngle = GetShoulderAngle();
 	encAngle = encAngle > 150.0 ? 0.5 : encAngle;
 
 	if (encAngle < 10){
@@ -387,7 +411,9 @@ void Arm::SetShoulderManual(double speed) {
 }
 
 float Arm::GetShoulderAngle() {
-	return mShoulderEncoder->GetAngle();
+	double a = mShoulderEncoder->GetAngle();
+	a = a > 200 ? 0 : a;
+	return a;
 }
 
 float Arm::GetWristAngle() {
