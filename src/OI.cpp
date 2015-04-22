@@ -110,11 +110,11 @@ OI::OI()
 
 	//Arm Raise
 	armRaise = ARM_RAISE_BUTTON;
-	armRaise->WhileHeld(new ArmShoulderManualCommand(-1));
+	armRaise->WhileHeld(new ArmShoulderManualCommand(-.7));
 
 	//Arm Lower
 	armLower = ARM_LOWER_BUTTON;
-	armLower->WhileHeld(new ArmShoulderManualCommand(1));
+	armLower->WhileHeld(new ArmShoulderManualCommand(.6));
 
 	//Arm Gripper Open
 	gripperOpen = GRIPPER_OPEN_BUTTON;
