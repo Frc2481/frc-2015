@@ -24,7 +24,7 @@ DriveTrain::DriveTrain() : Subsystem("DriveTrain"),
 				isFieldCentric(false),
 				isForward(true),
 				mXPos(0), mYPos(0), mTwist(0),
-				mPIDGyro(new PIDController(0.1, 0.002, 0, NULL, NULL)){
+				mPIDGyro(new PIDController(0.008, 0.000, 0, NULL, NULL)){
 
 	printf("Pre DriveTrain Constructor \n");
 	prevAngle = 90.0;
@@ -336,7 +336,7 @@ void DriveTrain::Crab(double xPos, double yPos, double twist) {
 		if (gyroCorrection) {
 
 				//TODO: Decide if we want this.
-			if (xPos != 0 || yPos != 0) {
+			//if (xPos != 0 || yPos != 0) {
 				gyroAngle -= gyroCorrectionOffset;
 				gyroAngle = std::max(std::min(-gyroAngle, 30.0f), -30.0f);
 				gyroAccumError += (gyroAngle * 2.0);
@@ -348,11 +348,15 @@ void DriveTrain::Crab(double xPos, double yPos, double twist) {
 				SmartDashboard::PutBoolean("GYRO Correction 2", true);
 				SmartDashboard::PutNumber("Gyro I Accum", gyroAccumError);
 
-				twist *= sqrt((xPos * xPos) + (yPos * yPos));
+				//TODO: Put this back for normal 3 tote to have a chance at working :)
+//				twist *= sqrt((xPos * xPos) + (yPos * yPos));
+//				twist *= 2;
+//				twist = std::max(std::min(twist, .1), -.1);
+
 				twist *= 2;
-				twist = std::max(std::min(twist, .1), -.1);
+				twist = std::max(std::min(twist, .3), -.3);
 				SmartDashboard::PutNumber("GYRO Twist Correct", twist);
-			}
+			//}
 
 
 //			} else {

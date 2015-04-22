@@ -14,7 +14,7 @@ public:
 	void Initialize(){}
 	void Execute(){}
 	bool IsFinished(){
-		return fabs(driveTrain->GetHeading() - mAngle) < 2;
+		return fabs(driveTrain->GetHeading() - mAngle) < 4;
 
 	}
 	void End(){}
