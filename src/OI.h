@@ -29,6 +29,7 @@ private:
 	Button* driveOnToScoringPlatform;
 	Button* toggleFieldCentric;
 	Button* stackerStep;
+	Button* lengthenPoles;
 	bool boosting;
 
 	//debug stick

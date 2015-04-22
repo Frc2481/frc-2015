@@ -45,6 +45,7 @@
 #include "Commands/StackerSetToteCount.h"
 #include "Commands/DriveOnToScoringPlatformCommand.h"
 #include "Commands/ArmShoulderManualCommand.h"
+#include "Commands/LengthenFishingPolesCommand.h"
 
 
 #include "Commands/SetICommand.h"
@@ -88,6 +89,9 @@ OI::OI()
 	//Reverse Intake
 	reverseIntake = REVERSE_INTAKE_BUTTON;
 	reverseIntake->WhileHeld(new IntakeTurnOnReverse());
+
+	lengthenPoles = LENGTHEN_POLES_BUTTON;
+	lengthenPoles->WhenPressed(new LengthenFishingPolesCommand());
 
 	//Aux Stick
 

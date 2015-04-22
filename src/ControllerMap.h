@@ -11,6 +11,7 @@
 #define REVERSE_INTAKE_BUTTON		new JoystickButton(driverStick, XboxController::xbRightBumper)
 #define SET_ORIGIN_BUTTON           new AnalogJoystickButton(driverStick, XboxController::xbLeftTrigger, .5)
 #define TOGGLE_FIELD_CENTRIC_BUTTON new JoystickButton(driverStick, XboxController::xbLeftBumper)
+#define LENGTHEN_POLES_BUTTON		new JoystickButton(driverStick, XboxController::xbXButton)
 
 //Note: NEVER PRESS THIS BUTTON!!!!
 //#define KILL_EVERYTHING_BUTTON		new JoystickButton(driverStick, XboxController::xbBackButton)

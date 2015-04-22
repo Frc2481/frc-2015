@@ -51,6 +51,8 @@ private:
 	Command *autonomousCommand;
 	Command *armWristStalledMonitor;
 	Command *stackerStalledMonitor;
+	Command *fishPoleAuto;
+	Command *shortenFishingPolesCommand;
 	LiveWindow *lw;
 	PowerDistributionPanel pdp;
 //	USBCamera* mCamera;
@@ -64,12 +66,16 @@ private:
 //		mCamera->SetBrightness(50);
 //		mCamera->SetExposureManual(50);
 
+		shortenFishingPolesCommand  = new ShortenFishingPolesCommand();
+
 		//Auto Choosing
 		autoOptions = new SendableChooser();
 
 		autoOptions->AddDefault("Nothing", (void*)0);
 		autoOptions->AddObject("Three Tote Auto", new ThreeToteStackAutoCommandGroup());
 		autoOptions->AddObject("Get RC from Step", new RemoveRCFromStepCommand());
+		fishPoleAuto = new FishingPoleAutoCommandGroup();
+		autoOptions->AddObject("Fishing Pole", fishPoleAuto);
 		//autoOptions->AddObject("Fishing Pole Auto", new FishingPoleAutoCommandGroup());
 		//autoOptions->AddObject("Three Tote Auto (No Can)", new ThreeToteStackAutoNoStrafeCommandGroup());
 		SmartDashboard::PutData("Auto Chooser", autoOptions);
@@ -171,6 +177,10 @@ private:
 		if (autonomousCommand != NULL)
 			autonomousCommand->Start();
 
+		if (autonomousCommand != fishPoleAuto
+				&& shortenFishingPolesCommand != NULL) {
+			shortenFishingPolesCommand->Start();
+		}
 	}
 
 	void AutonomousPeriodic()
