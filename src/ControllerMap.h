@@ -39,20 +39,20 @@
 
 //#define SLIDE_EXTEND_BUTTON		new POVJoystickButton(auxStick, 0, XboxController::xbDPadRight)
 //#define SLIDE_RETRACT_BUTTON		new POVJoystickButton(auxStick, 0, XboxController::xbDPadLeft)
-#define CO_OP_ON_STEP_BUTTON		new AnalogJoystickButton(auxStick, 0, .5);
-#define PICK_UP_CO_OP_BUTTON		new AnalogJoystickButton(auxStick, 0, -.5);
+#define CO_OP_ON_STEP_BUTTON		new AnalogJoystickButton(auxStick, 0, .5)
+#define PICK_UP_CO_OP_BUTTON		new AnalogJoystickButton(auxStick, 0, -.5)
 //#define GRIPPER_OPEN_BUTTON			new AnalogJoystickButton(auxStick, XboxController::xbLeftXAxis, 0.5f)
 //#define GRIPPER_CLOSE_BUTTON		new AnalogJoystickButton(auxStick, XboxController::xbLeftXAxis, -0.5f)
 //#define ARM_RAISE_BUTTON			new JoystickButton(auxStick, XboxController::xbBackButton)
 //#define ARM_LOWER_BUTTON			new JoystickButton(auxStick, XboxController::xbStartButton)
-#define GRIPPER_OPEN_BUTTON			new JoystickButton(auxRStick, 1);
-#define ARM_TO_TOP_BUTTON			new JoystickButton(auxRStick, 4);
-#define ARM_TO_STEP_BUTTON			new JoystickButton(auxRStick, 3);
-#define ARM_TO_BOTTOM_BUTTON		new JoystickButton(auxRStick, 5);
-#define ARM_TO_TIPPER_OVER_CAN_BUTTON		new JoystickButton(auxRStick, 2);
-#define ARM_TO_PRE_TIPPER_OVER_CAN_BUTTON	new JoystickButton(auxStick, 5);
+#define GRIPPER_OPEN_BUTTON			new JoystickButton(auxRStick, 1)
 #define STACKER_EXTEND_BUTTON			new AnalogJoystickButton(auxRStick, 1, -.75)
 #define STACKER_RETRACT_BUTTON			new AnalogJoystickButton(auxRStick, 1, .75)
+#define ARM_TO_TOP_BUTTON			new JoystickButton(auxRStick, 4)
+#define ARM_TO_STEP_BUTTON			new JoystickButton(auxRStick, 3)
+#define ARM_TO_BOTTOM_BUTTON		new JoystickButton(auxRStick, 5)
+#define ARM_TO_TIPPER_OVER_CAN_BUTTON		new JoystickButton(auxRStick, 2)
+#define ARM_TO_PRE_TIPPER_OVER_CAN_BUTTON	new JoystickButton(auxStick, 5)
 #define ARM_RAISE_BUTTON			new JoystickButton(auxRStick, 7)
 #define ARM_LOWER_BUTTON			new JoystickButton(auxRStick, 6)
 #define GRIPPER_SHUDDER_BUTTON		new JoystickButton(auxRStick, 8)
