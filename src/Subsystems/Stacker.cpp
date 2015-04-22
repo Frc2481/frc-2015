@@ -46,7 +46,7 @@ float Stacker::GetPosition() {
 }
 
 void Stacker::PeriodicUpdate() {
-	SmartDashboard::PutNumber("Stacker Current AVG Power", mRightLift->GetAverageCurrent() * mRightLift->GetAverageVoltage());
+//	SmartDashboard::PutNumber("Stacker Current AVG Power", mRightLift->GetAverageCurrent() * mRightLift->GetAverageVoltage());
 
 	mRightLift->PeriodicUpdate();
 
@@ -58,12 +58,12 @@ void Stacker::PeriodicUpdate() {
 #ifdef DEBUGGING
 	SmartDashboard::PutNumber("ToteCount", mToteCount);
 	SmartDashboard::PutNumber("Desired Tote Count", mDesiredToteCount);
-	SmartDashboard::PutNumber("stackerRightPosition", mRightLift->GetDesiredPostion());
+//	SmartDashboard::PutNumber("stackerRightPosition", mRightLift->GetDesiredPostion());
 	SmartDashboard::PutBoolean("stackerRightOnTarget", mRightLift->OnTarget());
 	SmartDashboard::PutBoolean("stackerRightResetting", mRightLift->IsResetting());
 	SmartDashboard::PutNumber("stackerRightCurrentPosition", mRightLift->GetCurrentPostion());
 	SmartDashboard::PutData("stackerRightController", (PIDController*)mRightLift->GetController());
-	SmartDashboard::PutNumber("RightStackerState", mRightLift->GetLiftState());
+//	SmartDashboard::PutNumber("RightStackerState", mRightLift->GetLiftState());
 	SmartDashboard::PutBoolean("top limit", mRightLift->IsTopLimit());
 	SmartDashboard::PutBoolean("Bottom Limit", mRightLift->IsBottomLimit());
 #endif

@@ -23,8 +23,7 @@ DriveTrain::DriveTrain() : Subsystem("DriveTrain"),
 				imu(new IMU(serialPort,update_rate_hz)),
 				isFieldCentric(false),
 				isForward(true),
-				mXPos(0), mYPos(0), mTwist(0),
-				mPIDGyro(new PIDController(0.008, 0.000, 0, NULL, NULL)){
+				mXPos(0), mYPos(0), mTwist(0) {
 
 	printf("Pre DriveTrain Constructor \n");
 	prevAngle = 90.0;
@@ -45,8 +44,6 @@ DriveTrain::DriveTrain() : Subsystem("DriveTrain"),
 		imu->ZeroYaw();
 	}
 	printf("post DriveTrain Constructor \n");
-
-	SmartDashboard::PutData("GYRO PID",mPIDGyro);
 }
 
 void DriveTrain::InitDefaultCommand() {
@@ -258,7 +255,7 @@ void DriveTrain::SetI(float i) {
 	BLWheel->GetController()->SetI(i);
 }
 void DriveTrain::ResetGyro(){
-	printf("\n\n reset wii in driveTrain \n \n");
+//	printf("\n\n reset wii in driveTrain \n \n");
 }
 
 float DriveTrain::GetHeading(){
@@ -341,12 +338,12 @@ void DriveTrain::Crab(double xPos, double yPos, double twist) {
 				gyroAngle = std::max(std::min(-gyroAngle, 30.0f), -30.0f);
 				gyroAccumError += (gyroAngle * 2.0);
 				gyroAccumError = std::max(std::min(gyroAccumError, 5.0), -5.0);
-				float P = mPIDGyro->GetP();
-				float I = mPIDGyro->GetI() * .1;
+				float P = 0.008; // mPIDGyro->GetP();
+				float I = 0; // mPIDGyro->GetI() * .1;
 				twist = gyroAngle * P + gyroAccumError * I;
-				printf("GYRO CORRECTION %f \n", gyroAngle);
-				SmartDashboard::PutBoolean("GYRO Correction 2", true);
-				SmartDashboard::PutNumber("Gyro I Accum", gyroAccumError);
+//				printf("GYRO CORRECTION %f \n", gyroAngle);
+//				SmartDashboard::PutBoolean("GYRO Correction 2", true);
+//				SmartDashboard::PutNumber("Gyro I Accum", gyroAccumError);
 
 				//TODO: Put this back for normal 3 tote to have a chance at working :)
 //				twist *= sqrt((xPos * xPos) + (yPos * yPos));
@@ -355,7 +352,7 @@ void DriveTrain::Crab(double xPos, double yPos, double twist) {
 
 				twist *= 2;
 				twist = std::max(std::min(twist, .3), -.3);
-				SmartDashboard::PutNumber("GYRO Twist Correct", twist);
+//				SmartDashboard::PutNumber("GYRO Twist Correct", twist);
 			//}
 
 
@@ -434,22 +431,22 @@ void DriveTrain::Crab(double xPos, double yPos, double twist) {
 			wheelSpeedBL /= maxWheelSpeed;
 		}
 
-		SmartDashboard::PutNumber("wheelSpeedFR", wheelSpeedFR);
-		SmartDashboard::PutNumber("wheelSpeedFL", wheelSpeedFL);
-		SmartDashboard::PutNumber("wheelSpeedBR", wheelSpeedBR);
-		SmartDashboard::PutNumber("wheelSpeedBL", wheelSpeedBL);
+//		SmartDashboard::PutNumber("wheelSpeedFR", wheelSpeedFR);
+//		SmartDashboard::PutNumber("wheelSpeedFL", wheelSpeedFL);
+//		SmartDashboard::PutNumber("wheelSpeedBR", wheelSpeedBR);
+//		SmartDashboard::PutNumber("wheelSpeedBL", wheelSpeedBL);
 
 		SmartDashboard::PutNumber("wheelAngleFR", FRWheel->GetRawAngle());
-		SmartDashboard::PutNumber("wheelAngleFRV", FRWheel->GetVoltage());
+//		SmartDashboard::PutNumber("wheelAngleFRV", FRWheel->GetVoltage());
 
 		SmartDashboard::PutNumber("wheelAngleFL", FLWheel->GetRawAngle());
-		SmartDashboard::PutNumber("wheelAngleFLV", FLWheel->GetVoltage());
+//		SmartDashboard::PutNumber("wheelAngleFLV", FLWheel->GetVoltage());
 
 		SmartDashboard::PutNumber("wheelAngleBR", BRWheel->GetRawAngle());
-		SmartDashboard::PutNumber("wheelAngleBRV", BRWheel->GetVoltage());
+//		SmartDashboard::PutNumber("wheelAngleBRV", BRWheel->GetVoltage());
 
 		SmartDashboard::PutNumber("wheelAngleBL", BLWheel->GetRawAngle());
-		SmartDashboard::PutNumber("wheelAngleBLV", BLWheel->GetVoltage());
+//		SmartDashboard::PutNumber("wheelAngleBLV", BLWheel->GetVoltage());
 
 		SmartDashboard::PutNumber("aref", ControllerPower::GetVoltage5V());
 

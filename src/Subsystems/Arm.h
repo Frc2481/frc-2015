@@ -33,8 +33,6 @@ private:
 	RollingAccumulator<double, 10> mWristCurrent;
 	Notifier* mGripperShudder;
 
-	PIDController* mDummyPID;
-
 	enum WristState {
 		NORMAL,
 		WARNING,

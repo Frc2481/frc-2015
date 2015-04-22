@@ -94,17 +94,17 @@ private:
 		SmartDashboard::PutData(Scheduler::GetInstance());
 		SmartDashboard::PutData("Increment Tote Count", new IncrementToteCountCommand());
 		SmartDashboard::PutData("Decrement Tote Count", new DecrementToteCountCommand());
-		SmartDashboard::PutData("Reset Stacker", new StackerResetCommand());
+//		SmartDashboard::PutData("Reset Stacker", new StackerResetCommand());
 		SmartDashboard::PutData("disable Brake", new StackerDisableBrakeCommand());
 		SmartDashboard::PutData("Pickup Tote", new PickUpToteCommand());
 		SmartDashboard::PutData("Pickup Tote To Scoring Platform", new PickUpToteToScoringPlatformCommand());
 		SmartDashboard::PutData("Calibrate Encoder Offsets", new CalibrateEncoderOffsetsCommand());
 		SmartDashboard::PutData("Turn Intake On", new IntakeTurnOn());
-		SmartDashboard::PutData("Turn Intake Off", new IntakeTurnOff());
+		//SmartDashboard::PutData("Turn Intake Off", new IntakeTurnOff());
 		SmartDashboard::PutData("Reverse Intake", new IntakeTurnOnReverse());
-		SmartDashboard::PutData("Turn Tote CW", new IntakeCW());
-		SmartDashboard::PutData("Turn Tote CCW", new IntakeCCW());
-		SmartDashboard::PutData("Acquire Tote", new AcquireToteCommand());
+		//SmartDashboard::PutData("Turn Tote CW", new IntakeCW());
+		//SmartDashboard::PutData("Turn Tote CCW", new IntakeCCW());
+		//SmartDashboard::PutData("Acquire Tote", new AcquireToteCommand());
 //		SmartDashboard::PutData("ArmTop", new ArmGoToPositionCommand(ARM_PIVOT_POSITION_TOP));
 //		SmartDashboard::PutData("ArmBot", new ArmGoToPositionCommand(ARM_PIVOT_POSITION_BOT));
 		SmartDashboard::PutData("Zero Stacker Encoders", new StackerZeroEncodersCommand());
@@ -143,7 +143,7 @@ private:
 		SmartDashboard::PutData("Slide Extend", new ExtendSlideCommand());
 		SmartDashboard::PutData("Slide Retract", new RetractSlideCommand());
 
-		SmartDashboard::PutData("Get RC From Step", new RemoveRCFromStepCommand());
+//		SmartDashboard::PutData("Get RC From Step", new RemoveRCFromStepCommand());
 
 		SmartDashboard::PutData("Fishing Pole Auto", new FishingPoleAutoCommandGroup());
 
@@ -155,8 +155,8 @@ private:
 //		PersistedSettings::GetInstance().Set("STACKER_D", STACKER_D);
 //		PersistedSettings::GetInstance().Set("I", STACKER_P);
 //
-		PersistedSettings::GetInstance().Set("INTAKE_FORWARD_SPEED", 1);
-		PersistedSettings::GetInstance().Set("INTAKE_REVERSE_SPEED", 1);
+//		PersistedSettings::GetInstance().Set("INTAKE_FORWARD_SPEED", 1);
+//		PersistedSettings::GetInstance().Set("INTAKE_REVERSE_SPEED", 1);
 
 		//PersistedSettings::GetInstance().Set("WRIST_P", .05);
 		//PersistedSettings::GetInstance().Set("SHOULDER_P", .05);
@@ -225,8 +225,6 @@ private:
 		CommandBase::stacker->PeriodicUpdate();
 		CommandBase::intake->PeriodicUpdate();
 		CommandBase::arm->PeriodicUpdate();
-
-		SmartDashboard::PutNumber("POV Values", CommandBase::oi->GetAuxStick()->GetPOV());
 
 		SmartDashboard::PutNumber("IMU roll", CommandBase::driveTrain->GetRoll());
 				SmartDashboard::PutNumber("IMU pitch", CommandBase::driveTrain->GetPitch());

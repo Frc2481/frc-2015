@@ -31,7 +31,6 @@ Arm::Arm() : Subsystem("Arm"),
 		mWristStallCounter(0),
 		mWristNoEncoderOffset(false),
 		mWristOverride(false),
-		mDummyPID(new PIDController(.05,.1,.01,NULL,NULL)),
 		mShoulderMaxSpeedOutput(SHOULDER_RAMP_RATE),
 		mPrevShoulderValue(mShoulderEncoder->GetAngle()),
 		mGripperShudderEnabled(false),
@@ -39,7 +38,6 @@ Arm::Arm() : Subsystem("Arm"),
 		mWristState(NORMAL)
 		{
 
-	SmartDashboard::PutData("WristPID", mDummyPID);
 	mGripperShudder = new Notifier(Arm::CallGripperShudder, this);
 	mGripperShudder->StartPeriodic(.005);
 	mPivotWristTalon->ConfigNeutralMode(CANTalon::kNeutralMode_Brake);
@@ -210,13 +208,6 @@ void Arm::PeriodicUpdate() {
 		mPIDWrist->Disable();
 	}
 
-//	if (!mGripper->Get()){
-//		mPIDWrist->SetP(.5);
-//	}
-//	else {
-		mPIDWrist->SetP(mDummyPID->GetP());
-//	}
-
 	if (mWristLocked && !mWristOverride){
 		SetWristPosition(GetParallel());
 	}
@@ -256,9 +247,9 @@ void Arm::PeriodicUpdate() {
 	SmartDashboard::PutNumber("Current Wrist Position Raw", mWristEncoder->GetRawAngle());
 	SmartDashboard::PutNumber("Wrist Set Point", mPIDWrist->GetSetPoint());
 	SmartDashboard::PutBoolean("Wrist Stalled", mWristStalled);
-	SmartDashboard::PutBoolean("Gripper Close Solenoid", mGripperClose->Get());
-	SmartDashboard::PutBoolean("Gripper Open Solenoid", mGripperOpen->Get());
-	SmartDashboard::PutBoolean("Extender Solenoid", mArmExtention->Get());
+//	SmartDashboard::PutBoolean("Gripper Close Solenoid", mGripperClose->Get());
+//	SmartDashboard::PutBoolean("Gripper Open Solenoid", mGripperOpen->Get());
+//	SmartDashboard::PutBoolean("Extender Solenoid", mArmExtention->Get());
 	SmartDashboard::PutNumber("Wrist Motor Speed", mPivotWristTalon->Get());
 	SmartDashboard::PutNumber("Shoulder Motor Speed", mPivotShoulderTalon->Get());
 	SmartDashboard::PutNumber("Wrist Current Draw", mPivotWristTalon->GetOutputCurrent());

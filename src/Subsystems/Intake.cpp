@@ -81,8 +81,8 @@ void Intake::IntakeManual(float xValue){
 
 void Intake::PeriodicUpdate(){
 #ifdef DEBUGGING
-	SmartDashboard::PutNumber("IntakeLeftMotorSpeed", mLeftMotor->Get());
-	SmartDashboard::PutNumber("IntakeRightMotorSpeed", mRightMotor->Get());
+//	SmartDashboard::PutNumber("IntakeLeftMotorSpeed", mLeftMotor->Get());
+//	SmartDashboard::PutNumber("IntakeRightMotorSpeed", mRightMotor->Get());
 	SmartDashboard::PutBoolean("Contain Limit", mIntakeLimit->Get());
 #endif
 }
