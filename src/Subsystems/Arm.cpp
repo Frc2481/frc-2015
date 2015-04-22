@@ -15,9 +15,9 @@ Arm::Arm() : Subsystem("Arm"),
 		mShoulderEncoder     (new ContinuousEncoder(SHOULDER_ENCODER)),
 		mWristEncoder        (new ContinuousEncoder(WRIST_ENCODER)),
 		mArmExtention        (new Solenoid(EXTENTION_SOLENOID)),
-		mPivotShoulderTalon  (new CANTalon(ARM_SHOULDER_PIVOT)),
 		mGripperClose        (new Solenoid(GRIPPER_SOLENOID_CLOSE)),
 		mGripperOpen         (new Solenoid(GRIPPER_SOLENOID_OPEN)),
+		mPivotShoulderTalon  (new DualCANTalon(ARM_SHOULDER_PIVOT_A, ARM_SHOULDER_PIVOT_B, false, true)),
 		mPivotWristTalon     (new CANTalon(ARM_WRIST_PIVOT)),
 		mPIDShoulder         (new PController(mShoulderEncoder,mPivotShoulderTalon,
 								.8,0)),
@@ -38,7 +38,7 @@ Arm::Arm() : Subsystem("Arm"),
 	mGripperShudder = new Notifier(Arm::CallGripperShudder, this);
 	mGripperShudder->StartPeriodic(.005);
 	mPivotWristTalon->ConfigNeutralMode(CANTalon::kNeutralMode_Brake);
-	mPivotShoulderTalon->ConfigNeutralMode(CANTalon::kNeutralMode_Brake);
+//	mPivotShoulderTalon->ConfigNeutralMode(CANTalon::kNeutralMode_Brake);
 
 	mShoulderEncoder->SetOffset(PersistedSettings::GetInstance().Get("SHOULDER_ENCODER_OFFSET", 302.61));
 	mWristEncoder->SetOffset(PersistedSettings::GetInstance().Get("WRIST_ENCODER_OFFSET", 11.3716));
@@ -64,6 +64,9 @@ Arm::Arm() : Subsystem("Arm"),
 	mPIDShoulder->SetStallDetect(true);
 
 //	mPIDShoulder->SetBrakeMode(true);
+
+	mPivotShoulderTalon->GetTalonA()->ConfigRevLimitSwitchNormallyOpen(true);	//A is 13
+	mPivotShoulderTalon->GetTalonB()->ConfigFwdLimitSwitchNormallyOpen(true);	//B is 15
 
 	if (PersistedSettings::GetInstance().Get("WRIST_ENCODER_OFFSET_SET", 0) == 0) {
 		//mWristNoEncoderOffset = true;

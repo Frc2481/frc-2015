@@ -5,15 +5,16 @@
 #include "Commands/Subsystem.h"
 #include "Components/ContinuousEncoder.h"
 #include "Components/PController.h"
+#include "Components/DualCANTalon.h"
 
 class Arm: public Subsystem {
 private:
 	ContinuousEncoder* mShoulderEncoder;
 	ContinuousEncoder* mWristEncoder;
 	Solenoid* mArmExtention;
-	CANTalon* mPivotShoulderTalon;
 	Solenoid* mGripperClose;
 	Solenoid* mGripperOpen;
+	DualCANTalon* mPivotShoulderTalon;
 	CANTalon* mPivotWristTalon;
 	PController* mPIDShoulder;
 	PController* mPIDWrist;
@@ -26,6 +27,7 @@ private:
 	bool mWristNoEncoderOffset;
 	bool mWristOverride;
 	bool mGripperShudderEnabled;
+	int mShouldWraparoundDetectionCount;
 	RollingAccumulator<double, 10> mWristCurrent;
 	Notifier* mGripperShudder;
 

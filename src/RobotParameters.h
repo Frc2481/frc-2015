@@ -29,7 +29,8 @@
 		#define INTAKE_RIGHT 12
 
 	//Arm
-		#define ARM_SHOULDER_PIVOT 13
+		#define ARM_SHOULDER_PIVOT_A 13
+		#define ARM_SHOULDER_PIVOT_B 15
 		#define ARM_WRIST_PIVOT 14
 
 //Analog Channels
