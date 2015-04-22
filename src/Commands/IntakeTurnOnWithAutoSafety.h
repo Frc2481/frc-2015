@@ -11,7 +11,7 @@ public:
 		Requires(intake);
 	}
 	void Initialize(){
-		intake->TurnOn();
+		intake->TurnOn(.75 * INTAKE_FORWARD_SPEED);
 		SetTimeout(THREE_TOTE_AUTO_STACK_TIMEOUT);
 	}
 	void Execute(){

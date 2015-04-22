@@ -16,9 +16,9 @@ Intake::Intake() : Subsystem("Intake"),
 
 void Intake::InitDefaultCommand(){}
 
-void Intake::TurnOn() {
-	mRightMotor->Set(INTAKE_FORWARD_SPEED);
-	mLeftMotor->Set(-INTAKE_FORWARD_SPEED);
+void Intake::TurnOn(double speed) {
+	mRightMotor->Set(speed);
+	mLeftMotor->Set(-speed);
 	mState = On;
 }
 
@@ -28,9 +28,9 @@ void Intake::TurnOff() {
 	mState = Off;
 }
 
-void Intake::TurnOnReverse() {
-	mRightMotor->Set(INTAKE_REVERSE_SPEED);
-	mLeftMotor->Set(-INTAKE_REVERSE_SPEED);
+void Intake::TurnOnReverse(double speed) {
+	mRightMotor->Set(speed);
+	mLeftMotor->Set(-speed);
 	mState = Reverse;
 }
 

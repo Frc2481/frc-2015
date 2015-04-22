@@ -16,10 +16,12 @@ public:
 		//AddSequential(new StackerGoToPositionCommand(10));
 		AddParallel(new ExtendSlideCommand());
 		AddSequential(new WaitCommand(.75));
+		AddParallel(new IntakeTurnOnReverse(.5));
 		AddSequential(new StackerGoToPositionCommand(STEP_HEIGHT));
 		AddSequential(new RetractSlideCommand());
 		AddSequential(new WaitCommand(1.5));
 		AddSequential(new StackerResetToteCount());
+		AddSequential(new IntakeTurnOff());
 	}
 };
 

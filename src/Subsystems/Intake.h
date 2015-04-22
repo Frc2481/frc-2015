@@ -10,6 +10,7 @@
 
 #include "Commands/Subsystem.h"
 #include "WPILib.h"
+#include "RobotParameters.h"
 
 class Intake: public Subsystem
 {
@@ -31,9 +32,9 @@ private:
 public:
 	Intake();
 	void InitDefaultCommand();
-	void TurnOn();
+	void TurnOn(double speed = INTAKE_FORWARD_SPEED);
 	void TurnOff();
-	void TurnOnReverse();
+	void TurnOnReverse(double speed = INTAKE_REVERSE_SPEED);
 	void TurnOnLeftReverse();
 	void RotateCW();
 	void RotateCCW();

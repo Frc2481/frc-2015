@@ -40,7 +40,7 @@
 
 //Intake Define
 	#define INTAKE_FORWARD_SPEED 1 * -1
-	#define INTAKE_REVERSE_SPEED 1
+	#define INTAKE_REVERSE_SPEED .7
 	#define INTAKE_TRIM .5
 	#define INTAKE_CONTAIN_LIMIT 4
 

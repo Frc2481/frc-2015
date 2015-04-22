@@ -6,12 +6,15 @@
 
 class IntakeTurnOnReverse: public CommandBase
 {
+private:
+	double mSpeed;
 public:
-	IntakeTurnOnReverse(){
+	IntakeTurnOnReverse(double speed = INTAKE_REVERSE_SPEED){
 		Requires(intake);
+		mSpeed = speed;
 	}
 	void Initialize(){
-		CommandBase::intake->TurnOnReverse();
+		CommandBase::intake->TurnOnReverse(mSpeed);
 	}
 	void Execute(){}
 	bool IsFinished(){
