@@ -11,8 +11,9 @@ private:
 	ContinuousEncoder* mShoulderEncoder;
 	ContinuousEncoder* mWristEncoder;
 	Solenoid* mArmExtention;
-	Solenoid* mGripper;
 	CANTalon* mPivotShoulderTalon;
+	Solenoid* mGripperClose;
+	Solenoid* mGripperOpen;
 	CANTalon* mPivotWristTalon;
 	PController* mPIDShoulder;
 	PController* mPIDWrist;

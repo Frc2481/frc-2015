@@ -15,8 +15,9 @@ Arm::Arm() : Subsystem("Arm"),
 		mShoulderEncoder     (new ContinuousEncoder(SHOULDER_ENCODER)),
 		mWristEncoder        (new ContinuousEncoder(WRIST_ENCODER)),
 		mArmExtention        (new Solenoid(EXTENTION_SOLENOID)),
-		mGripper             (new Solenoid(GRIPPER_SOLENOID)),
 		mPivotShoulderTalon  (new CANTalon(ARM_SHOULDER_PIVOT)),
+		mGripperClose        (new Solenoid(GRIPPER_SOLENOID_CLOSE)),
+		mGripperOpen         (new Solenoid(GRIPPER_SOLENOID_OPEN)),
 		mPivotWristTalon     (new CANTalon(ARM_WRIST_PIVOT)),
 		mPIDShoulder         (new PController(mShoulderEncoder,mPivotShoulderTalon,
 								.8,0)),
@@ -215,7 +216,8 @@ void Arm::PeriodicUpdate() {
 	SmartDashboard::PutNumber("Current Wrist Position Raw", mWristEncoder->GetRawAngle());
 	SmartDashboard::PutNumber("Wrist Set Point", mPIDWrist->GetSetPoint());
 	SmartDashboard::PutBoolean("Wrist Stalled", mWristStalled);
-	SmartDashboard::PutBoolean("Gripper Solenoid", mGripper->Get());
+	SmartDashboard::PutBoolean("Gripper Close Solenoid", mGripperClose->Get());
+	SmartDashboard::PutBoolean("Gripper Open Solenoid", mGripperOpen->Get());
 	SmartDashboard::PutBoolean("Extender Solenoid", mArmExtention->Get());
 	SmartDashboard::PutNumber("Wrist Motor Speed", mPivotWristTalon->Get());
 	SmartDashboard::PutNumber("Shoulder Motor Speed", mPivotShoulderTalon->Get());
@@ -241,11 +243,13 @@ void Arm::SetPivotArmRelative(float position) {
 }
 
 void Arm::CloseGripper() {
-	mGripper->Set(false);
+	mGripperClose->Set(false);
+	mGripperOpen->Set(true);
 }
 
 void Arm::OpenGripper() {
-	mGripper->Set(true);
+	mGripperClose->Set(true);
+	mGripperOpen->Set(false);
 }
 
 void Arm::ExtendArm() {
@@ -263,7 +267,7 @@ bool Arm::IsExtended(){
 }
 
 bool Arm::IsGripper(){
-	return mGripper->Get();
+	return mGripperClose->Get();
 }
 
 bool Arm::IsArmOnTarget() {
@@ -334,7 +338,7 @@ void Arm::SetWristPosition(double pos, bool override) {
 
 void Arm::SetWristManual(double speed) {
 	mPIDWrist->Disable();
-	if (mGripper->Get()) {
+	if (mGripperClose->Get()) {
 		mPivotWristTalon->Set(-speed);
 	}
 	else {
