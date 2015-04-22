@@ -67,6 +67,7 @@ private:
 	Button* armTo4Tote;
 	Button* armTo5Tote;
 	Button* armDropOnTotes;
+	Button* gripperShudder;
 
 	Button* sixStack;
 	Button* fiveStack;

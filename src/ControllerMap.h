@@ -55,6 +55,7 @@
 #define ARM_TO_PRE_TIPPER_OVER_CAN_BUTTON	new JoystickButton(auxStick, 5);
 #define ARM_RAISE_BUTTON			new JoystickButton(auxRStick, 7)
 #define ARM_LOWER_BUTTON			new JoystickButton(auxRStick, 6)
+#define GRIPPER_SHUDDER_BUTTON		new JoystickButton(auxRStick, 8)
 //#define WRIST_TILT_UP_BUTTON		new AnalogJoystickButton(auxStick, XboxController::xbRightYAxis, 0.5f)
 //#define WRIST_TILT_DOWN_BUTTON	new AnalogJoystickButton(auxStick, XboxController::xbRightYAxis, -0.5f)
 #define WRIST_TO_90_BUTTON			new AnalogJoystickButton(auxStick, XboxController::xbRightYAxis, -0.5f)

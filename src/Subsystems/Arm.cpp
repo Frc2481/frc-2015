@@ -29,10 +29,13 @@ Arm::Arm() : Subsystem("Arm"),
 		mWristNoEncoderOffset(false),
 		mWristOverride(false),
 		mDummyPID(new PIDController(.05,.1,.01,NULL,NULL)),
+		mGripperShudderEnabled(false),
 		mWristState(NORMAL)
 		{
 
 	SmartDashboard::PutData("WristPID", mDummyPID);
+	mGripperShudder = new Notifier(Arm::CallGripperShudder, this);
+	mGripperShudder->StartPeriodic(.005);
 	mPivotWristTalon->ConfigNeutralMode(CANTalon::kNeutralMode_Brake);
 	mPivotShoulderTalon->ConfigNeutralMode(CANTalon::kNeutralMode_Brake);
 
@@ -382,4 +385,33 @@ float Arm::GetShoulderAngle() {
 
 float Arm::GetWristAngle() {
 	return mWristEncoder->GetAngle();
+}
+
+void Arm::CallGripperShudder(void *gripperShudder)
+{
+	Arm *arm = (Arm*) gripperShudder;
+	arm->GripperShudder();
+}
+
+void Arm::GripperShudder() {
+	static int loopCount = 0;
+
+	if (mGripperShudderEnabled){
+		loopCount++;
+		if (loopCount < 8){
+			OpenGripper();
+		}
+		else if (loopCount < 15) {
+			CloseGripper();
+		}
+		loopCount %= 15;
+	}
+}
+
+void Arm::SetGripperShudder(bool b) {
+	mGripperShudderEnabled = b;
+}
+
+bool Arm::GetGripperShudder() {
+	return mGripperShudderEnabled;
 }

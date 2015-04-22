@@ -24,7 +24,9 @@ private:
 	int mWristStallCounter;
 	bool mWristNoEncoderOffset;
 	bool mWristOverride;
+	bool mGripperShudderEnabled;
 	RollingAccumulator<double, 10> mWristCurrent;
+	Notifier* mGripperShudder;
 
 	PIDController* mDummyPID;
 
@@ -68,6 +70,10 @@ public:
 	void SetShoulderManual(double speed);
 	float GetShoulderAngle();
 	float GetWristAngle();
+	static void CallGripperShudder(void *logger);
+	void GripperShudder();
+	void SetGripperShudder(bool b);
+	bool GetGripperShudder();
 };
 
 

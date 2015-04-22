@@ -22,8 +22,9 @@ public:
 			mPos = 3.0f;
 		}
 
-		if (stacker->GetToteCount() >= 5){
-			arm->OpenGripper();
+		if (stacker->GetToteCount() >= 4){
+			arm->SetGripperShudder(true);
+			SetTimeout(2);
 		}
 
 		if (CommandBase::stacker->GetPosition() < ((mPos - 2) * 578)){
@@ -33,13 +34,20 @@ public:
 			mSkipOnTarget = true;
 		}
 	}
-	void Execute() {}
+	void Execute() {
+		if (IsTimedOut() &&
+			stacker->GetToteCount() >= 4) {
+			arm->SetGripperShudder(false);
+			arm->OpenGripper();
+		}
+	}
 	bool IsFinished(){
 		return (CommandBase::stacker->GetPosition() > (mPos * 578)) || mSkipOnTarget;
 	}
 	void End(){
 		CommandBase::stacker->Disable();
-		if (stacker->GetToteCount() >= 5){
+		if (stacker->GetToteCount() >= 4){
+			arm->SetGripperShudder(false);
 			arm->CloseGripper();
 		}
 //		CommandBase::stacker->UpdateToteCount();

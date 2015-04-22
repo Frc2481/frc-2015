@@ -46,6 +46,7 @@
 #include "Commands/DriveOnToScoringPlatformCommand.h"
 #include "Commands/ArmShoulderManualCommand.h"
 #include "Commands/LengthenFishingPolesCommand.h"
+#include "Commands/ArmGripperShudderCommand.h"
 
 
 #include "Commands/SetICommand.h"
@@ -134,6 +135,10 @@ OI::OI()
 
 	armToPreTippedOverCan = ARM_TO_PRE_TIPPER_OVER_CAN_BUTTON;
 	armToPreTippedOverCan->WhenPressed(new ArmShoulderAndWristToTippedOverCanCommand(SHOULDER_PRE_TIPPED_OVER_CAN));
+
+	//Gripper Shudder
+	gripperShudder = GRIPPER_SHUDDER_BUTTON;
+	gripperShudder->WhileHeld(new ArmGripperShudderCommand());
 
 
 	armTo2Tote = ARM_TWO_TOTE_STACK_BUTTON;
