@@ -40,6 +40,7 @@
 #include "Commands/ArmWristStalledMonitor.h"
 #include "Commands/StackerStalledMonitor.h"
 #include "Commands/RotateToAngle.h"
+#include "Commands/ThreeToteStackSnowPlowAutoCommandGroup.h"
 
 #include "RobotParameters.h"
 
@@ -74,6 +75,7 @@ private:
 		autoOptions->AddDefault("Nothing", (void*)0);
 		autoOptions->AddObject("Three Tote Auto", new ThreeToteStackAutoCommandGroup());
 		autoOptions->AddObject("Get RC from Step", new RemoveRCFromStepCommand());
+		autoOptions->AddObject("Three Tote Snowplow (TEST)", new ThreeToteStackSnowPlowAutoCommandGroup());
 		autoOptions->AddObject("No Strafe three tote (TEST)", new ThreeToteStackNoStrafeAutoCommandGroup());
 		fishPoleAuto = new FishingPoleAutoCommandGroup();
 		autoOptions->AddObject("Fishing Pole", fishPoleAuto);
