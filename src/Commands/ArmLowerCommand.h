@@ -11,11 +11,12 @@ public:
 		Requires(arm);
 	}
 	void Initialize(){
-		arm->SetPivotArmRelative(10.0f);
+		SetTimeout(.3);
+		arm->SetPivotArmRelative(5.0f);
 	}
 	void Execute(){}
 	bool IsFinished(){
-		return arm->IsArmOnTarget();
+		return arm->IsArmOnTarget() || IsTimedOut();
 	}
 	void End(){
 		arm->StopPivotArm();
