@@ -7,7 +7,7 @@
 class StackerGoToNextPositionCommand: public CommandBase
 {
 private:
-	int mPos;
+	float mPos;
 	bool mSkipOnTarget;
 public:
 	StackerGoToNextPositionCommand() : CommandBase() {
@@ -16,7 +16,7 @@ public:
 	}
 	void Initialize(){
 		if(stacker->GetToteCount() < stacker->getDesiredToteCount()){
-			mPos = 15.25f;
+			mPos = 15.0f;   //changed from 15.25
 		}
 		else {
 			mPos = 3.0f;
@@ -50,7 +50,6 @@ public:
 			arm->SetGripperShudder(false);
 			arm->CloseGripper();
 		}
-//		CommandBase::stacker->UpdateToteCount();
 	}
 	void Interrupted(){
 		End();
