@@ -219,7 +219,15 @@ void Arm::PeriodicUpdate() {
 #endif
 
 	if (mWristLocked && !mWristOverride){
-		SetWristPosition(GetParallel());
+		if (mPIDShoulder->GetSetPoint() < shoulderAngle &&
+				shoulderAngle < 40) {
+			SetWristPosition(270);
+		} else {
+			SetWristPosition(GetParallel());
+		}
+		mPIDWrist->SetP(.08);
+	} else {
+		mPIDWrist->SetP(.05);
 	}
 	//mPIDWrist->SetSetpoint(wristAngle);
 
@@ -416,7 +424,7 @@ double Arm::GetParallel() {
 		return 270;
 	}
 	else {
-		return -encAngle + 275;
+		return -encAngle + 265;
 	}
 }
 
