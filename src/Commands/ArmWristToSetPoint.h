@@ -12,6 +12,7 @@ protected:
 public:
 	ArmWristToSetPoint(double setpoint)
 		: mSetPoint(setpoint){
+		Requires(arm);
 	}
 	virtual void Initialize() {
 		 mDone = false;

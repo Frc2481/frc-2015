@@ -13,6 +13,7 @@ public:
 	ArmShoulderToSetPoint(double setpoint)
 		: CommandBase("ArmShoulderToSetPoint"),
 			mSetPoint(setpoint) {
+		Requires(arm);
 	}
 	virtual void Initialize(){
 		mDone = false;
