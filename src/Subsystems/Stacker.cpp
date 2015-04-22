@@ -8,9 +8,20 @@ Stacker::Stacker() :
 		mDesiredToteCount(6)
 {
 	float p = PersistedSettings::GetInstance().Get("STACKER_P", 0.0002);
-	float i = PersistedSettings::GetInstance().Get("STACKER_I", 0.0002);
+	float i = PersistedSettings::GetInstance().Get("STACKER_I", 0.0002); //changed from .00005
+	float d = 0; //changed from 0.0002
 
-	mRightLift = new Lift2481(RIGHT_STACKER, STACKER_ENCODER_A, STACKER_ENCODER_B, p, i, 0, STACKER_RIGHT_TOP_LIMIT, STACKER_RIGHT_BOTTOM_LIMIT, STACKER_BRAKE);
+	mRightLift = new Lift2481(
+			RIGHT_STACKER,
+			STACKER_ENCODER_A,
+			STACKER_ENCODER_B,
+			p,
+			i,
+			d,
+			STACKER_RIGHT_TOP_LIMIT,
+			STACKER_RIGHT_BOTTOM_LIMIT,
+			STACKER_BRAKE
+		);
 }
 
 void Stacker::InitDefaultCommand()
