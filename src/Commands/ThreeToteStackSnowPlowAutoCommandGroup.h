@@ -38,7 +38,7 @@
 #define PLOW_ANGLE_2 45
 
 #define RUSH_STAGE_1_SPEED .8
-#define RUSH_STAGE_1_TIME 1.75
+#define RUSH_STAGE_1_TIME 1.9
 #define RUSH_STAGE_2_SPEED .2
 #define RUSH_STAGE_2_TIME .1
 
@@ -58,10 +58,10 @@ public:
 		AddSequential(new AutoDriveCommand(DRIVE_FORWARD_PLOW,DRIVE_FORWARD_PLOW,0,PLOW_DRIVE_TIME));
 //		AddSequential(new AutoDriveCommand(DRIVE_FORWARD_PLOW*.819,DRIVE_FORWARD_PLOW*.574,0,PLOW_DRIVE_TIME));
 		AddParallel(new DriveTrainSetGyroOffsetCommand(0));
-		AddParallel(new AcquireToteAutoCommandGroup());
 		AddSequential(new DriveTrainWaitForHeading(0));
 		AddSequential(new AutoDriveCommand(0,-.1,0,.01));
 		AddSequential(new AutoDriveCommand(0,DRIVE_FAST_TO_NEXT_TOTE,0,FAST_DRIVE_TIME));
+		AddParallel(new AcquireToteAutoCommandGroup());
 		AddParallel(new AutoDriveCommand(0,DRIVE_TO_NEXT_TOTE,0));
 		AddSequential(new WaitForToteCommand());
 		AddParallel(new AutoDriveCommand(0,0,0));

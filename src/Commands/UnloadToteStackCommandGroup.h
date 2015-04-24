@@ -14,7 +14,6 @@ class UnloadToteStackCommandGroup: public CommandGroup
 public:
 	UnloadToteStackCommandGroup(bool autoMode = false){
 		//AddSequential(new ArmGripperOpenCommand());
-		AddSequential(new StackerGoToBottomUnloadCommand(true));
 		//AddParallel(new ArmGoToPositionAndDropCommand(40));
 		//AddSequential(new StackerResetToteCount());
 
@@ -22,6 +21,7 @@ public:
 			AddSequential(new UnloadStackerAuto());
 		}
 		else {
+			AddSequential(new StackerGoToBottomUnloadCommand(true));
 			AddSequential(new UnloadStackerManual());
 		}
 	}
