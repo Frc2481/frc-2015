@@ -22,9 +22,13 @@ public:
 			mPos = 3.0f;
 		}
 
-		if (stacker->GetToteCount() >= 4){
-			arm->SetGripperShudder(true);
-			SetTimeout(2);
+//		if (stacker->GetToteCount() >= 4){
+//			arm->SetGripperShudder(true);
+//			SetTimeout(2);
+//		}
+
+		if (stacker->GetToteCount() >= 5){
+			arm->OpenGripper();
 		}
 
 		if (CommandBase::stacker->GetPosition() < ((mPos - 2) * 578)){
@@ -46,8 +50,11 @@ public:
 	}
 	void End(){
 		CommandBase::stacker->Disable();
-		if (stacker->GetToteCount() >= 4){
-			arm->SetGripperShudder(false);
+//		if (stacker->GetToteCount() >= 4){
+//			arm->SetGripperShudder(false);
+//			arm->CloseGripper();
+//		}
+		if (stacker->GetToteCount() >= 5){
 			arm->CloseGripper();
 		}
 	}

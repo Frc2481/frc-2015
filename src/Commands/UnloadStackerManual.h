@@ -62,7 +62,7 @@ public:
 		if (mToteCount >= 5) {
 			arm->OpenGripper();
 		}
-		intake->TurnOnReverse();
+		intake->TurnOnReverse(.5);
 		driveTrain->Crab(0,.4,0);   //!!this relies on boost being false
 //		}
 	}

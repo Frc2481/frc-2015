@@ -8,7 +8,7 @@ Stacker::Stacker() :
 		mDesiredToteCount(6)
 {
 	float p = PersistedSettings::GetInstance().Get("STACKER_P", 0.0002);
-	float i = PersistedSettings::GetInstance().Get("STACKER_I", 0.0002); //changed from .00005
+	float i = PersistedSettings::GetInstance().Get("STACKER_I", 0.0001); //changed from .00005
 	float d = 0; //changed from 0.0002
 
 	mRightLift = new Lift2481(

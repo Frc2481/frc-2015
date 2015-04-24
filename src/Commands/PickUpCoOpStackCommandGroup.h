@@ -13,7 +13,8 @@ class PickUpCoOpStackCommandGroup: public CommandGroup
 {
 public:
 	PickUpCoOpStackCommandGroup(){
-		AddSequential(new StackerGoToPositionCommand(STEP_HEIGHT));
+//		AddSequential(new StackerGoToPositionCommand(PICKUP_COOP_HEIGHT));
+		AddSequential(new StackerGoToTopCommand());
 		//AddParallel(new AutoDriveCommand(0,-.2,0,1));
 		AddSequential(new IntakeTurnOn());
 		//AddSequential(new AutoDriveCommand(0,0,0));
